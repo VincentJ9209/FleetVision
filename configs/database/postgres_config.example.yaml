@@ -1,0 +1,5 @@
+host: localhost
+port: 5432
+database: fleetvision
+user: fleetvision_user
+password: change_me

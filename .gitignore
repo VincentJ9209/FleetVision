@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Raw catalog files
+# Keep the folder structure, but do not commit source Excel/CSV catalogs.
+dataset/00_catalog/raw_excels/*
+!dataset/00_catalog/raw_excels/.gitkeep
+
+# Raw and large data
+dataset/01_raw/
+dataset/02_interim/
+dataset/03_reviewed/
+dataset/04_annotations/
+dataset/05_yolo/
+
+# Allow dataset structure placeholders
+!dataset/01_raw/**/.gitkeep
+!dataset/02_interim/**/.gitkeep
+!dataset/03_reviewed/**/.gitkeep
+!dataset/04_annotations/**/.gitkeep
+!dataset/05_yolo/**/.gitkeep
+!dataset/README_dataset.md
+
+# Models and training artifacts
+models/**/*.pt
+models/**/*.pth
+models/**/*.onnx
+models/**/*.engine
+models/**/*.weights
+models/**/*.tflite
+runs/
+mlruns/
+
+# Outputs
+outputs/predictions/
+outputs/error_analysis/
+outputs/**/*.mp4
+outputs/**/*.avi
+outputs/**/*.mov
+
+# Database
+*.db
+*.sqlite
+*.dump
+*.backup
+
+# Logs
+*.log

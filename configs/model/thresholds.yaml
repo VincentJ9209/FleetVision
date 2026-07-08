@@ -1,0 +1,10 @@
+prediction:
+  default_confidence_threshold: 0.25
+  review_confidence_threshold: 0.40
+comparison:
+  iou_threshold: 0.20
+  new_damage_confidence_threshold: 0.40
+quality:
+  min_blur_score: null
+  min_brightness: null
+  max_brightness: null

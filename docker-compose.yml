@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: fleetvision_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-fleetvision}
+      POSTGRES_USER: ${POSTGRES_USER:-fleetvision_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fleetvision_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - fleetvision_postgres_data:/var/lib/postgresql/data
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.17.0
+    container_name: fleetvision_mlflow
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:////mlflow/mlflow.db --default-artifact-root /mlflow/artifacts
+    volumes:
+      - fleetvision_mlflow_data:/mlflow
+
+volumes:
+  fleetvision_postgres_data:
+  fleetvision_mlflow_data:

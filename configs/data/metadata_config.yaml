@@ -1,0 +1,11 @@
+supported_extensions:
+  - .jpg
+  - .jpeg
+  - .png
+  - .bmp
+  - .webp
+source_groups:
+  general_fleet: dataset/01_raw/01_general_fleet/images
+  claimable_damage: dataset/01_raw/02_claimable_damage/images
+  minor_damage: dataset/01_raw/03_minor_damage/images
+output_csv: outputs/metadata/image_metadata.csv

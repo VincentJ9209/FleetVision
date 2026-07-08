@@ -1,0 +1,15 @@
+pandas
+numpy
+opencv-python
+pillow
+pyyaml
+scikit-learn
+matplotlib
+plotly
+streamlit
+ultralytics
+psycopg2-binary
+sqlalchemy
+mlflow
+pytest
+python-dotenv
