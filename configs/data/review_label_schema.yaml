@@ -1,0 +1,57 @@
+input_csv: dataset/00_catalog/image_review_labels.csv
+summary_csv: outputs/metadata/review_label_validation_summary.csv
+errors_csv: outputs/metadata/review_label_validation_errors.csv
+required_columns:
+  - review_id
+  - image_id
+  - source_bucket
+  - original_path
+  - filename
+  - photo_type_review
+  - angle_review
+  - is_exterior_review
+  - has_visible_damage_review
+  - severity_review
+  - review_status
+  - reviewer
+  - review_notes
+identity_columns:
+  - review_id
+  - image_id
+  - source_bucket
+  - original_path
+  - filename
+allowed_values:
+  photo_type_review:
+    - exterior
+    - interior
+    - low_quality
+    - irrelevant
+    - unknown
+  angle_review:
+    - left_front
+    - left_rear
+    - right_front
+    - right_rear
+    - other
+    - unknown
+  is_exterior_review:
+    - "0"
+    - "1"
+    - unknown
+  has_visible_damage_review:
+    - "0"
+    - "1"
+    - unknown
+  severity_review:
+    - minor
+    - claimable
+    - unknown
+  review_status:
+    - pending
+    - reviewed
+    - needs_followup
+    - skipped
+unique_columns:
+  - review_id
+  - image_id
