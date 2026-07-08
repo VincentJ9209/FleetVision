@@ -1,0 +1,43 @@
+input_labels_csv: dataset/00_catalog/image_review_labels.csv
+suggestions_csv: outputs/metadata/auto_review_suggestions.csv
+
+outputs:
+  merged_labels_csv: dataset/00_catalog/image_review_labels_auto_suggested.csv
+  summary_csv: outputs/metadata/auto_review_merge_summary.csv
+
+settings:
+  fill_empty_only: true
+  keep_review_status_pending: true
+  pending_status_value: pending
+  auto_reviewer_value: auto_clip_suggestion
+  append_notes: true
+
+confidence_thresholds:
+  photo_type_review: 0.45
+  angle_review: 0.35
+  has_visible_damage_review: 0.55
+  severity_review: 0.40
+
+allowed_values:
+  photo_type_review:
+    - exterior
+    - interior
+    - low_quality
+    - irrelevant
+    - unknown
+  angle_review:
+    - front
+    - rear
+    - left
+    - right
+    - front_left
+    - front_right
+    - rear_left
+    - rear_right
+    - unknown
+  severity_review:
+    - none
+    - minor
+    - moderate
+    - severe
+    - unknown
