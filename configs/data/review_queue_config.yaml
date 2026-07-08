@@ -1,0 +1,9 @@
+input_csv: outputs/metadata/image_metadata.csv
+output_csv: dataset/02_interim/03_review_queue/review_queue.csv
+summary_csv: outputs/metadata/review_queue_summary.csv
+priority_by_source_bucket:
+  02_claimable_damage: 10
+  03_minor_damage: 20
+  01_general_fleet: 30
+default_priority: 90
+unreadable_priority_offset: 100
