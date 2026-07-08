@@ -104,3 +104,73 @@ python scripts/phase01_build_metadata.py --max-images-per-source 20
 6. 是否可以 commit。
 7. 是否可以 push 到 GitHub。
 8. 是否需要進入下一個 Phase。
+
+---
+
+## 6. Patch-only 更新規則
+
+為避免覆蓋本機已完成作業，FleetVision 後續交付一律優先採用 **patch 壓縮包**，不再以完整專案資料夾作為主要交付方式。
+
+### 核心原則
+
+- Patch 壓縮包只包含本階段需要「新增」或「替換」的檔案。
+- 不要直接把完整壓縮包解壓覆蓋整個 `FleetVision/` 根目錄。
+- 使用 patch 前，必須先檢查壓縮包內檔案清單。
+- 只複製 patch 中明確列出的檔案到 repo 對應位置。
+- 若 patch 中的檔案會替換現有檔案，先用 Cursor 查看 diff，再決定是否接受。
+- 若本機檔案已有手動修改，先備份或建立 Git commit，再套用 patch。
+- Patch 不應包含 `dataset/01_raw/`、大型輸出、模型權重或 `.env`。
+
+### Patch 套用前固定檢查
+
+```text
+Patch 套用檢查
+
+patch 檔名：<zip name>
+是否為完整專案包：否，應為局部 patch
+將新增檔案：<list>
+將替換檔案：<list>
+是否可能覆蓋本機已完成作業：是 / 否
+是否已查看 diff：是 / 否
+是否需要先 commit 目前狀態：是 / 否
+是否允許套用：是 / 否
+```
+
+### 建議套用流程
+
+1. 先在 Cursor terminal 執行：
+
+```bash
+git status
+```
+
+2. 若目前有重要修改，先 commit 或至少備份。
+3. 解壓 patch 到暫存資料夾，不要直接覆蓋 `FleetVision/`。
+4. 逐一複製 patch 內檔案到對應路徑。
+5. 用 Cursor 查看 diff。
+6. 執行本階段驗收指令。
+7. 通過後再 commit / push。
+
+### Windows PowerShell 範例
+
+假設 patch 解壓到：
+
+```text
+G:\Project\_patches\FleetVision_phase_gate_patch\
+```
+
+專案根目錄是：
+
+```text
+G:\Project\FleetVision\
+```
+
+則只複製 patch 內指定檔案，例如：
+
+```powershell
+Copy-Item "G:\Project\_patches\FleetVision_phase_gate_patch\PHASE_GATE_CHECKLIST.md" "G:\Project\FleetVision\PHASE_GATE_CHECKLIST.md" -Force
+Copy-Item "G:\Project\_patches\FleetVision_phase_gate_patch\CODEX_WORKFLOW.md" "G:\Project\FleetVision\CODEX_WORKFLOW.md" -Force
+Copy-Item "G:\Project\_patches\FleetVision_phase_gate_patch\CODEX_PHASE02_PROMPT.md" "G:\Project\FleetVision\CODEX_PHASE02_PROMPT.md" -Force
+```
+
+禁止使用會把整包內容直接覆蓋到根目錄的做法，除非已確認該 patch 只含安全的局部檔案，且已完成 diff 檢查。
