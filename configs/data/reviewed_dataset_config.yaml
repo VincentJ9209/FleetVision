@@ -1,0 +1,27 @@
+input_csv: dataset/00_catalog/image_review_labels.csv
+
+outputs:
+  exterior_csv: dataset/03_reviewed/exterior/exterior_image_list.csv
+  low_quality_csv: dataset/03_reviewed/low_quality/low_quality_image_list.csv
+  irrelevant_csv: dataset/03_reviewed/irrelevant/irrelevant_image_list.csv
+  annotation_candidates_csv: dataset/04_annotations/annotation_candidates.csv
+  summary_csv: outputs/metadata/reviewed_dataset_summary.csv
+
+settings:
+  reviewed_only: true
+  reviewed_status_value: reviewed
+
+required_columns:
+  - review_id
+  - image_id
+  - source_bucket
+  - original_path
+  - filename
+  - photo_type_review
+  - angle_review
+  - is_exterior_review
+  - has_visible_damage_review
+  - severity_review
+  - review_status
+  - reviewer
+  - review_notes
