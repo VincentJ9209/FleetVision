@@ -1,0 +1,32 @@
+# Phase 06: YOLO labels raw -> YOLOv8 dataset builder
+
+annotation_manifest_csv: dataset/04_annotations/annotation_task_manifest.csv
+yolo_labels_raw_dir: dataset/04_annotations/yolo_labels_raw
+output_root: dataset/05_yolo/v001_damage_detect
+summary_csv: outputs/metadata/yolo_dataset_summary.csv
+
+# The produced dataset remains local/generated and should not be committed.
+copy_images: true
+strict_missing_labels: true
+label_name_strategy: filename_stem  # filename_stem or image_id
+
+split:
+  train: 0.8
+  val: 0.1
+  test: 0.1
+  seed: 42
+
+class_names:
+  - damage
+
+required_manifest_columns:
+  - image_id
+  - original_path
+  - filename
+
+allowed_image_extensions:
+  - .jpg
+  - .jpeg
+  - .png
+  - .bmp
+  - .webp
