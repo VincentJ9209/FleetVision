@@ -68,3 +68,10 @@ outputs/**/*.mov
 outputs/metadata/*.csv
 outputs/review/*.csv
 
+
+# Generated FleetVision outputs
+outputs/metadata/*.csv
+outputs/review/*.csv
+outputs/predictions/
+outputs/error_analysis/
+
