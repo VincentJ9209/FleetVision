@@ -1,0 +1,36 @@
+input_csv: dataset/04_annotations/annotation_candidates.csv
+
+outputs:
+  task_manifest_csv: dataset/04_annotations/annotation_task_manifest.csv
+  summary_csv: outputs/metadata/annotation_task_manifest_summary.csv
+
+settings:
+  annotation_class: damage
+  annotation_type: bbox
+  annotation_status: pending
+  require_reviewed_status: true
+  reviewed_status_value: reviewed
+  require_visible_damage: true
+
+required_columns:
+  - review_id
+  - image_id
+  - source_bucket
+  - original_path
+  - filename
+  - photo_type_review
+  - angle_review
+  - is_exterior_review
+  - has_visible_damage_review
+  - severity_review
+  - review_status
+  - reviewer
+  - review_notes
+  - candidate_reason
+
+priority_rules:
+  severity_review:
+    claimable: 10
+    minor: 20
+    unknown: 30
+  default_priority: 40
