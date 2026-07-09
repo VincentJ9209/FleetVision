@@ -1,0 +1,8 @@
+pilot_merge_csv: dataset/00_catalog/image_review_labels_auto_suggested_pilot500_v2.csv
+suggestions_csv: outputs/metadata/auto_review_suggestions_v2.csv
+worklist_csv: dataset/00_catalog/image_review_labels_pilot500_human_review_worklist.csv
+summary_csv: outputs/metadata/pilot500_human_review_worklist_summary.csv
+expected_rows: 500
+default_review_status: pending
+prefill_human_fields_from_seed: true
+default_reviewer_from_seed: true
