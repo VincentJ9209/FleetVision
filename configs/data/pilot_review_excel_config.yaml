@@ -1,0 +1,3 @@
+﻿input_csv: dataset/00_catalog/image_review_labels_pilot500_human_review_worklist.csv
+output_xlsx: outputs/manual_review/pilot500_human_review_interface.xlsx
+expected_rows: 500

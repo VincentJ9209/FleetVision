@@ -91,3 +91,6 @@ src/fleetvision.egg-info/
 
 # Temporary generated outputs
 /outputs/tmp/
+
+# Generated Pilot 500 manual review Excel interface
+outputs/manual_review/pilot500_human_review_interface.xlsx
