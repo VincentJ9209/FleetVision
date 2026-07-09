@@ -13,8 +13,8 @@ settings:
   append_notes: true
 
 confidence_thresholds:
-  photo_type_review: 0.45
-  angle_review: 0.35
+  photo_type_review: 0.75
+  angle_review: 1.00
   has_visible_damage_review: 0.55
   severity_review: 0.40
 

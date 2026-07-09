@@ -158,7 +158,13 @@ def make_config(tmp_path: Path) -> AutoReviewPrelabelConfig:
                 "outputs": {
                     "merged_labels_csv": "merged.csv",
                     "summary_csv": "summary.csv",
-                }
+                },
+                "confidence_thresholds": {
+                    "photo_type_review": 0.75,
+                    "angle_review": 1.00,
+                    "has_visible_damage_review": 0.55,
+                    "severity_review": 0.40,
+                },
             },
             sort_keys=False,
         ),
@@ -181,19 +187,54 @@ def test_merge_suggestions_fills_empty_fields_without_marking_reviewed(tmp_path:
 
     first = merged.loc[merged["image_id"] == "img_001"].iloc[0]
     assert first["photo_type_review"] == "exterior"
-    assert first["angle_review"] == "front_left"
+    assert first["angle_review"] == ""
     assert first["is_exterior_review"] == "1"
-    assert first["has_visible_damage_review"] == "1"
-    assert first["severity_review"] == "severe"
+    assert first["has_visible_damage_review"] == ""
+    assert first["severity_review"] == ""
     assert first["review_status"] == "pending"
     assert first["reviewer"] == "auto_clip_suggestion"
     assert "auto_photo_type=exterior" in first["review_notes"]
+    assert "auto_angle=" not in first["review_notes"]
+    assert "auto_damage=" not in first["review_notes"]
 
     assert counters["matched_rows"] == 2
     assert counters["photo_type_filled_rows"] == 1
-    assert counters["angle_filled_rows"] == 1
-    assert counters["damage_filled_rows"] == 1
-    assert counters["severity_filled_rows"] == 1
+    assert counters["angle_filled_rows"] == 0
+    assert counters["damage_filled_rows"] == 0
+    assert counters["severity_filled_rows"] == 0
+    assert counters["is_exterior_updated_rows"] == 1
+
+
+def test_accepted_exterior_changes_placeholder_zero_to_one(tmp_path: Path) -> None:
+    config = make_config(tmp_path)
+    labels = sample_review_labels().iloc[[0]].copy()
+    labels.loc[0, "photo_type_review"] = "unknown"
+    labels.loc[0, "is_exterior_review"] = "0"
+    labels.loc[0, "review_status"] = "pending"
+    suggestions = sample_suggestions().iloc[[0]].copy()
+
+    merged, counters = merge_auto_suggestions(labels, suggestions, config)
+    first = merged.iloc[0]
+    assert first["photo_type_review"] == "exterior"
+    assert first["is_exterior_review"] == "1"
+    assert counters["is_exterior_updated_rows"] == 1
+
+
+def test_rejected_photo_type_leaves_is_exterior_unchanged(tmp_path: Path) -> None:
+    config = make_config(tmp_path)
+    labels = sample_review_labels().iloc[[0]].copy()
+    labels.loc[0, "photo_type_review"] = "unknown"
+    labels.loc[0, "is_exterior_review"] = "0"
+    labels.loc[0, "review_status"] = "pending"
+    suggestions = sample_suggestions().iloc[[0]].copy()
+    suggestions.loc[0, "photo_type_confidence"] = "0.01"
+
+    merged, counters = merge_auto_suggestions(labels, suggestions, config)
+    first = merged.iloc[0]
+    assert first["photo_type_review"] == "unknown"
+    assert first["is_exterior_review"] == "0"
+    assert counters["photo_type_filled_rows"] == 0
+    assert counters["is_exterior_updated_rows"] == 0
 
 
 def test_merge_suggestions_does_not_overwrite_existing_human_values(tmp_path: Path) -> None:
@@ -209,7 +250,78 @@ def test_merge_suggestions_does_not_overwrite_existing_human_values(tmp_path: Pa
     assert second["reviewer"] == "vincent"
 
 
-def test_low_confidence_suggestions_are_not_filled(tmp_path: Path) -> None:
+def test_pending_unknown_photo_type_can_be_filled(tmp_path: Path) -> None:
+    config = make_config(tmp_path)
+    labels = sample_review_labels().iloc[[0]].copy()
+    labels.loc[0, "photo_type_review"] = "unknown"
+    labels.loc[0, "review_status"] = "pending"
+    suggestions = sample_suggestions().iloc[[0]].copy()
+
+    merged, counters = merge_auto_suggestions(labels, suggestions, config)
+    first = merged.iloc[0]
+    assert first["photo_type_review"] == "exterior"
+    assert first["is_exterior_review"] == "1"
+    assert counters["photo_type_filled_rows"] == 1
+
+
+def test_pending_unknown_angle_can_be_filled(tmp_path: Path) -> None:
+    config = make_config(tmp_path)
+    labels = sample_review_labels().iloc[[0]].copy()
+    labels.loc[0, "angle_review"] = "unknown"
+    labels.loc[0, "review_status"] = "pending"
+    suggestions = sample_suggestions().iloc[[0]].copy()
+    suggestions.loc[0, "suggested_angle_review"] = "front"
+    suggestions.loc[0, "angle_confidence"] = "1.00"
+    suggestions.loc[0, "photo_type_confidence"] = "0.01"
+
+    merged, counters = merge_auto_suggestions(labels, suggestions, config)
+    first = merged.iloc[0]
+    assert first["angle_review"] == "front"
+    assert first["photo_type_review"] == ""
+    assert counters["angle_filled_rows"] == 1
+    assert counters["photo_type_filled_rows"] == 0
+
+
+def test_reviewed_rows_remain_unchanged(tmp_path: Path) -> None:
+    config = make_config(tmp_path)
+    labels = sample_review_labels().iloc[[0]].copy()
+    labels.loc[0, "photo_type_review"] = "unknown"
+    labels.loc[0, "angle_review"] = "unknown"
+    labels.loc[0, "review_status"] = "reviewed"
+    labels.loc[0, "reviewer"] = "vincent"
+    labels.loc[0, "review_notes"] = "human reviewed"
+    suggestions = sample_suggestions().iloc[[0]].copy()
+    suggestions.loc[0, "angle_confidence"] = "1.00"
+
+    merged, counters = merge_auto_suggestions(labels, suggestions, config)
+    first = merged.iloc[0]
+    assert first["photo_type_review"] == "unknown"
+    assert first["angle_review"] == "unknown"
+    assert first["review_status"] == "reviewed"
+    assert first["reviewer"] == "vincent"
+    assert first["review_notes"] == "human reviewed"
+    assert counters["matched_rows"] == 0
+    assert counters["photo_type_filled_rows"] == 0
+
+
+def test_existing_non_unknown_values_remain_unchanged(tmp_path: Path) -> None:
+    config = make_config(tmp_path)
+    labels = sample_review_labels().iloc[[1]].copy()
+    labels.loc[1, "angle_review"] = "front"
+    suggestions = sample_suggestions().iloc[[1]].copy()
+    suggestions.loc[1, "angle_confidence"] = "1.00"
+
+    merged, counters = merge_auto_suggestions(labels, suggestions, config)
+    second = merged.iloc[0]
+    assert second["photo_type_review"] == "interior"
+    assert second["angle_review"] == "front"
+    assert second["reviewer"] == "vincent"
+    assert counters["photo_type_filled_rows"] == 0
+    assert counters["angle_filled_rows"] == 0
+    assert counters["reviewer_filled_rows"] == 0
+
+
+def test_no_accepted_suggestion_does_not_change_reviewer(tmp_path: Path) -> None:
     config = make_config(tmp_path)
     suggestions = sample_suggestions()
     suggestions.loc[0, "photo_type_confidence"] = "0.01"
@@ -223,7 +335,54 @@ def test_low_confidence_suggestions_are_not_filled(tmp_path: Path) -> None:
     assert first["angle_review"] == ""
     assert first["has_visible_damage_review"] == ""
     assert first["severity_review"] == ""
+    assert first["is_exterior_review"] == ""
+    assert first["reviewer"] == ""
     assert counters["photo_type_filled_rows"] == 0
+    assert counters["reviewer_filled_rows"] == 0
+
+
+def test_low_confidence_suggestions_are_not_filled(tmp_path: Path) -> None:
+    config = make_config(tmp_path)
+    suggestions = sample_suggestions()
+    suggestions.loc[0, "photo_type_confidence"] = "0.01"
+    suggestions.loc[0, "angle_confidence"] = "0.01"
+
+    merged, counters = merge_auto_suggestions(sample_review_labels().iloc[[0]].copy(), suggestions.iloc[[0]].copy(), config)
+    first = merged.iloc[0]
+    assert first["photo_type_review"] == ""
+    assert first["angle_review"] == ""
+    assert counters["photo_type_filled_rows"] == 0
+
+
+def test_unknown_photo_type_leaves_is_exterior_blank(tmp_path: Path) -> None:
+    config = make_config(tmp_path)
+    labels = sample_review_labels().iloc[[0]].copy()
+    suggestions = sample_suggestions().iloc[[0]].copy()
+    suggestions.loc[0, "suggested_photo_type_review"] = "unknown"
+    suggestions.loc[0, "photo_type_confidence"] = "0.95"
+
+    merged, counters = merge_auto_suggestions(labels, suggestions, config)
+    first = merged.iloc[0]
+    assert first["photo_type_review"] == "unknown"
+    assert first["is_exterior_review"] == ""
+    assert counters["photo_type_filled_rows"] == 1
+
+
+def test_accepted_interior_sets_is_exterior_zero(tmp_path: Path) -> None:
+    config = make_config(tmp_path)
+    labels = sample_review_labels().iloc[[0]].copy()
+    suggestions = sample_suggestions().iloc[[0]].copy()
+    suggestions.loc[0, "suggested_photo_type_review"] = "interior"
+    suggestions.loc[0, "photo_type_confidence"] = "0.95"
+    suggestions.loc[0, "angle_confidence"] = "0.01"
+    suggestions.loc[0, "damage_confidence"] = "0.01"
+    suggestions.loc[0, "severity_confidence"] = "0.01"
+
+    merged, _ = merge_auto_suggestions(labels, suggestions, config)
+    first = merged.iloc[0]
+    assert first["photo_type_review"] == "interior"
+    assert first["is_exterior_review"] == "0"
+    assert first["reviewer"] == "auto_clip_suggestion"
 
 
 def test_validate_suggestion_columns_reports_missing() -> None:

@@ -57,6 +57,7 @@ SUMMARY_COLUMNS = [
     "severity_filled_rows",
     "review_status_set_pending_rows",
     "reviewer_filled_rows",
+    "is_exterior_updated_rows",
 ]
 
 DEFAULT_ALLOWED_VALUES = {
@@ -237,10 +238,35 @@ def normalize_suggestions(suggestions: pd.DataFrame, config: AutoReviewPrelabelC
     return result
 
 
-def should_fill(current_value: Any, config: AutoReviewPrelabelConfig) -> bool:
-    """Return True if a current review value may be filled by automation."""
+def is_placeholder_value(value: Any) -> bool:
+    """Return True when a review field is blank or the unreviewed placeholder."""
 
-    return (not config.fill_empty_only) or is_blank(current_value)
+    normalized = normalize_text(value)
+    return normalized == "" or normalized == "unknown"
+
+
+def is_reviewed_row(row: pd.Series) -> bool:
+    """Return True when a row has already been human-reviewed."""
+
+    return normalize_text(row.get("review_status", "")) == "reviewed"
+
+
+def should_fill_review_field(current_value: Any, config: AutoReviewPrelabelConfig) -> bool:
+    """Return True if a review field may be filled by automation."""
+
+    if not config.fill_empty_only:
+        return True
+    return is_placeholder_value(current_value)
+
+
+def is_exterior_review_for_photo_type(photo_type: str) -> str | None:
+    """Map an accepted photo_type suggestion to the synchronized is_exterior_review value."""
+
+    if photo_type == "exterior":
+        return "1"
+    if photo_type in {"interior", "low_quality", "irrelevant"}:
+        return "0"
+    return None
 
 
 def append_note(existing: Any, note: str) -> str:
@@ -282,64 +308,51 @@ def merge_auto_suggestions(
         "severity_filled_rows": 0,
         "review_status_set_pending_rows": 0,
         "reviewer_filled_rows": 0,
+        "is_exterior_updated_rows": 0,
     }
 
     for idx, row in result.iterrows():
         image_id = str(row.get("image_id", ""))
         suggestion = suggestion_by_image_id.get(image_id)
-        if suggestion is None:
+        if suggestion is None or is_reviewed_row(row):
             continue
 
         counters["matched_rows"] += 1
         note_parts: list[str] = []
+        accepted_any = False
+        accepted_photo_type = ""
 
         photo_type = suggestion["suggested_photo_type_review"]
-        if photo_type and should_fill(row["photo_type_review"], config) and confidence_at_least(
+        if photo_type and should_fill_review_field(row["photo_type_review"], config) and confidence_at_least(
             suggestion["photo_type_confidence"], config.confidence_thresholds["photo_type_review"]
         ):
             result.at[idx, "photo_type_review"] = photo_type
             counters["photo_type_filled_rows"] += 1
+            accepted_any = True
+            accepted_photo_type = photo_type
             note_parts.append(f"auto_photo_type={photo_type}:{float(suggestion['photo_type_confidence']):.3f}")
 
         angle = suggestion["suggested_angle_review"]
-        if angle and should_fill(row["angle_review"], config) and confidence_at_least(
+        if angle and should_fill_review_field(row["angle_review"], config) and confidence_at_least(
             suggestion["angle_confidence"], config.confidence_thresholds["angle_review"]
         ):
             result.at[idx, "angle_review"] = angle
             counters["angle_filled_rows"] += 1
+            accepted_any = True
             note_parts.append(f"auto_angle={angle}:{float(suggestion['angle_confidence']):.3f}")
 
-        damage = suggestion["suggested_has_visible_damage_review"]
-        if damage and should_fill(row["has_visible_damage_review"], config) and confidence_at_least(
-            suggestion["damage_confidence"], config.confidence_thresholds["has_visible_damage_review"]
-        ):
-            result.at[idx, "has_visible_damage_review"] = damage
-            counters["damage_filled_rows"] += 1
-            note_parts.append(f"auto_damage={damage}:{float(suggestion['damage_confidence']):.3f}")
-
-        severity = suggestion["suggested_severity_review"]
-        if severity and should_fill(row["severity_review"], config) and confidence_at_least(
-            suggestion["severity_confidence"], config.confidence_thresholds["severity_review"]
-        ):
-            result.at[idx, "severity_review"] = severity
-            counters["severity_filled_rows"] += 1
-            note_parts.append(f"auto_severity={severity}:{float(suggestion['severity_confidence']):.3f}")
-
-        if is_blank(result.at[idx, "is_exterior_review"]):
-            result.at[idx, "is_exterior_review"] = "1" if normalize_text(result.at[idx, "photo_type_review"]) == "exterior" else "0"
-
-        if is_blank(result.at[idx, "has_visible_damage_review"]):
-            severity_value = normalize_text(result.at[idx, "severity_review"])
-            if severity_value == "none":
-                result.at[idx, "has_visible_damage_review"] = "0"
-            elif severity_value in {"minor", "moderate", "severe"}:
-                result.at[idx, "has_visible_damage_review"] = "1"
+        exterior_value = is_exterior_review_for_photo_type(accepted_photo_type)
+        if exterior_value is not None:
+            previous = normalize_text(result.at[idx, "is_exterior_review"])
+            result.at[idx, "is_exterior_review"] = exterior_value
+            if previous != exterior_value:
+                counters["is_exterior_updated_rows"] += 1
 
         if config.keep_review_status_pending and is_blank(result.at[idx, "review_status"]):
             result.at[idx, "review_status"] = config.pending_status_value
             counters["review_status_set_pending_rows"] += 1
 
-        if is_blank(result.at[idx, "reviewer"]):
+        if accepted_any and is_blank(result.at[idx, "reviewer"]):
             result.at[idx, "reviewer"] = config.auto_reviewer_value
             counters["reviewer_filled_rows"] += 1
 

@@ -88,3 +88,6 @@ FleetVision_backups/
 # Build metadata created by editable installs
 src/*.egg-info/
 src/fleetvision.egg-info/
+
+# Temporary generated outputs
+/outputs/tmp/
