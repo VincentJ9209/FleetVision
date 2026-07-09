@@ -69,4 +69,22 @@ outputs/metadata/*.csv
 outputs/review/*.csv
 outputs/predictions/
 outputs/error_analysis/
+# Local catalog working CSVs
+# Keep CSV review/registry outputs local unless explicitly approved.
+dataset/00_catalog/*.csv
+!dataset/00_catalog/*.template.csv
+!dataset/00_catalog/raw_excels/.gitkeep
 
+# External data and local transfer packages
+dataset/01_raw/99_external/
+dataset/04_annotations/external_yolo_labels_raw/
+dataset/05_yolo/v002_damage_detect_external_pretrain/
+dataset/05_yolo/v003_damage_detect_mixed_finetune/
+FleetVision_colab_packages/
+FleetVision_backups/
+*.zip
+*.rar
+
+# Build metadata created by editable installs
+src/*.egg-info/
+src/fleetvision.egg-info/

@@ -17,7 +17,7 @@
 | blur_score | float | 模糊程度 |
 | brightness | float | 平均亮度 |
 | photo_type | string | exterior / interior / low_quality / irrelevant / unknown |
-| angle | string | left_front / left_rear / right_front / right_rear / other / unknown |
+| angle | string | front / rear / left / right / front_left / front_right / rear_left / rear_right / unknown |
 | has_visible_damage | string | 0 / 1 / unknown |
-| severity_label | string | minor / claimable / unknown |
+| severity_label | string | none / minor / moderate / severe / unknown |
 | split | string | train / val / test / unused |

@@ -5,15 +5,14 @@ import sys
 from pathlib import Path
 
 import pandas as pd
-import pytest
 import yaml
+import pytest
 
 from fleetvision.data.prepare_annotation_tasks import (
     AnnotationPrepConfig,
     build_annotation_task_manifest,
     build_eligible_candidates,
     build_summary,
-    load_config,
     validate_required_columns,
 )
 
@@ -46,10 +45,10 @@ def sample_candidates() -> pd.DataFrame:
                 "original_path": "dataset/01_raw/02_claimable_damage/images/a.jpg",
                 "filename": "a.jpg",
                 "photo_type_review": "exterior",
-                "angle_review": "left_front",
+                "angle_review": "front_left",
                 "is_exterior_review": "1",
                 "has_visible_damage_review": "1",
-                "severity_review": "claimable",
+                "severity_review": "severe",
                 "review_status": "reviewed",
                 "reviewer": "tester",
                 "review_notes": "visible bumper damage",
@@ -62,7 +61,7 @@ def sample_candidates() -> pd.DataFrame:
                 "original_path": "dataset/01_raw/03_minor_damage/images/b.jpg",
                 "filename": "b.jpg",
                 "photo_type_review": "exterior",
-                "angle_review": "right_rear",
+                "angle_review": "rear_right",
                 "is_exterior_review": "1",
                 "has_visible_damage_review": "1",
                 "severity_review": "minor",
@@ -78,7 +77,7 @@ def sample_candidates() -> pd.DataFrame:
                 "original_path": "dataset/01_raw/01_general_fleet/images/c.jpg",
                 "filename": "c.jpg",
                 "photo_type_review": "exterior",
-                "angle_review": "left_rear",
+                "angle_review": "left",
                 "is_exterior_review": "1",
                 "has_visible_damage_review": "1",
                 "severity_review": "unknown",
@@ -94,10 +93,10 @@ def sample_candidates() -> pd.DataFrame:
                 "original_path": "dataset/01_raw/01_general_fleet/images/d.jpg",
                 "filename": "d.jpg",
                 "photo_type_review": "exterior",
-                "angle_review": "left_rear",
+                "angle_review": "left",
                 "is_exterior_review": "1",
                 "has_visible_damage_review": "0",
-                "severity_review": "unknown",
+                "severity_review": "none",
                 "review_status": "reviewed",
                 "reviewer": "tester",
                 "review_notes": "clean exterior",
@@ -110,7 +109,7 @@ def sample_candidates() -> pd.DataFrame:
                 "original_path": "dataset/01_raw/03_minor_damage/images/e.jpg",
                 "filename": "e.jpg",
                 "photo_type_review": "exterior",
-                "angle_review": "right_front",
+                "angle_review": "front_right",
                 "is_exterior_review": "1",
                 "has_visible_damage_review": "1",
                 "severity_review": "minor",
@@ -126,7 +125,7 @@ def sample_candidates() -> pd.DataFrame:
                 "original_path": "dataset/01_raw/01_general_fleet/images/f.jpg",
                 "filename": "f.jpg",
                 "photo_type_review": "interior",
-                "angle_review": "other",
+                "angle_review": "unknown",
                 "is_exterior_review": "0",
                 "has_visible_damage_review": "1",
                 "severity_review": "unknown",
@@ -145,7 +144,7 @@ def default_config(tmp_path: Path) -> AnnotationPrepConfig:
         input_csv=tmp_path / "annotation_candidates.csv",
         task_manifest_csv=tmp_path / "annotation_task_manifest.csv",
         summary_csv=tmp_path / "summary.csv",
-        severity_priority={"claimable": 10, "minor": 20, "unknown": 30},
+        severity_priority={"severe": 10, "moderate": 20, "minor": 30, "unknown": 40, "none": 90},
     )
 
 
@@ -166,7 +165,7 @@ def test_build_annotation_task_manifest_has_expected_columns_and_priority(tmp_pa
     assert manifest["annotation_class"].unique().tolist() == ["damage"]
     assert manifest["annotation_type"].unique().tolist() == ["bbox"]
     assert manifest["annotation_status"].unique().tolist() == ["pending"]
-    assert manifest["task_priority"].tolist() == [10, 20, 30]
+    assert manifest["task_priority"].tolist() == [10, 30, 40]
     assert manifest["task_id"].is_unique
 
 
@@ -179,9 +178,11 @@ def test_summary_counts_input_eligible_and_skipped_rows(tmp_path: Path) -> None:
     assert summary["total_input_rows"] == 6
     assert summary["eligible_task_rows"] == 3
     assert summary["skipped_rows"] == 3
-    assert summary["claimable_rows"] == 1
+    assert summary["severe_rows"] == 1
+    assert summary["moderate_rows"] == 0
     assert summary["minor_rows"] == 1
     assert summary["unknown_severity_rows"] == 1
+    assert summary["none_rows"] == 0
 
 
 def test_missing_required_columns_fail_clearly() -> None:
@@ -212,8 +213,8 @@ def test_cli_runs_with_tmp_config_without_touching_real_data(tmp_path: Path) -> 
             "require_visible_damage": True,
         },
         "priority_rules": {
-            "severity_review": {"claimable": 10, "minor": 20, "unknown": 30},
-            "default_priority": 40,
+            "severity_review": {"severe": 10, "moderate": 20, "minor": 30, "unknown": 40, "none": 90},
+            "default_priority": 90,
         },
     }
     config_path = tmp_path / "annotation_prep_config.yaml"

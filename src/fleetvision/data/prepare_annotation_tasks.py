@@ -56,9 +56,11 @@ SUMMARY_COLUMNS = [
     "total_input_rows",
     "eligible_task_rows",
     "skipped_rows",
-    "claimable_rows",
+    "severe_rows",
+    "moderate_rows",
     "minor_rows",
     "unknown_severity_rows",
+    "none_rows",
     "annotation_class",
     "annotation_type",
 ]
@@ -131,7 +133,7 @@ def load_config(config_path: Path, project_root: Path) -> AnnotationPrepConfig:
     severity_priority = _get_nested(
         raw_config,
         "priority_rules.severity_review",
-        {"claimable": 10, "minor": 20, "unknown": 30},
+        {"severe": 10, "moderate": 20, "minor": 30, "unknown": 40, "none": 90},
     )
     if not isinstance(severity_priority, dict):
         raise ValueError("priority_rules.severity_review must be a mapping")
@@ -238,9 +240,11 @@ def build_summary(candidates: pd.DataFrame, manifest: pd.DataFrame, config: Anno
         "total_input_rows": int(len(candidates)),
         "eligible_task_rows": int(len(manifest)),
         "skipped_rows": int(len(candidates) - len(manifest)),
-        "claimable_rows": int((severity == "claimable").sum()),
+        "severe_rows": int((severity == "severe").sum()),
+        "moderate_rows": int((severity == "moderate").sum()),
         "minor_rows": int((severity == "minor").sum()),
         "unknown_severity_rows": int((severity == "unknown").sum()),
+        "none_rows": int((severity == "none").sum()),
         "annotation_class": config.annotation_class,
         "annotation_type": config.annotation_type,
     }
@@ -308,9 +312,11 @@ def main() -> None:
         "total_input_rows",
         "eligible_task_rows",
         "skipped_rows",
-        "claimable_rows",
+        "severe_rows",
+        "moderate_rows",
         "minor_rows",
         "unknown_severity_rows",
+        "none_rows",
     ]:
         print(f"{key}: {summary_row[key]}")
 

@@ -91,7 +91,7 @@ data/metadata/image_metadata.csv
 | blur_score | 模糊分數 |
 | brightness | 平均亮度 |
 | photo_type | exterior / interior / irrelevant / low_quality / unknown |
-| angle | left_front / left_rear / right_front / right_rear / other / unknown |
+| angle | front / rear / left / right / front_left / front_right / rear_left / rear_right / unknown |
 | has_visible_damage | 0 / 1 / unknown |
 | severity_label | minor_non_claim / claim / unknown |
 | source_group | A / B / C |

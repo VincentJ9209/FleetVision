@@ -53,7 +53,7 @@ photo_type_review:
   exterior, interior, low_quality, irrelevant, unknown
 
 angle_review:
-  left_front, left_rear, right_front, right_rear, other, unknown
+  front, rear, left, right, front_left, front_right, rear_left, rear_right, unknown
 
 is_exterior_review:
   0, 1, unknown
@@ -62,7 +62,7 @@ has_visible_damage_review:
   0, 1, unknown
 
 severity_review:
-  minor, claimable, unknown
+  none, minor, moderate, severe, unknown
 
 review_status:
   pending, reviewed, needs_followup, skipped
@@ -78,8 +78,8 @@ review_status:
 - `review_status = reviewed` 時，`reviewer` 不可空白。
 - `photo_type_review = exterior` 時，`is_exterior_review` 必須為 `1`。
 - `photo_type_review` 為 `interior`、`low_quality`、`irrelevant` 時，`is_exterior_review` 必須為 `0`。
-- `has_visible_damage_review = 0` 時，`severity_review` 必須為 `unknown`。
-- `has_visible_damage_review = 1` 時，`severity_review` 可為 `minor`、`claimable` 或 `unknown`，因為嚴重度可能需要後續覆核。
+- `has_visible_damage_review = 0` 時，`severity_review` 應為 `none`；尚未確認時可保留 `unknown`。
+- `has_visible_damage_review = 1` 時，`severity_review` 可為 `minor`、`moderate`、`severe` 或 `unknown`，因為嚴重度可能需要後續覆核。
 - `review_id` 不可重複。
 - `image_id` 不可重複。
 
@@ -151,6 +151,6 @@ python scripts/phase03_validate_review_labels.py --input dataset/00_catalog/imag
 - 不要建立 YOLO dataset。
 - 不要訓練模型。
 - 不要修改 Phase 01 或 Phase 02 core logic。
-- 不要把 `minor` / `claimable` 當成 YOLO 第一版類別。
+- 不要把 `minor` / `moderate` / `severe` 當成 YOLO 第一版類別。
 - 不要 commit generated CSV outputs。
 - 不要沿用舊的 `irent-damage-detection` 架構。

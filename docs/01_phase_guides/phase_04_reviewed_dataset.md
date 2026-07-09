@@ -204,7 +204,7 @@ python scripts/phase04_build_reviewed_dataset.py --input dataset/00_catalog/imag
 - 不要建立 `dataset/05_yolo/`。
 - 不要訓練模型。
 - 不要判斷索賠責任。
-- 不要把 `minor` / `claimable` 當成 YOLO class。
+- 不要把 `minor` / `moderate` / `severe` 當成 YOLO class。
 - 不要 commit generated CSV outputs。
 
 ---

@@ -30,7 +30,9 @@ required_columns:
 
 priority_rules:
   severity_review:
-    claimable: 10
-    minor: 20
-    unknown: 30
-  default_priority: 40
+    severe: 10
+    moderate: 20
+    minor: 30
+    unknown: 40
+    none: 90
+  default_priority: 90

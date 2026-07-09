@@ -37,9 +37,9 @@ outputs/metadata/bad_images.csv
 | blur_score | 模糊分數 |
 | brightness | 平均亮度 |
 | photo_type | exterior / interior / low_quality / irrelevant / unknown |
-| angle | left_front / left_rear / right_front / right_rear / other / unknown |
+| angle | front / rear / left / right / front_left / front_right / rear_left / rear_right / unknown |
 | has_visible_damage | 0 / 1 / unknown |
-| severity_label | minor / claimable / unknown |
+| severity_label | none / minor / moderate / severe / unknown |
 
 ## 驗收標準
 

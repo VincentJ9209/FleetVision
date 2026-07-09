@@ -45,6 +45,18 @@ def load_schema(schema_path: Path) -> dict[str, Any]:
             "review label schema is missing required setting(s): "
             + ", ".join(missing_settings)
         )
+
+    allowed_values = schema.get("allowed_values", {})
+    invalid_allowed_columns = [
+        column
+        for column, values in allowed_values.items()
+        if not isinstance(values, list) or not all(isinstance(value, str) for value in values)
+    ]
+    if invalid_allowed_columns:
+        raise ValueError(
+            "review label schema allowed_values must map columns to string lists: "
+            + ", ".join(invalid_allowed_columns)
+        )
     return schema
 
 
@@ -59,7 +71,7 @@ def validate_review_labels(
     if not input_csv.exists():
         raise FileNotFoundError(f"review labels CSV not found: {input_csv}")
 
-    with input_csv.open(newline="", encoding="utf-8") as csv_file:
+    with input_csv.open(newline="", encoding="utf-8-sig") as csv_file:
         reader = csv.DictReader(csv_file)
         fieldnames = reader.fieldnames or []
         rows = list(reader)
@@ -269,14 +281,44 @@ def _validate_conditional_rules(
                 f"photo_type_review={photo_type} requires is_exterior_review=0",
             )
         )
-    if has_visible_damage == "0" and severity != "unknown":
+    if has_visible_damage == "0" and severity not in {"none", "unknown"}:
         errors.append(
             _error(
                 row_number,
                 "severity_review",
                 severity,
                 "conditional_rule",
-                "has_visible_damage_review=0 requires severity_review=unknown",
+                "has_visible_damage_review=0 requires severity_review=none or unknown",
+            )
+        )
+    if has_visible_damage == "1" and severity == "none":
+        errors.append(
+            _error(
+                row_number,
+                "severity_review",
+                severity,
+                "conditional_rule",
+                "has_visible_damage_review=1 cannot use severity_review=none",
+            )
+        )
+    if severity == "none" and has_visible_damage != "0":
+        errors.append(
+            _error(
+                row_number,
+                "has_visible_damage_review",
+                has_visible_damage,
+                "conditional_rule",
+                "severity_review=none requires has_visible_damage_review=0",
+            )
+        )
+    if severity in {"minor", "moderate", "severe"} and has_visible_damage != "1":
+        errors.append(
+            _error(
+                row_number,
+                "has_visible_damage_review",
+                has_visible_damage,
+                "conditional_rule",
+                "severity_review=minor/moderate/severe requires has_visible_damage_review=1",
             )
         )
     return errors

@@ -1,6 +1,7 @@
 input_csv: dataset/00_catalog/image_review_labels.csv
 summary_csv: outputs/metadata/review_label_validation_summary.csv
 errors_csv: outputs/metadata/review_label_validation_errors.csv
+
 required_columns:
   - review_id
   - image_id
@@ -15,12 +16,14 @@ required_columns:
   - review_status
   - reviewer
   - review_notes
+
 identity_columns:
   - review_id
   - image_id
   - source_bucket
   - original_path
   - filename
+
 allowed_values:
   photo_type_review:
     - exterior
@@ -29,7 +32,6 @@ allowed_values:
     - irrelevant
     - unknown
   angle_review:
-    allowed_values:
     - front
     - rear
     - left
@@ -48,14 +50,17 @@ allowed_values:
     - "1"
     - unknown
   severity_review:
+    - none
     - minor
-    - claimable
+    - moderate
+    - severe
     - unknown
   review_status:
     - pending
     - reviewed
     - needs_followup
     - skipped
+
 unique_columns:
   - review_id
   - image_id
