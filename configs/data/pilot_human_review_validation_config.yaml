@@ -1,0 +1,10 @@
+﻿input_csv: dataset/00_catalog/image_review_labels_pilot500_human_review_worklist.csv
+summary_csv: outputs/metadata/pilot500_human_review_validation_summary.csv
+errors_csv: outputs/metadata/pilot500_human_review_validation_errors.csv
+expected_rows: 500
+require_unique_review_id: true
+require_unique_image_id: true
+reviewed_status_value: reviewed
+pending_status_value: pending
+followup_status_value: needs_followup
+skipped_status_value: skipped
