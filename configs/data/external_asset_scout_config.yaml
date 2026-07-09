@@ -1,0 +1,51 @@
+registry_csv: dataset/00_catalog/external_asset_registry.csv
+summary_csv: outputs/metadata/external_asset_scout_summary.csv
+
+external_data_roots:
+  external_raw_root: dataset/01_raw/99_external
+  external_yolo_labels_raw_root: dataset/04_annotations/external_yolo_labels_raw
+  external_assets_metadata_root: outputs/metadata/external_assets
+
+provider_subdirs:
+  - kaggle
+  - roboflow
+  - huggingface
+
+future_yolo_dataset_roots:
+  external_pretrain: dataset/05_yolo/v002_damage_detect_external_pretrain
+  mixed_finetune: dataset/05_yolo/v003_damage_detect_mixed_finetune
+
+allowed_values:
+  platform:
+    - kaggle
+    - roboflow
+    - huggingface
+    - github
+    - other
+  task_type:
+    - object_detection
+    - segmentation
+    - classification
+    - unknown
+  annotation_format:
+    - yolo
+    - coco
+    - voc
+    - cvat
+    - labelstudio
+    - image_only
+    - unknown
+  decision:
+    - pending
+    - approved_for_download
+    - rejected
+    - downloaded
+    - audited
+    - converted
+
+boolean_columns:
+  - has_bbox
+  - has_yolo_format
+  - can_map_to_damage
+  - can_use_for_training
+  - can_use_for_prelabel
