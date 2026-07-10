@@ -1,0 +1,15 @@
+﻿source_worklist_csv: dataset/00_catalog/image_review_labels_pilot500_human_review_worklist.csv
+guide_pdf: docs/01_phase_guides/FleetVision_人工審核填寫指南_Excel協作版.pdf
+output_root: outputs/manual_review/collaboration
+assignment_csv: outputs/manual_review/collaboration/pilot500_review_assignments.csv
+vincent_workbook: outputs/manual_review/collaboration/packages/vincent/review_workbook.xlsx
+sister_workbook: outputs/manual_review/collaboration/packages/sister/review_workbook.xlsx
+output_csv: outputs/manual_review/collaboration/pilot500_human_review_results_collaboration.csv
+summary_csv: outputs/metadata/pilot500_human_review_collaboration_summary.csv
+errors_csv: outputs/metadata/pilot500_human_review_collaboration_errors.csv
+expected_rows: 500
+reviewers:
+  - reviewer_id: vincent
+    reviewer_name: Vincent
+  - reviewer_id: sister
+    reviewer_name: Allison
