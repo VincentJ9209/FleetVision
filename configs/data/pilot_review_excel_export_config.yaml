@@ -1,0 +1,6 @@
+﻿input_xlsx: outputs/manual_review/pilot500_human_review_interface.xlsx
+source_worklist_csv: dataset/00_catalog/image_review_labels_pilot500_human_review_worklist.csv
+output_csv: outputs/manual_review/pilot500_human_review_results.csv
+summary_csv: outputs/metadata/pilot500_human_review_export_summary.csv
+errors_csv: outputs/metadata/pilot500_human_review_export_errors.csv
+expected_rows: 500
