@@ -31,6 +31,7 @@ def sample_config(tmp_path: Path | None = None, expected_rows: int = 500) -> Pil
     return PilotReviewExcelConfig(
         input_csv=root / "worklist.csv",
         output_xlsx=root / "pilot500_human_review_interface.xlsx",
+        project_root=root,
         expected_rows=expected_rows,
     )
 
@@ -124,11 +125,31 @@ def test_dropdown_validation_freeze_panes_and_autofilter_exist(tmp_path: Path) -
 
 
 def test_image_hyperlink_uses_original_path(tmp_path: Path) -> None:
+    image_path = tmp_path / "dataset" / "01_raw" / "02_claimable_damage" / "images" / "001.jpg"
+    image_path.parent.mkdir(parents=True, exist_ok=True)
+    image_path.write_bytes(b"fake image bytes")
     workbook = build_and_reload(tmp_path)
     worksheet = workbook[WORKLIST_SHEET]
 
     assert worksheet.cell(row=2, column=1).value == "開啟圖片"
-    assert worksheet.cell(row=2, column=1).hyperlink.target == "dataset/01_raw/02_claimable_damage/images/001.jpg"
+    assert worksheet.cell(row=2, column=1).hyperlink.target == image_path.resolve().as_uri()
+    assert worksheet.cell(row=2, column=1).hyperlink.target != "dataset/01_raw/02_claimable_damage/images/001.jpg"
+    assert worksheet.cell(row=2, column=1).hyperlink.target.startswith("file:///")
+
+
+def test_absolute_original_path_hyperlink_uses_file_uri(tmp_path: Path) -> None:
+    image_path = tmp_path / "absolute" / "001.jpg"
+    image_path.parent.mkdir(parents=True, exist_ok=True)
+    image_path.write_bytes(b"fake image bytes")
+    dataframe = make_dataframe()
+    dataframe.loc[0, "original_path"] = str(image_path)
+
+    workbook = build_and_reload(tmp_path, dataframe)
+    worksheet = workbook[WORKLIST_SHEET]
+
+    assert worksheet.cell(row=2, column=1).value == "開啟圖片"
+    assert worksheet.cell(row=2, column=1).hyperlink.target == image_path.resolve().as_uri()
+    assert worksheet.cell(row=2, column=1).hyperlink.target.startswith("file:///")
 
 
 def test_options_sheet_is_hidden_and_summary_formulas_exist(tmp_path: Path) -> None:
@@ -149,6 +170,14 @@ def test_input_dataframe_is_not_modified(tmp_path: Path) -> None:
     build_pilot_review_excel(dataframe, sample_config(tmp_path))
 
     pd.testing.assert_frame_equal(dataframe, before)
+
+
+def test_headers_do_not_include_merge_suffix_columns(tmp_path: Path) -> None:
+    workbook = build_and_reload(tmp_path)
+    worksheet = workbook[WORKLIST_SHEET]
+    headers = [worksheet.cell(row=1, column=column).value for column in range(1, worksheet.max_column + 1)]
+
+    assert not any(str(header).endswith(("_x", "_y")) for header in headers)
 
 
 def test_missing_required_column_fails_clearly() -> None:
@@ -191,6 +220,8 @@ def test_cli_uses_tmp_paths_without_touching_real_files(tmp_path: Path) -> None:
             str(repo_root / "scripts" / "phase04_build_pilot_review_excel.py"),
             "--config",
             str(config_yaml),
+            "--project-root",
+            str(tmp_path),
         ],
         text=True,
         capture_output=True,
@@ -200,6 +231,12 @@ def test_cli_uses_tmp_paths_without_touching_real_files(tmp_path: Path) -> None:
     assert completed.returncode == 0, completed.stderr
     assert output_xlsx.exists()
     assert "rows: 3" in completed.stdout
+    from openpyxl import load_workbook
+
+    workbook = load_workbook(output_xlsx)
+    worksheet = workbook[WORKLIST_SHEET]
+    expected_target = (tmp_path / "dataset" / "01_raw" / "02_claimable_damage" / "images" / "001.jpg").resolve().as_uri()
+    assert worksheet.cell(row=2, column=1).hyperlink.target == expected_target
 
 
 def test_missing_openpyxl_reports_clear_runtime_error() -> None:

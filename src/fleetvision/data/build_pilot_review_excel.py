@@ -65,6 +65,7 @@ class PilotReviewExcelConfig:
 
     input_csv: Path
     output_xlsx: Path
+    project_root: Path
     expected_rows: int = 500
 
 
@@ -97,6 +98,7 @@ def load_config(config_path: Path, project_root: Path) -> PilotReviewExcelConfig
     return PilotReviewExcelConfig(
         input_csv=resolve_path(raw_config.get("input_csv"), project_root, DEFAULT_INPUT_CSV),
         output_xlsx=resolve_path(raw_config.get("output_xlsx"), project_root, DEFAULT_OUTPUT_XLSX),
+        project_root=project_root,
         expected_rows=int(raw_config.get("expected_rows", 500)),
     )
 
@@ -126,7 +128,7 @@ def build_pilot_review_excel(dataframe: pd.DataFrame, config: PilotReviewExcelCo
 
     _write_instructions(ws_instructions)
     _write_options(ws_options)
-    _write_worklist(ws_worklist, dataframe)
+    _write_worklist(ws_worklist, dataframe, config.project_root)
     _write_summary(ws_summary, len(dataframe))
     _style_workbook(workbook)
     return workbook
@@ -179,6 +181,7 @@ def _apply_overrides(
     return PilotReviewExcelConfig(
         input_csv=resolve_path(args.input, project_root, config.input_csv),
         output_xlsx=resolve_path(args.output, project_root, config.output_xlsx),
+        project_root=project_root,
         expected_rows=config.expected_rows,
     )
 
@@ -223,14 +226,14 @@ def _write_options(worksheet) -> None:
             worksheet.cell(row=row_index, column=column_index, value=value)
 
 
-def _write_worklist(worksheet, dataframe: pd.DataFrame) -> None:
+def _write_worklist(worksheet, dataframe: pd.DataFrame, project_root: Path) -> None:
     for column_index, column_name in enumerate(EXCEL_COLUMNS, start=1):
         worksheet.cell(row=1, column=column_index, value=column_name)
 
     for row_index, (_, row) in enumerate(dataframe.iterrows(), start=2):
         original_path = str(row["original_path"])
         open_cell = worksheet.cell(row=row_index, column=1, value="開啟圖片")
-        open_cell.hyperlink = original_path
+        open_cell.hyperlink = _resolve_image_uri(original_path, project_root)
         open_cell.style = "Hyperlink"
         for column_index, column_name in enumerate(WORKLIST_COLUMNS, start=2):
             cell = worksheet.cell(row=row_index, column=column_index)
@@ -384,6 +387,12 @@ def _set_literal_cell_value(cell, value: str) -> None:
     cell.value = value
     if value.startswith(("=", "+", "-", "@")):
         cell.data_type = "s"
+
+
+def _resolve_image_uri(original_path: str, project_root: Path) -> str:
+    path = Path(original_path)
+    resolved_path = path if path.is_absolute() else project_root / path
+    return resolved_path.resolve().as_uri()
 
 
 def _column_letter(column_index: int) -> str:
