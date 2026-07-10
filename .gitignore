@@ -94,3 +94,5 @@ src/fleetvision.egg-info/
 
 # Generated Pilot 500 manual review Excel interface
 outputs/manual_review/pilot500_human_review_interface.xlsx
+outputs/manual_review/collaboration/
+outputs/metadata/pilot500_human_review_collaboration_*.csv
