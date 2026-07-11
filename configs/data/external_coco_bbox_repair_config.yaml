@@ -1,0 +1,47 @@
+dataset_id: rf_car_damage_seg_v1
+
+raw_export_root: dataset/01_raw/99_external/roboflow/rf_car_damage_seg_v1/01_extracted_export
+
+output_root: dataset/02_interim/99_external/roboflow/rf_car_damage_seg_v1
+
+annotation_filename: _annotations.coco.json
+
+splits:
+  - train
+  - valid
+  - test
+
+repair_policy:
+  allowed_invalid_reasons:
+    - exceeds_image_width
+    - exceeds_image_height
+  preserve_segmentation: true
+  preserve_area: true
+  preserve_ids: true
+  drop_annotations: false
+  fail_on_unexpected_invalid_reason: true
+  allow_overwrite: false
+
+expected:
+  total_images: 11675
+  total_annotations: 22019
+  total_repaired: 403
+  total_dropped: 0
+  total_invalid_after: 0
+
+  per_split:
+    train:
+      images: 10218
+      annotations: 19181
+      repaired: 351
+    valid:
+      images: 971
+      annotations: 1881
+      repaired: 40
+    test:
+      images: 486
+      annotations: 957
+      repaired: 12
+
+lineage_status: generated_augmented_v1
+training_acceptance: NOT_YET_APPROVED
