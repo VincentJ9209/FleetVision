@@ -1,0 +1,21 @@
+dataset_id: rf_car_damage_seg_v1
+provider: roboflow
+expected_classes:
+  - Car-Damage
+mapped_class: damage
+export_format: coco-segmentation
+
+source:
+  project_url: https://universe.roboflow.com/college-gxdrt/car-damage-detection-ha5mm
+  version_url: https://universe.roboflow.com/college-gxdrt/car-damage-detection-ha5mm/dataset/1
+  license_name: Public Domain
+  license_url: https://creativecommons.org/publicdomain/mark/1.0/
+  dataset_version: "1"
+  reported_project_image_count: 4869
+  reported_version_image_count: 11685
+  lineage_status: generated_augmented_v1
+
+paths:
+  registry_csv: dataset/00_catalog/external_dataset_registry.csv
+  raw_dataset_root: dataset/01_raw/99_external/roboflow/rf_car_damage_seg_v1
+  metadata_root: outputs/metadata/external_assets/roboflow/rf_car_damage_seg_v1
