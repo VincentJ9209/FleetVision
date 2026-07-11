@@ -1,0 +1,10 @@
+input_csv: outputs/manual_review/collaboration/pilot500_human_review_results_collaboration.csv
+output_csv: outputs/manual_review/collaboration/pilot500_review_labels_canonical.csv
+summary_csv: outputs/metadata/pilot500_review_schema_promotion_summary.csv
+errors_csv: outputs/metadata/pilot500_review_schema_promotion_errors.csv
+manifest_csv: outputs/metadata/pilot500_review_schema_promotion_manifest.csv
+review_label_schema: configs/data/review_label_schema.yaml
+
+expected_rows: 500
+required_status: reviewed
+allow_overwrite: false
