@@ -180,13 +180,15 @@ Phase 04 目前由 Vincent 與 Allison 各 250 筆。
 
 ## 12. 最新 Checkpoint（2026-07-12）
 
-Phase 04E Verified Freeze 與 Formal Merge 已完成；Phase 04 Gate 尚未完全關閉。
+Phase 04 — Pilot Human Review and Reviewed Dataset **COMPLETED**。
 
-- `NEW_FREEZE_VERIFIED`
-- `FORMAL_MERGE_PREFLIGHT_PASS`
-- `FORMAL_MERGE_VERIFIED`
-- Frozen snapshot：`G:\Project\FleetVision_Backups\Phase04_Completed_Reviews\Frozen_500\20260711_235712`
-- Formal merge provenance：`G:\Project\FleetVision_Backups\Phase04_Completed_Reviews\Formal_Merge_500\20260712_001744`
+- Gates：`FORMAL_MERGE_VERIFIED`、`SCHEMA_PROMOTION_VERIFIED`、`REVIEWED_DATASET_BUILD_VERIFIED`
 - Formal merged CSV：`outputs/manual_review/collaboration/pilot500_human_review_results_collaboration.csv`
-- Logical fingerprint：`1FF38FF9E9B04481A0C0BAD724E3D9B9ADFCA4E2C92441D8A2DC7DC3D30113FD`
-- Next technical Gate：Reviewed Dataset Schema Promotion and Dataset Build
+- Formal merge fingerprint：`1FF38FF9E9B04481A0C0BAD724E3D9B9ADFCA4E2C92441D8A2DC7DC3D30113FD`
+- Canonical review CSV：`outputs/manual_review/collaboration/pilot500_review_labels_canonical.csv`
+- Canonical fingerprint：`26074E75E8BDB0436D10FC7BE81543254C186E3FB13F9D9C66F1230DC383DD7B`
+- Reviewed Dataset 輸出：`dataset/03_reviewed/` 分類清單、`dataset/04_annotations/annotation_candidates.csv`、`outputs/metadata/reviewed_dataset_summary.csv`
+- 分布：500 reviewed；exterior 446；low_quality 18；irrelevant 4；annotation_candidates 82；interior 26；unknown 6
+- Build provenance：`G:\Project\FleetVision_Backups\Phase04_Completed_Reviews\Reviewed_Dataset_Build\20260712_011049`
+- `dataset/01_raw` 未修改；未建立 YOLO labels、dataset split 或模型訓練
+- Next Gate：Phase 04.5 — External Dataset Intake

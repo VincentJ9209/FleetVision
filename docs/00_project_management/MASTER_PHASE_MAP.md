@@ -47,7 +47,7 @@ Gate：約 27,660 列、支援 `.jfif`、schema 與測試通過。
 
 ## Phase 04 — Pilot Human Review and Reviewed Dataset
 
-**狀態：ACTIVE**
+**狀態：COMPLETED**
 
 ### 04A — Worklist／Validator／Excel Interface
 
@@ -77,32 +77,29 @@ Gate：約 27,660 列、支援 `.jfif`、schema 與測試通過。
 
 ### 04E — Merge and Final Validation
 
-**狀態：ACTIVE**（Formal Merge 已完成；Phase 04 Gate 尚未完全關閉）
+**狀態：DONE**
 
 已完成：
 
 - 500 筆 reviewer assignment
-- 500／500 human review
-- validator 0 errors
+- 500／500 human review；pending：0；validation errors：0
 - verified frozen snapshot（`NEW_FREEZE_VERIFIED`）
 - formal merge preflight（`FORMAL_MERGE_PREFLIGHT_PASS`）
 - formal merge（`FORMAL_MERGE_VERIFIED`）
 - merge post-write verification
-- logical fingerprint：`1FF38FF9E9B04481A0C0BAD724E3D9B9ADFCA4E2C92441D8A2DC7DC3D30113FD`
-
-尚待完成：
-
-- merged `human_*` fields → canonical review schema promotion
-- Reviewed Dataset build
-- annotation candidates list
+- formal merge logical fingerprint：`1FF38FF9E9B04481A0C0BAD724E3D9B9ADFCA4E2C92441D8A2DC7DC3D30113FD`
+- schema promotion（`SCHEMA_PROMOTION_VERIFIED`）
+- canonical review logical fingerprint：`26074E75E8BDB0436D10FC7BE81543254C186E3FB13F9D9C66F1230DC383DD7B`
+- reviewed dataset build（`REVIEWED_DATASET_BUILD_VERIFIED`）
+- annotation candidates list（82 筆）
 - distribution／data quality report
-- Phase 04 final closeout
+- final verification
 
-Phase 04 Gate：500 筆分派完整、所有完成列通過 Validator、needs_followup 處理完成、skipped 原因合理、兩人結果合併、Reviewed Dataset 與分布報告完成。
+Phase 04 Gate：500 筆分派完整、所有完成列通過 Validator、兩人結果合併、canonical review promotion、Reviewed Dataset 與分布報告完成。
 
 ## Phase 04.5 — External Dataset Intake and Audit
 
-**狀態：PLANNED／不可遺漏**
+**狀態：PLANNED／NEXT**
 
 ### 04.5A Candidate Search
 

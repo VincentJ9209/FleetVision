@@ -80,3 +80,16 @@
 - Formal merge provenance：`G:\Project\FleetVision_Backups\Phase04_Completed_Reviews\Formal_Merge_500\20260712_001744`
 - 歷史保護：historical frozen snapshot 與 provenance 不得被後續修正覆寫
 - 後續 Gate：Phase 04 下一步仍需 schema promotion 與 Reviewed Dataset build；不得直接以 `human_*` merged CSV 執行舊 Reviewed Dataset Builder
+
+## ADR-012 — Promote Formal Human Review Schema Before Reviewed Dataset Build
+
+- 日期：2026-07-12
+- 狀態：Active／Validated
+- 決策：Formal Merge CSV 保持 immutable；使用獨立 Schema Promotion Adapter 將 `human_*` 欄位映射至 canonical review 欄位
+- Builder 邊界：既有 Reviewed Dataset Builder 不修改；Schema Promotion 與 Dataset Build 分開執行
+- Canonical logical fingerprint：`26074E75E8BDB0436D10FC7BE81543254C186E3FB13F9D9C66F1230DC383DD7B`
+- Canonical review CSV：`outputs/manual_review/collaboration/pilot500_review_labels_canonical.csv`
+- Reviewed Dataset Build 使用已驗證 canonical review CSV；Gate：`REVIEWED_DATASET_BUILD_VERIFIED`
+- 資料保護：`dataset/01_raw` 不得修改
+- Annotation 邊界：annotation candidates 尚不是 YOLO labels
+- 後續 Gate：Phase 04.5 必須先處理外部資料授權、mapping、品質與去重，方可與內部 annotation candidates 整合

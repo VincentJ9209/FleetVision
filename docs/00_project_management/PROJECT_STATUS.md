@@ -5,9 +5,9 @@
 
 ## 1. 當前 Phase
 
-- 主 Phase：Phase 04 — Pilot Human Review and Reviewed Dataset（尚未完全關閉）
-- 已完成 Gate：Phase 04C — Portable Image Link Compatibility；Phase 04D — Human Review Execution；Phase 04E — Verified Freeze；Phase 04E — Formal Merge
-- 下一 Gate：Phase 04E — Reviewed Dataset Schema Promotion and Dataset Build
+- 主 Phase：Phase 04 — Pilot Human Review and Reviewed Dataset — **COMPLETED**
+- 已完成 Gate：Phase 04C — Package／Assignment；Phase 04D — Human Review Execution；Phase 04E — Verified Freeze；Phase 04E — Formal Merge；Phase 04E — Schema Promotion；Phase 04E — Reviewed Dataset Build
+- 下一階段：Phase 04.5 — External Dataset Intake and Annotation Preparation（**PLANNED／NEXT**）
 
 ## 2. 已完成項目
 
@@ -28,6 +28,9 @@
 - Phase 04E Verified Freeze（`NEW_FREEZE_VERIFIED`）
 - Phase 04E Formal Merge Preflight（`FORMAL_MERGE_PREFLIGHT_PASS`）
 - Phase 04E Formal Merge（`FORMAL_MERGE_VERIFIED`）
+- Phase 04E Schema Promotion（`SCHEMA_PROMOTION_VERIFIED`）
+- Phase 04E Reviewed Dataset Build（`REVIEWED_DATASET_BUILD_VERIFIED`）
+- Annotation candidates list 與 distribution／quality summary
 
 ## 3. Phase 04C／04D 完成狀態
 
@@ -55,7 +58,9 @@
 - 兩份完成版 canonical Workbook 均已建立凍結快照與 SHA256 manifest
 - 正式人工成果未被 Builder 修正流程覆蓋
 
-### Phase 04E Verified Freeze and Formal Merge
+### Phase 04E — Formal Merge, Schema Promotion, and Reviewed Dataset Build
+
+#### Formal Merge（`FORMAL_MERGE_VERIFIED`）
 
 - Gate：`NEW_FREEZE_VERIFIED`、`FORMAL_MERGE_PREFLIGHT_PASS`、`FORMAL_MERGE_VERIFIED`
 - 合併列數：500 rows、500 unique review IDs
@@ -64,7 +69,31 @@
 - Frozen snapshot：`G:\Project\FleetVision_Backups\Phase04_Completed_Reviews\Frozen_500\20260711_235712`
 - Formal merge provenance：`G:\Project\FleetVision_Backups\Phase04_Completed_Reviews\Formal_Merge_500\20260712_001744`
 - Formal merged CSV：`outputs/manual_review/collaboration/pilot500_human_review_results_collaboration.csv`
-- Logical fingerprint：`1FF38FF9E9B04481A0C0BAD724E3D9B9ADFCA4E2C92441D8A2DC7DC3D30113FD`
+- Input SHA256：`A88F530BB3B68E518197E476057E4B1A2A2295196E9892F9116F3F95060AF2D0`
+- Formal merge logical fingerprint：`1FF38FF9E9B04481A0C0BAD724E3D9B9ADFCA4E2C92441D8A2DC7DC3D30113FD`
+
+#### Schema Promotion（`SCHEMA_PROMOTION_VERIFIED`）
+
+- Canonical review CSV：`outputs/manual_review/collaboration/pilot500_review_labels_canonical.csv`
+- Canonical output SHA256：`0CA1E663AE2AA702AF07E7431F4FE7476ED407B12D2DF48835A5FC9BF9EA4B7A`
+- rows：500；unique review IDs：500；reviewed：500；pending：0
+- input validation errors：0；output validation errors：0；mapping mismatches：0
+- Canonical logical fingerprint：`26074E75E8BDB0436D10FC7BE81543254C186E3FB13F9D9C66F1230DC383DD7B`
+- Formal merge input 未修改
+
+#### Reviewed Dataset Build（`REVIEWED_DATASET_BUILD_VERIFIED`）
+
+- total：500；reviewed：500
+- exterior：446；low_quality：18；irrelevant：4
+- annotation_candidates：82；interior：26；unknown：6
+- 正式輸出：
+  - `dataset/03_reviewed/exterior/exterior_image_list.csv`
+  - `dataset/03_reviewed/low_quality/low_quality_image_list.csv`
+  - `dataset/03_reviewed/irrelevant/irrelevant_image_list.csv`
+  - `dataset/04_annotations/annotation_candidates.csv`
+  - `outputs/metadata/reviewed_dataset_summary.csv`
+- Build provenance：`G:\Project\FleetVision_Backups\Phase04_Completed_Reviews\Reviewed_Dataset_Build\20260712_011049`
+- 安全邊界：`dataset/01_raw` 未修改；未建立 YOLO labels、dataset split 或模型訓練
 
 ## 4. 當前重要風險
 
@@ -88,36 +117,22 @@
 
 - `docs: record phase04c workbook integrity fix`
 - `docs: record phase04e verified freeze and formal merge`
+- `49e14cf feat: add human review schema promotion adapter`
+- `docs: close phase04 reviewed dataset workflow`
 
 ## 6. 下一個正式執行順序
 
-### Phase 04E — Reviewed Dataset Schema Promotion and Dataset Build
+### Phase 04.5 — External Dataset Intake and Annotation Preparation（PLANNED／NEXT）
 
-目前正式 merged CSV 使用 `human_*` 欄位，而既有 Reviewed Dataset Builder 預期 canonical review 欄位：
+1. Kaggle／Roboflow 外部車損資料搜尋
+2. 授權審查與來源 lineage 登錄
+3. 下載、版本記錄與 catalog
+4. class mapping 至 `damage`
+5. bbox 品質抽查
+6. SHA256／perceptual hash 去重
+7. 與內部 annotation candidates 整合前 Gate
 
-- `photo_type_review`
-- `angle_review`
-- `is_exterior_review`
-- `has_visible_damage_review`
-- `severity_review`
-- `review_status`
-- `reviewer`
-- `review_notes`
-
-在建立 Reviewed Dataset 前，必須先完成受驗證的 schema promotion／adapter，不得直接執行舊 builder。
-
-1. 建立並驗證 `human_*` → canonical review schema promotion／adapter
-2. 執行 Reviewed Dataset build
-3. 產生 annotation candidates list
-4. 產生分布與資料品質報告
-5. 解決 `needs_followup`（若 promotion 後仍待處理）
-6. Phase 04 final closeout
-
-### Parallel Governance Work
-
-8. 建立 External Dataset Registry
-9. 定義 Kaggle／Roboflow 搜尋與接受標準
-10. 準備 external intake scripts／audit schema
+不得跳過 Phase 04.5 直接進入 YOLO labels、dataset split 或模型訓練。
 
 ## 7. 明確禁止事項
 
