@@ -272,3 +272,55 @@ paths:
     assert config.registry_csv == tmp_path / "dataset/00_catalog/external_dataset_registry.csv"
     assert config.raw_dataset_root == tmp_path / "dataset/01_raw/99_external/roboflow/rf_car_damage_seg_v1"
     assert config.expected_classes == ("Car-Damage",)
+
+
+def test_run_controlled_intake_uses_local_evidence_without_network(tmp_path: Path) -> None:
+    config = make_config(tmp_path)
+    write_registry(config.registry_csv)
+    archive = tmp_path / "roboflow-export.zip"
+    make_coco_zip(archive)
+
+    project_evidence = tmp_path / "project_evidence.txt"
+    project_evidence.write_text(
+        "Car-Damage Public Domain 4869 source snapshot",
+        encoding="utf-8",
+    )
+    version_evidence = tmp_path / "version_evidence.txt"
+    version_evidence.write_text(
+        "Car-Damage 11685 Outputs per training example: 3 source snapshot",
+        encoding="utf-8",
+    )
+
+    def forbidden_network_fetch(url: str, destination: Path) -> None:
+        raise AssertionError(f"network fetch must not be called: {url} -> {destination}")
+
+    result = run_controlled_intake(
+        config,
+        archive_path=archive,
+        project_evidence_path=project_evidence,
+        version_evidence_path=version_evidence,
+        evidence_fetcher=forbidden_network_fetch,
+        now_utc="2026-07-12T00:00:00Z",
+    )
+
+    assert result["gate_classification"] == "EXTERNAL_DATASET_INTAKE_VERIFIED"
+    evidence_root = config.metadata_root / "license_evidence"
+    assert (evidence_root / "roboflow_project_page.html").read_text(encoding="utf-8") == project_evidence.read_text(encoding="utf-8")
+    assert (evidence_root / "roboflow_dataset_v1_page.html").read_text(encoding="utf-8") == version_evidence.read_text(encoding="utf-8")
+
+
+def test_run_controlled_intake_requires_both_local_evidence_files(tmp_path: Path) -> None:
+    config = make_config(tmp_path)
+    write_registry(config.registry_csv)
+    archive = tmp_path / "roboflow-export.zip"
+    make_coco_zip(archive)
+    project_evidence = tmp_path / "project_evidence.txt"
+    project_evidence.write_text("Car-Damage Public Domain 4869", encoding="utf-8")
+
+    with pytest.raises(DatasetIntakeError, match="both project and version evidence"):
+        run_controlled_intake(
+            config,
+            archive_path=archive,
+            project_evidence_path=project_evidence,
+            now_utc="2026-07-12T00:00:00Z",
+        )

@@ -58,3 +58,13 @@ outputs/metadata/external_assets/roboflow/rf_car_damage_seg_v1/
 - 任何 bbox／segmentation／image reference 問題都寫入 QA report；資料仍保持 `NOT_YET_APPROVED`。
 - 不建立 dataset split，不執行模型訓練。
 - 本工具不直接修改 tracked registry；成功後由下一個獨立 Gate promotion `registry_update_proposal.csv`。
+
+
+## Roboflow 403 Evidence Fallback
+
+Roboflow Universe may reject non-browser HTML requests with HTTP 403. The controlled intake launcher therefore uses two reviewed local evidence snapshots by default:
+
+- `evidence/roboflow_project_evidence_20260712.txt`
+- `evidence/roboflow_version_v1_evidence_20260712.txt`
+
+The intake copies these snapshots into the immutable metadata evidence directory, records their SHA256 values, and validates the expected project name, license label, image counts, class name, and augmentation multiplier before extracting the dataset archive. Both evidence files must be supplied together. Live fetching remains available only when neither local evidence argument is provided.

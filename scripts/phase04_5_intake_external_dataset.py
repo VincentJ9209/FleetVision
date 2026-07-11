@@ -33,6 +33,18 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--archive", type=Path, required=True, help="Roboflow COCO Segmentation ZIP path.")
     parser.add_argument("--project-root", type=Path, default=None)
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
+    parser.add_argument(
+        "--project-evidence",
+        type=Path,
+        default=None,
+        help="Reviewed local snapshot of the Roboflow project page.",
+    )
+    parser.add_argument(
+        "--version-evidence",
+        type=Path,
+        default=None,
+        help="Reviewed local snapshot of the Roboflow dataset version page.",
+    )
     return parser
 
 
@@ -43,7 +55,12 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         config = load_controlled_intake_config(config_path, project_root)
-        result = run_controlled_intake(config, archive_path=args.archive)
+        result = run_controlled_intake(
+            config,
+            archive_path=args.archive,
+            project_evidence_path=args.project_evidence,
+            version_evidence_path=args.version_evidence,
+        )
     except DatasetIntakeError as exc:
         print("Gate classification: EXTERNAL_DATASET_INTAKE_BLOCKED")
         print(f"ERROR: {exc}")

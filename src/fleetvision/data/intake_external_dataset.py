@@ -535,6 +535,8 @@ def run_controlled_intake(
     config: ControlledIntakeConfig,
     *,
     archive_path: Path,
+    project_evidence_path: Path | None = None,
+    version_evidence_path: Path | None = None,
     evidence_fetcher: Callable[[str, Path], None] = _default_evidence_fetcher,
     now_utc: str | None = None,
 ) -> dict[str, Any]:
@@ -549,6 +551,20 @@ def run_controlled_intake(
         raise DatasetIntakeError(
             "target already exists; do not overwrite or rerun without a separate rollback/promotion gate"
         )
+
+    if (project_evidence_path is None) != (version_evidence_path is None):
+        raise DatasetIntakeError(
+            "both project and version evidence files are required when using local evidence"
+        )
+    local_evidence_paths: tuple[Path, Path] | None = None
+    if project_evidence_path is not None and version_evidence_path is not None:
+        resolved_project_evidence = project_evidence_path.resolve()
+        resolved_version_evidence = version_evidence_path.resolve()
+        if not resolved_project_evidence.is_file():
+            raise DatasetIntakeError(f"project evidence file not found: {resolved_project_evidence}")
+        if not resolved_version_evidence.is_file():
+            raise DatasetIntakeError(f"version evidence file not found: {resolved_version_evidence}")
+        local_evidence_paths = (resolved_project_evidence, resolved_version_evidence)
 
     registry_row = load_registry_row(config.registry_csv, config.dataset_id)
     now_utc = now_utc or datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -580,8 +596,14 @@ def run_controlled_intake(
 
         project_html = evidence_dir / "roboflow_project_page.html"
         version_html = evidence_dir / "roboflow_dataset_v1_page.html"
-        evidence_fetcher(config.project_url, project_html)
-        evidence_fetcher(config.version_url, version_html)
+        evidence_source_mode = "live_fetch"
+        if local_evidence_paths is None:
+            evidence_fetcher(config.project_url, project_html)
+            evidence_fetcher(config.version_url, version_html)
+        else:
+            evidence_source_mode = "local_reviewed_snapshot"
+            shutil.copy2(local_evidence_paths[0], project_html)
+            shutil.copy2(local_evidence_paths[1], version_html)
         _verify_evidence(config, project_html, version_html)
 
         archive_rows = safe_extract_zip(archive_copy, extracted_dir)
@@ -646,6 +668,9 @@ def run_controlled_intake(
             "license": config.license_name,
             "license_url": config.license_url,
             "license_verified": "yes",
+            "evidence_source_mode": evidence_source_mode,
+            "project_evidence_sha256": sha256_file(project_html),
+            "version_evidence_sha256": sha256_file(version_html),
             "export_format": config.export_format,
             "lineage_status": config.lineage_status,
             "archive_source_path": str(archive_path),
@@ -691,6 +716,9 @@ def run_controlled_intake(
             "archive_sha256": archive_hash,
             "archive_copy_verified": True,
             "license_evidence_verified": True,
+            "evidence_source_mode": evidence_source_mode,
+            "project_evidence_sha256": sha256_file(project_html),
+            "version_evidence_sha256": sha256_file(version_html),
             "summary": summary,
             "error_count": len(inspection.errors),
             "raw_target": str(config.raw_dataset_root),
