@@ -6,7 +6,8 @@
 ## 1. 當前 Phase
 
 - 主 Phase：Phase 04 — Pilot Human Review and Reviewed Dataset
-- 子階段：Phase 04C — Portable Image Link Compatibility；Phase 04D — Human Review Execution
+- 已完成 Gate：Phase 04C — Portable Image Link Compatibility；Phase 04D — Human Review Execution
+- 下一 Gate：Phase 04E — Merge and Final Validation
 
 ## 2. 已完成項目
 
@@ -21,43 +22,40 @@
 - Multi-reviewer package builder／merger
 - Vincent／Allison 250／250 deterministic assignment
 - Collaboration artifacts `.gitignore`
+- Phase 04C portable image link 與 dropdown compatibility 驗證
+- Phase 04D Vincent 250／250、Allison 250／250，共 500／500 人工審核
+- 兩份完成版 canonical Workbook 凍結快照與 SHA256 manifest
 
-## 3. 目前進行中
+## 3. Phase 04C／04D 完成狀態
 
-### Human Review
+### Excel Workbook Compatibility
 
-- Vincent 已開始人工審核
-- 存在部分已完成 `human_*` 結果
-- 已完成內容必須保留
-- Allison 初版 package 已交付
-
-### Excel Image Link Compatibility
-
-問題：Allison 的 Excel 將裸相對圖片 hyperlink 交由瀏覽器處理。
-
-已完成程式修正：
+已完成並驗證：
 
 - `open_image` 改用 Excel `HYPERLINK(...)` 公式
+- 六組 Excel list Data Validation 改用 workbook-scoped named ranges，指向隱藏的 `選項清單`
 - `calcMode = auto`
 - `fullCalcOnLoad = True`
 - `forceFullCalc = True`
 - `calcOnSave = True`
+- TEMP Vincent／Allison Package build PASS
+- Excel COM 驗收 PASS
+- Allison 實際 Excel 工作流程完成
 
-Codex 測試：Targeted 5 passed；Regression 6 passed；Full 111 passed, 1 skipped；`git diff --check` PASS。
+驗證結果：Targeted 6 passed；Merger regression 6 passed；Exporter regression 10 passed；Full 112 passed, 1 skipped。
 
-尚未完成：
+### Human Review Completion and Freeze
 
-1. TEMP package 獨立本機驗收
-2. Allison 實機前三筆連結驗證
-3. commit／push hyperlink formula fix
-4. 修補現有 Vincent Workbook 或安全搬移已完成人工資料
-5. 重建／重新交付 Allison 正式 package
-6. 確認兩人都使用可持續作業版本
+- Vincent：250／250 完成
+- Allison：250／250 完成
+- 合計：500／500 完成
+- 兩份完成版 canonical Workbook 均已建立凍結快照與 SHA256 manifest
+- 正式人工成果未被 Builder 修正流程覆蓋
 
 ## 4. 當前重要風險
 
-- R-001：人工結果遺失
-- R-002：舊 Package 連結不相容
+- R-001：人工結果遺失（已以凍結快照與 SHA256 manifest 控制；merge 前仍須維持唯讀）
+- R-002：舊 Package 連結不相容（Phase 04C 已完成驗證）
 - R-003：資料不平衡
 - R-004：外部資料尚未建立正式接收流程
 - R-005：Internal holdout 尚未凍結
@@ -74,34 +72,25 @@ Codex 測試：Targeted 5 passed；Regression 6 passed；Full 111 passed, 1 skip
 - `feat: add phase04 multi-reviewer collaboration workflow`
 - `chore: ignore phase04 collaboration artifacts`
 
-Hyperlink formula fix 尚待新 checkpoint。
+Phase 04C workbook integrity fix 尚待本次 checkpoint。
 
 ## 6. 下一個正式執行順序
 
-### Immediate
+### Phase 04E — Merge and Final Validation
 
-1. TEMP 產生修正版 package
-2. Allison 實機確認圖片由圖片檢視器開啟
-3. 修補／遷移 Vincent 已填寫 Workbook
-4. commit／push hyperlink formula fix
-5. 重新交付 Allison 修正版 package
-6. 兩人繼續人工審核
-
-### After Review Completion
-
-7. 回收兩份 Workbook
-8. Merger 合併
-9. Validator 驗證
-10. 解決 `needs_followup`
-11. 抽查 Reviewer 一致性
-12. 建立正式 Reviewed Dataset
-13. 產生分布與資料品質報告
+1. 執行 merge preflight，確認兩份凍結 Workbook、assignment identity、schema 與 SHA256 manifest
+2. 正式合併 500 筆人工審核結果
+3. Validator 驗證
+4. 解決 `needs_followup`
+5. 抽查 Reviewer 一致性
+6. 建立正式 Reviewed Dataset
+7. 產生分布與資料品質報告
 
 ### Parallel Governance Work
 
-14. 建立 External Dataset Registry
-15. 定義 Kaggle／Roboflow 搜尋與接受標準
-16. 準備 external intake scripts／audit schema
+8. 建立 External Dataset Registry
+9. 定義 Kaggle／Roboflow 搜尋與接受標準
+10. 準備 external intake scripts／audit schema
 
 ## 7. 明確禁止事項
 

@@ -61,7 +61,8 @@
 ## ADR-010 — Collaboration Workbook 圖片連結改用 HYPERLINK 公式
 
 - 日期：2026-07-11
-- 狀態：Pending Validation
-- 決策：不再使用裸相對 `cell.hyperlink.target`；使用 Workbook 位置組合 `images\...` 的 Excel `HYPERLINK(...)`；開啟時強制重算
-- 證據：Targeted 5 passed；Regression 6 passed；Full 111 passed, 1 skipped
-- 尚需：Allison 實機驗證、commit／push、正式 package 修補／重建
+- 狀態：Active／Validated
+- 決策：不再使用裸相對 `cell.hyperlink.target`；`open_image` 使用 Workbook 位置組合 `images\...` 的 portable Excel `HYPERLINK(...)` formula，並保留開啟時強制重算設定
+- Dropdown 相容性：六組 Excel list Data Validation 使用 workbook-scoped named ranges，指向隱藏的 `選項清單`
+- 安全邊界：Builder 不得覆蓋 active／completed canonical Workbook；正式人工成果必須保留
+- 驗證：Targeted 6 passed；Merger regression 6 passed；Exporter regression 10 passed；Full 112 passed, 1 skipped；TEMP Vincent／Allison Package build PASS；Excel COM 驗收 PASS；Allison 實際人工流程完成

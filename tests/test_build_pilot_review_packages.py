@@ -3,12 +3,13 @@
 import shutil
 import zipfile
 from pathlib import Path
+from zipfile import ZipFile
 
 import pandas as pd
 import pytest
 from openpyxl import load_workbook
 
-from fleetvision.data.build_pilot_review_excel import EXCEL_COLUMNS, WORKLIST_SHEET
+from fleetvision.data.build_pilot_review_excel import DROPDOWN_COLUMNS, EXCEL_COLUMNS, OPTIONS_SHEET, WORKLIST_SHEET
 from fleetvision.data.build_pilot_review_packages import (
     MANIFEST_FILENAME,
     PACKAGE_GUIDE_FILENAME,
@@ -70,6 +71,26 @@ def write_worklist(path: Path, dataframe: pd.DataFrame) -> None:
     dataframe.to_csv(path, index=False, encoding="utf-8-sig")
 
 
+def image_formula_path(formula: str) -> str:
+    marker = '&"'
+    start = formula.index(marker) + len(marker)
+    end = formula.index('"', start)
+    return formula[start:end]
+
+
+def review_sheet_xml_contains_data_validations(workbook_path: Path) -> bool:
+    with ZipFile(workbook_path) as workbook_zip:
+        for name in workbook_zip.namelist():
+            if name.startswith("xl/worksheets/") and name.endswith(".xml"):
+                if b"<dataValidations" in workbook_zip.read(name):
+                    return True
+    return False
+
+
+def data_validation_by_range(worksheet) -> dict[str, object]:
+    return {str(validation.sqref): validation for validation in worksheet.data_validations.dataValidation}
+
+
 def make_config(tmp_path: Path, row_count: int = 4) -> tuple[PilotReviewCollaborationConfig, pd.DataFrame]:
     worklist = make_worklist(tmp_path, row_count)
     guide_pdf = tmp_path / "docs" / "01_phase_guides" / "FleetVision_人工審核填寫指南_Excel協作版.pdf"
@@ -129,11 +150,24 @@ def test_build_packages_contain_reviewer_workbooks_images_manifest_guide_readme_
         assert {worksheet.cell(row=row, column=EXCEL_COLUMNS.index("human_review_status") + 1).value for row in range(2, worksheet.max_row + 1)} == {"pending"}
         assert {worksheet.cell(row=row, column=EXCEL_COLUMNS.index("human_reviewed_at") + 1).value for row in range(2, worksheet.max_row + 1)} == {None}
         for row in range(2, worksheet.max_row + 1):
-            target = worksheet.cell(row=row, column=1).hyperlink.target
-            assert target.startswith("images/")
+            cell = worksheet.cell(row=row, column=1)
+            formula = cell.value
+            target = image_formula_path(formula)
+            assert formula.startswith("=HYPERLINK(")
+            assert 'CELL("filename",A1)' in formula
+            assert cell.hyperlink is None
+            assert target.startswith("images\\")
             assert not target.startswith("file:///")
+            assert "G:\\" not in formula
+            assert "file:///" not in formula
+            assert "http://" not in formula
+            assert "https://" not in formula
             assert ":" not in target
             assert (package_dir / target).exists()
+        assert workbook.calculation.calcMode == "auto"
+        assert workbook.calculation.fullCalcOnLoad is True
+        assert workbook.calculation.forceFullCalc is True
+        assert workbook.calculation.calcOnSave is True
 
 
 def test_package_can_be_moved_or_unzipped_with_valid_relative_links(tmp_path: Path) -> None:
@@ -145,7 +179,64 @@ def test_package_can_be_moved_or_unzipped_with_valid_relative_links(tmp_path: Pa
     workbook = load_workbook(extract_root / "vincent" / WORKBOOK_FILENAME)
     worksheet = workbook[WORKLIST_SHEET]
     for row in range(2, worksheet.max_row + 1):
-        assert (extract_root / "vincent" / worksheet.cell(row=row, column=1).hyperlink.target).exists()
+        target = image_formula_path(worksheet.cell(row=row, column=1).value)
+        assert (extract_root / "vincent" / target).exists()
+
+
+def test_vincent_and_sister_open_image_formulas_are_excel_compatible(tmp_path: Path) -> None:
+    config, _ = make_config(tmp_path)
+    build_pilot_review_packages(config)
+
+    for reviewer_id in ["vincent", "sister"]:
+        workbook = load_workbook(config.output_root / "packages" / reviewer_id / WORKBOOK_FILENAME)
+        worksheet = workbook[WORKLIST_SHEET]
+        for row in range(2, worksheet.max_row + 1):
+            cell = worksheet.cell(row=row, column=1)
+            formula = cell.value
+            assert cell.data_type == "f"
+            assert cell.hyperlink is None
+            assert formula.startswith("=HYPERLINK(")
+            assert 'LEFT(CELL("filename",A1),FIND("[",CELL("filename",A1))-1)' in formula
+            assert "images\\" in formula
+            assert "G:\\" not in formula
+            assert "file:///" not in formula
+            assert "http://" not in formula
+            assert "https://" not in formula
+
+
+def test_vincent_and_sister_workbooks_keep_human_dropdown_validations(tmp_path: Path) -> None:
+    config, _ = make_config(tmp_path, row_count=500)
+    build_pilot_review_packages(config)
+
+    expected_ranges = {
+        "human_photo_type_review": "T2:T251",
+        "human_angle_review": "U2:U251",
+        "human_is_exterior_review": "V2:V251",
+        "human_has_visible_damage_review": "W2:W251",
+        "human_severity_review": "X2:X251",
+        "human_review_status": "Y2:Y251",
+    }
+    expected_defined_names = {f"package_{column_name}_options" for column_name in DROPDOWN_COLUMNS}
+
+    for reviewer_id, reviewer_name in [("vincent", "Vincent"), ("sister", "Reviewer_Sister")]:
+        workbook_path = config.output_root / "packages" / reviewer_id / WORKBOOK_FILENAME
+        workbook = load_workbook(workbook_path)
+        worksheet = workbook[WORKLIST_SHEET]
+        validations = data_validation_by_range(worksheet)
+
+        assert worksheet.max_row == 251
+        assert {worksheet.cell(row=row, column=EXCEL_COLUMNS.index("human_reviewer") + 1).value for row in range(2, 252)} == {reviewer_name}
+        assert {worksheet.cell(row=row, column=EXCEL_COLUMNS.index("human_review_status") + 1).value for row in range(2, 252)} == {"pending"}
+        assert {worksheet.cell(row=row, column=EXCEL_COLUMNS.index("human_reviewed_at") + 1).value for row in range(2, 252)} == {None}
+        assert workbook[OPTIONS_SHEET].sheet_state == "hidden"
+        assert set(workbook.defined_names.keys()).issuperset(expected_defined_names)
+        assert review_sheet_xml_contains_data_validations(workbook_path)
+        assert len(worksheet.data_validations.dataValidation) == 6
+        for column_name, target_range in expected_ranges.items():
+            validation = validations[target_range]
+            assert validation.type == "list"
+            assert validation.allow_blank is True
+            assert validation.formula1 == f"=package_{column_name}_options"
 
 
 def test_missing_image_stops_without_partial_package(tmp_path: Path) -> None:

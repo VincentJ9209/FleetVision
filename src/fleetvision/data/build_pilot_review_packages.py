@@ -12,10 +12,15 @@ from typing import Any
 
 import pandas as pd
 import yaml
+from openpyxl.utils import get_column_letter
+from openpyxl.workbook.defined_name import DefinedName
+from openpyxl.worksheet.datavalidation import DataValidation, DataValidationList
 
 from fleetvision.data.build_pilot_review_excel import (
+    DROPDOWN_COLUMNS,
     EXCEL_COLUMNS,
     OPEN_IMAGE_COLUMN,
+    OPTIONS_SHEET,
     WORKLIST_SHEET,
     PilotReviewExcelConfig,
     build_pilot_review_excel,
@@ -275,14 +280,59 @@ def _write_reviewer_package(
         ),
     )
     _rewrite_open_image_links(workbook, worklist)
+    _ensure_package_dropdown_validations(workbook)
     write_workbook(workbook, reviewer_dir / WORKBOOK_FILENAME)
 
 
 def _rewrite_open_image_links(workbook, worklist: pd.DataFrame) -> None:
     worksheet = workbook[WORKLIST_SHEET]
+    workbook.calculation.calcMode = "auto"
+    workbook.calculation.fullCalcOnLoad = True
+    workbook.calculation.forceFullCalc = True
+    workbook.calculation.calcOnSave = True
     for row_number, (_, row) in enumerate(worklist.iterrows(), start=2):
         suffix = Path(str(row["original_path"])).suffix
-        worksheet.cell(row=row_number, column=1).hyperlink = f"images/{row['image_id']}{suffix}"
+        cell = worksheet.cell(row=row_number, column=1)
+        image_path = f"images\\{row['image_id']}{suffix}"
+        cell.hyperlink = None
+        cell.value = (
+            '=HYPERLINK('
+            'LEFT(CELL("filename",A1),FIND("[",CELL("filename",A1))-1)'
+            f'&"{image_path}",'
+            '"開啟圖片")'
+        )
+
+
+def _ensure_package_dropdown_validations(workbook) -> None:
+    worksheet = workbook[WORKLIST_SHEET]
+    options = workbook[OPTIONS_SHEET]
+    worksheet.data_validations = DataValidationList()
+
+    for option_col_index, column_name in enumerate(DROPDOWN_COLUMNS, start=1):
+        option_column = get_column_letter(option_col_index)
+        values_count = _count_option_values(options, option_col_index)
+        defined_name = f"package_{column_name}_options"
+        attr_text = f"'{OPTIONS_SHEET}'!${option_column}$2:${option_column}${values_count + 1}"
+        workbook.defined_names.pop(defined_name, None)
+        workbook.defined_names.add(DefinedName(defined_name, attr_text=attr_text))
+
+        validation = DataValidation(type="list", formula1=f"={defined_name}", allow_blank=True)
+        validation.error = "請選擇清單中的值。"
+        validation.errorTitle = "無效選項"
+        worksheet.add_data_validation(validation)
+        target_col = get_column_letter(EXCEL_COLUMNS.index(column_name) + 1)
+        validation.add(f"{target_col}2:{target_col}{worksheet.max_row}")
+
+
+def _count_option_values(options, option_col_index: int) -> int:
+    count = 0
+    row_index = 2
+    while options.cell(row=row_index, column=option_col_index).value not in (None, ""):
+        count += 1
+        row_index += 1
+    if count == 0:
+        raise ValueError(f"options sheet missing value(s) for {options.cell(row=1, column=option_col_index).value}")
+    return count
 
 
 def _source_image_path(original_path: str, project_root: Path) -> Path:
