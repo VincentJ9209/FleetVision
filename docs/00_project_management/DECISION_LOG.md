@@ -66,3 +66,17 @@
 - Dropdown 相容性：六組 Excel list Data Validation 使用 workbook-scoped named ranges，指向隱藏的 `選項清單`
 - 安全邊界：Builder 不得覆蓋 active／completed canonical Workbook；正式人工成果必須保留
 - 驗證：Targeted 6 passed；Merger regression 6 passed；Exporter regression 10 passed；Full 112 passed, 1 skipped；TEMP Vincent／Allison Package build PASS；Excel COM 驗收 PASS；Allison 實際人工流程完成
+
+## ADR-011 — Formal Pilot 500 Merge Uses Verified Frozen Snapshot
+
+- 日期：2026-07-12
+- 狀態：Active／Validated
+- 決策：正式 Merge 只使用已驗證 frozen snapshot，不直接使用可變動 canonical Workbook
+- Source identity：source assignments 與 source worklist 必須保持 identity 一致
+- 合併鍵：以 `review_id` 進行合併
+- 正式驗收條件：必須通過 validator、500 unique review IDs、reviewed 500、pending 0、validation errors 0
+- 正式 logical fingerprint：`1FF38FF9E9B04481A0C0BAD724E3D9B9ADFCA4E2C92441D8A2DC7DC3D30113FD`
+- Frozen snapshot：`G:\Project\FleetVision_Backups\Phase04_Completed_Reviews\Frozen_500\20260711_235712`
+- Formal merge provenance：`G:\Project\FleetVision_Backups\Phase04_Completed_Reviews\Formal_Merge_500\20260712_001744`
+- 歷史保護：historical frozen snapshot 與 provenance 不得被後續修正覆寫
+- 後續 Gate：Phase 04 下一步仍需 schema promotion 與 Reviewed Dataset build；不得直接以 `human_*` merged CSV 執行舊 Reviewed Dataset Builder

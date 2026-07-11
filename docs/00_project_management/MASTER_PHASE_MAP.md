@@ -59,24 +59,44 @@ Gate：約 27,660 列、支援 `.jfif`、schema 與測試通過。
 
 ### 04C — Portable Image Link Compatibility
 
-**狀態：ACTIVE**
+**狀態：DONE**
 
 - 舊相對 hyperlink 在 Allison Excel 環境會交由瀏覽器開啟
 - Builder 已改為 Excel `HYPERLINK(...)` 公式
 - Targeted／Regression／Full tests 已通過
-- 尚需 TEMP package 實機驗證、Allison 電腦確認、commit／push、修補或重建正式 package
+- TEMP package 實機驗證、Allison 電腦確認、Excel COM 驗收已完成
 
 ### 04D — Human Review Execution
 
-**狀態：ACTIVE**
+**狀態：DONE**
 
-- Vincent 已開始人工審核，存在部分已完成結果
-- Allison 初版 package 已交付，但需使用修正版或安全修補
-- 已填寫資料不得遺失或重做
+- Vincent：250／250 reviewed
+- Allison：250／250 reviewed
+- 合計：500／500 reviewed；pending：0；validation errors：0
+- 兩份完成版 canonical Workbook 已凍結；正式人工成果未被 Builder 覆蓋
 
 ### 04E — Merge and Final Validation
 
-**狀態：PLANNED**
+**狀態：ACTIVE**（Formal Merge 已完成；Phase 04 Gate 尚未完全關閉）
+
+已完成：
+
+- 500 筆 reviewer assignment
+- 500／500 human review
+- validator 0 errors
+- verified frozen snapshot（`NEW_FREEZE_VERIFIED`）
+- formal merge preflight（`FORMAL_MERGE_PREFLIGHT_PASS`）
+- formal merge（`FORMAL_MERGE_VERIFIED`）
+- merge post-write verification
+- logical fingerprint：`1FF38FF9E9B04481A0C0BAD724E3D9B9ADFCA4E2C92441D8A2DC7DC3D30113FD`
+
+尚待完成：
+
+- merged `human_*` fields → canonical review schema promotion
+- Reviewed Dataset build
+- annotation candidates list
+- distribution／data quality report
+- Phase 04 final closeout
 
 Phase 04 Gate：500 筆分派完整、所有完成列通過 Validator、needs_followup 處理完成、skipped 原因合理、兩人結果合併、Reviewed Dataset 與分布報告完成。
 

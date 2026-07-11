@@ -177,3 +177,16 @@ Phase 04 目前由 Vincent 與 Allison 各 250 筆。
 6. Decision Log 是否新增或取代
 7. Project Status 是否反映最新狀態
 8. 是否建立可回復 checkpoint
+
+## 12. 最新 Checkpoint（2026-07-12）
+
+Phase 04E Verified Freeze 與 Formal Merge 已完成；Phase 04 Gate 尚未完全關閉。
+
+- `NEW_FREEZE_VERIFIED`
+- `FORMAL_MERGE_PREFLIGHT_PASS`
+- `FORMAL_MERGE_VERIFIED`
+- Frozen snapshot：`G:\Project\FleetVision_Backups\Phase04_Completed_Reviews\Frozen_500\20260711_235712`
+- Formal merge provenance：`G:\Project\FleetVision_Backups\Phase04_Completed_Reviews\Formal_Merge_500\20260712_001744`
+- Formal merged CSV：`outputs/manual_review/collaboration/pilot500_human_review_results_collaboration.csv`
+- Logical fingerprint：`1FF38FF9E9B04481A0C0BAD724E3D9B9ADFCA4E2C92441D8A2DC7DC3D30113FD`
+- Next technical Gate：Reviewed Dataset Schema Promotion and Dataset Build

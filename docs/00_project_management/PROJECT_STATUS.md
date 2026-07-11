@@ -1,13 +1,13 @@
 # FleetVision Project Status
 
 > 更新原則：每次正式 checkpoint 後更新。
-> 基準日期：2026-07-11
+> 基準日期：2026-07-12
 
 ## 1. 當前 Phase
 
-- 主 Phase：Phase 04 — Pilot Human Review and Reviewed Dataset
-- 已完成 Gate：Phase 04C — Portable Image Link Compatibility；Phase 04D — Human Review Execution
-- 下一 Gate：Phase 04E — Merge and Final Validation
+- 主 Phase：Phase 04 — Pilot Human Review and Reviewed Dataset（尚未完全關閉）
+- 已完成 Gate：Phase 04C — Portable Image Link Compatibility；Phase 04D — Human Review Execution；Phase 04E — Verified Freeze；Phase 04E — Formal Merge
+- 下一 Gate：Phase 04E — Reviewed Dataset Schema Promotion and Dataset Build
 
 ## 2. 已完成項目
 
@@ -25,6 +25,9 @@
 - Phase 04C portable image link 與 dropdown compatibility 驗證
 - Phase 04D Vincent 250／250、Allison 250／250，共 500／500 人工審核
 - 兩份完成版 canonical Workbook 凍結快照與 SHA256 manifest
+- Phase 04E Verified Freeze（`NEW_FREEZE_VERIFIED`）
+- Phase 04E Formal Merge Preflight（`FORMAL_MERGE_PREFLIGHT_PASS`）
+- Phase 04E Formal Merge（`FORMAL_MERGE_VERIFIED`）
 
 ## 3. Phase 04C／04D 完成狀態
 
@@ -52,9 +55,20 @@
 - 兩份完成版 canonical Workbook 均已建立凍結快照與 SHA256 manifest
 - 正式人工成果未被 Builder 修正流程覆蓋
 
+### Phase 04E Verified Freeze and Formal Merge
+
+- Gate：`NEW_FREEZE_VERIFIED`、`FORMAL_MERGE_PREFLIGHT_PASS`、`FORMAL_MERGE_VERIFIED`
+- 合併列數：500 rows、500 unique review IDs
+- reviewed：500；pending：0；validation errors：0
+- Vincent／Allison overlap：0
+- Frozen snapshot：`G:\Project\FleetVision_Backups\Phase04_Completed_Reviews\Frozen_500\20260711_235712`
+- Formal merge provenance：`G:\Project\FleetVision_Backups\Phase04_Completed_Reviews\Formal_Merge_500\20260712_001744`
+- Formal merged CSV：`outputs/manual_review/collaboration/pilot500_human_review_results_collaboration.csv`
+- Logical fingerprint：`1FF38FF9E9B04481A0C0BAD724E3D9B9ADFCA4E2C92441D8A2DC7DC3D30113FD`
+
 ## 4. 當前重要風險
 
-- R-001：人工結果遺失（已以凍結快照與 SHA256 manifest 控制；merge 前仍須維持唯讀）
+- R-001：人工結果遺失（已以凍結快照、formal merge provenance 與 SHA256 manifest 控制；後續步驟仍須維持唯讀）
 - R-002：舊 Package 連結不相容（Phase 04C 已完成驗證）
 - R-003：資料不平衡
 - R-004：外部資料尚未建立正式接收流程
@@ -72,19 +86,32 @@
 - `feat: add phase04 multi-reviewer collaboration workflow`
 - `chore: ignore phase04 collaboration artifacts`
 
-Phase 04C workbook integrity fix 尚待本次 checkpoint。
+- `docs: record phase04c workbook integrity fix`
+- `docs: record phase04e verified freeze and formal merge`
 
 ## 6. 下一個正式執行順序
 
-### Phase 04E — Merge and Final Validation
+### Phase 04E — Reviewed Dataset Schema Promotion and Dataset Build
 
-1. 執行 merge preflight，確認兩份凍結 Workbook、assignment identity、schema 與 SHA256 manifest
-2. 正式合併 500 筆人工審核結果
-3. Validator 驗證
-4. 解決 `needs_followup`
-5. 抽查 Reviewer 一致性
-6. 建立正式 Reviewed Dataset
-7. 產生分布與資料品質報告
+目前正式 merged CSV 使用 `human_*` 欄位，而既有 Reviewed Dataset Builder 預期 canonical review 欄位：
+
+- `photo_type_review`
+- `angle_review`
+- `is_exterior_review`
+- `has_visible_damage_review`
+- `severity_review`
+- `review_status`
+- `reviewer`
+- `review_notes`
+
+在建立 Reviewed Dataset 前，必須先完成受驗證的 schema promotion／adapter，不得直接執行舊 builder。
+
+1. 建立並驗證 `human_*` → canonical review schema promotion／adapter
+2. 執行 Reviewed Dataset build
+3. 產生 annotation candidates list
+4. 產生分布與資料品質報告
+5. 解決 `needs_followup`（若 promotion 後仍待處理）
+6. Phase 04 final closeout
 
 ### Parallel Governance Work
 
