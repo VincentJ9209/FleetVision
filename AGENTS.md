@@ -1,117 +1,241 @@
-# AGENTS.md
+# FleetVision Agent Instructions
 
-## 專案名稱
+This file applies to the repository root and all descendant directories.
 
-FleetVision
+## 1. Source of Truth
 
-## 專案背景
+Before planning, inspecting, editing, testing, committing, or pushing, read the relevant current project governance files:
 
-FleetVision 是共享車輛借還車情境下的車輛外觀車損辨識專案。第一版目標是完成單張外觀照片的可見車損偵測，並建立可擴充到借還車前後差異比對的工程架構。
+- `PROJECT_CONTEXT_BRIEF.md`
+- `docs/00_project_management/MASTER_PHASE_MAP.md`
+- `docs/00_project_management/PROJECT_STATUS.md`
+- `docs/00_project_management/WORKFLOW_GOVERNANCE.md`
+- `docs/00_project_management/DECISION_LOG.md`
 
-## 主要工程助手
+Use `PROJECT_STATUS.md` to determine the current Phase and active gate. Do not rely on chat history as the primary project record.
 
-本專案以 Codex 付費版作為主要工程助手。Cursor 免費版作為主要 IDE / 編輯器，VS Code 作為備援。
+If repository files conflict with a task prompt, stop and report the conflict before editing.
 
-## 當前建模策略
+## 2. Start-of-Task Gate
 
-第一版模型採用：
+Before taking any repository action, confirm:
 
-- YOLOv8 Detect
-- 單一類別：`damage`
-- 標註方式：bounding box
-- 任務：偵測可見車損位置與信心分數
+1. Current Phase and active gate.
+2. Required prerequisites are complete.
+3. Immutable architecture decisions.
+4. Allowed files and prohibited files.
+5. Whether formal outputs or human-entered data are at risk.
+6. Expected Git state before the task.
+7. Required tests and completion evidence.
+8. Whether commit or push is explicitly authorized.
 
-請不要在第一版直接訓練以下分類：
+Do not begin implementation when these items are unresolved.
 
-- `minor_damage`
-- `claimable_damage`
-- `normal`
-- `new_damage`
+## 3. Skill Gate
 
-原因：目前 claimable damage 樣本數偏少，且索賠與否是業務規則，不應直接等同於模型類別。
+Before repository inspection, planning, editing, debugging, testing, review, commit, or push:
 
-## 目前資料來源
+1. Inspect the skills available in the current agent environment.
+2. Explicitly invoke every applicable installed skill.
+3. Never claim a skill was used unless its instructions were actually loaded and followed.
+4. If an applicable skill is unavailable, report:
 
-資料來源分為三類：
+   `SKILL_NOT_AVAILABLE: <skill-name>`
 
-```text
-dataset/01_raw/01_general_fleet/images/
-dataset/01_raw/02_claimable_damage/images/
-dataset/01_raw/03_minor_damage/images/
-```
+5. When a skill is unavailable, follow an equivalent disciplined workflow manually.
 
-Excel / catalog 類資料放在：
+Evaluate at minimum whether the following workflows apply:
 
-```text
-dataset/00_catalog/raw_excels/
-```
+- `using-superpowers`: task startup and skill selection
+- `brainstorming`: new behavior, new features, or design changes
+- `systematic-debugging`: bugs, failures, unexpected behavior, or regressions
+- `test-driven-development`: features, bug fixes, or behavior changes
+- `writing-plans`: multi-step or multi-file implementation
+- `verification-before-completion`: before claiming success, commit, or push
+- `requesting-code-review`: major changes or pre-merge review
+- `using-git-worktrees`: work requiring isolation from the active worktree
 
-## 資料處理原則
+The final report must contain:
 
-1. 不修改 `dataset/01_raw/` 原始圖片。
-2. 任何中間處理結果放入 `dataset/02_interim/`。
-3. 人工分類後結果放入 `dataset/03_reviewed/`。
-4. 標註結果放入 `dataset/04_annotations/`。
-5. YOLO 訓練資料放入 `dataset/05_yolo/`。
-6. demo 小樣本放入 `dataset/06_demo_samples/`。
-7. 大型圖片與模型檔不要放 GitHub。
+- `Skills used`
+- How each skill was applied
+- `Skills unavailable`
+- Any applicable skill intentionally not used and the reason
 
-## 程式碼規則
+## 4. Token and Context Efficiency
 
-1. 正式 Python 程式放在 `src/fleetvision/`。
-2. Notebook 只作為探索與 Colab 訓練用途，不放主要商業邏輯。
-3. 函數、類別、檔名、欄位名稱使用英文。
-4. 文件、註解、README 可使用繁體中文。
-5. 不要硬編碼個人電腦的絕對路徑。
-6. 請使用 config 或 CLI arguments 管理路徑。
-7. 每個主要腳本都要能從專案根目錄執行。
-8. 每個資料處理腳本都應輸出 summary。
-9. 重要函數應有 type hints 與 docstring。
-10. 重要邏輯，例如 IoU，比對規則、label validation，必須有測試。
+Use the smallest amount of context that preserves correctness.
 
-## Git 與版本控管規則
+- Do not repeat governance documents inside prompts.
+- Read only files relevant to the current task.
+- Prefer targeted repository searches over broad full-repository dumps.
+- Do not reopen or reanalyze files already understood unless the task changed.
+- Run targeted tests during development.
+- Run regression or full tests only at the required completion gate.
+- Do not repeatedly run the full suite without a new reason.
+- Keep each task within one coherent Git checkpoint.
+- Do not combine unrelated Phase work in one context or commit.
+- If task scope changes materially, recommend a new context.
+- If remaining context is insufficient for reliable completion, stop at a safe checkpoint and report it.
 
-請使用清楚的 commit message，例如：
+## 5. Immutable FleetVision Architecture
 
-```text
-feat: add image metadata builder
-fix: handle corrupted images
-chore: initialize project structure
-docs: update dataset structure guide
-test: add iou unit tests
-```
+Unless a newer approved Decision Log entry explicitly changes these rules:
 
-## Docker / PostgreSQL 原則
+- Project root is `G:\Project\FleetVision`.
+- The deprecated `irent-damage-detection` project must not be restored or reused.
+- First damage model is YOLOv8 Detect.
+- The first YOLO class is only `damage`.
+- `minor_damage` and `claimable_damage` are not YOLO classes.
+- Phase 03.5 inference is frozen and must not be rerun.
+- CLIP is limited to approved photo-type suggestion behavior.
+- Filename angle rules must never infer angle from `_1`, `_2`, `_3`, or `_4`.
+- Phase 03.5 must not infer damage or severity.
+- Do not assign insurance liability.
+- Do not create YOLO labels, `dataset/05_yolo`, data splits, or model training outputs before the applicable Phase gate is approved.
 
-1. Docker Compose 用於本機服務，例如 PostgreSQL、MLflow、Streamlit。
-2. PostgreSQL schema 放在 `sql/schema.sql`。
-3. `.env` 不得進 GitHub。
-4. `.env.example` 可以放 GitHub。
-5. 資料庫 dump 不進 GitHub，放 Google Drive 或外接硬碟備份。
+## 6. Data and Human-Review Safety
 
-## Colab 訓練原則
+The following are protected unless the active task explicitly authorizes them:
 
-1. Colab 用於 YOLOv8 GPU 訓練。
-2. 訓練資料從 Google Drive 掛載。
-3. 模型權重輸出回 Google Drive。
-4. Notebook 範本可以放 GitHub，但大量訓練輸出不放。
+- `dataset/01_raw/`
+- completed or active human-review Workbooks
+- reviewer assignment manifests
+- manual-review ZIP packages
+- frozen backups and SHA256 manifests
+- canonical CSV outputs
+- external dataset source archives
+- internal holdout definitions
 
-## 回答與協作要求
+Rules:
 
-當協助產生或修改程式時，請提供：
+- Never modify files under `dataset/01_raw/`.
+- Never overwrite human-entered review data.
+- Never rebuild a canonical Workbook over an active or completed reviewer file.
+- Never save a protected Workbook merely to inspect it.
+- Use read-only access for inspection whenever possible.
+- Use `pytest tmp_path`, Windows TEMP, or another isolated temporary directory for tests.
+- A failed operation must not leave a partial canonical output.
+- Preserve source files and create verified backups before promotion or replacement.
+- Use SHA256 comparisons for high-risk file promotion.
+- External data must remain separated from the frozen FleetVision internal holdout.
+- Never mix external data into internal evaluation data.
 
-1. 修改了哪些檔案。
-2. 如何執行。
-3. 會產生哪些輸出。
-4. 驗收標準。
-5. 新手應理解的關鍵概念。
-6. 可能風險與下一步。
+## 7. Implementation Discipline
 
-## 不要做的事
+Make the smallest change that fully satisfies the approved goal.
 
-- 不要把大型圖片放入 Git。
-- 不要把 `.env` 放入 Git。
-- 不要直接覆蓋 raw data。
-- 不要一次生成整個專案所有功能。
-- 不要把 claimable / minor 當成第一版 YOLO 類別。
-- 不要宣稱目前已能完整判斷真實新增車損，因為尚未有大量真實借還車成對資料。
+- Follow existing repository patterns.
+- Do not perform unrelated refactoring.
+- Do not silently alter schemas, column names, label meanings, thresholds, or file paths.
+- Do not hard-code values already controlled by configuration or workbook option sources.
+- Preserve deterministic ordering.
+- Preserve failure-no-overwrite behavior.
+- Keep modules focused on one responsibility.
+- Update tests for every behavior change.
+- Update governance documents when a Phase status, risk, or architectural decision changes.
+- Do not create duplicate tools when an existing builder, validator, exporter, or merger can be extended safely.
+
+## 8. Repository Engineering and Environment Rules
+
+### Code and Repository Conventions
+
+- Production Python code belongs under `src/fleetvision/`.
+- Notebooks are limited to exploration and approved Colab workflows; do not place primary business logic in notebooks.
+- Functions, classes, filenames, configuration keys, and data column names use English.
+- Documentation, guides, comments, and user-facing explanations may use Traditional Chinese.
+- Do not hard-code user-specific absolute paths in application code.
+- `G:\Project\FleetVision` is the current operator workspace, not an application-code constant.
+- Manage filesystem paths through configuration, CLI arguments, or repository-relative paths.
+- Primary scripts must be runnable from the repository root.
+- Data-processing scripts must produce a clear execution summary.
+- Important public functions should include type hints and concise docstrings.
+- Critical logic, including schema validation, matching rules, IoU, label validation, promotion, and no-overwrite behavior, requires automated tests.
+- Use only dataset directories approved by the current Phase Map and Project Status.
+- Do not create future-phase dataset folders or artifacts before their gate is approved.
+
+### Secrets and Large Artifacts
+
+- Never commit `.env`, API tokens, credentials, private keys, or service-account files.
+- A sanitized `.env.example` may be tracked.
+- Do not commit large image collections, model weights, training runs, database dumps, local backups, or generated review packages.
+- Database dumps belong in approved external backup storage, not Git.
+- If PostgreSQL is introduced, keep the tracked schema in `sql/schema.sql`.
+- Docker Compose is limited to approved local services and must not contain embedded secrets.
+
+### Colab and Training
+
+- Colab is reserved for approved GPU inference or training work.
+- Do not use Colab to bypass the current Phase gate.
+- Phase 03.5 inference remains frozen and must not be rerun.
+- When a future training gate is approved, mount data from approved storage and return model outputs to approved external storage.
+- Notebook templates may be tracked, but large training outputs must not be committed.
+
+### Product Claim Boundary
+
+- Do not claim that FleetVision can reliably determine true new damage until sufficient paired before-and-after rental data and validation exist.
+- Do not equate visible damage detection with insurance claimability, liability, or final business adjudication.
+## 9. Verification Gate
+
+Before claiming a task is complete:
+
+1. Run the required targeted tests.
+2. Run relevant regression tests.
+3. Run the full suite when required by the task or governance gate.
+4. Run `git diff --check`.
+5. Run `git status --short`.
+6. Confirm only authorized files changed.
+7. Confirm protected outputs were not modified.
+8. Confirm no partial output remains from failed tests.
+9. Inspect the final diff for accidental scope expansion.
+10. Report exact test counts and failures or skips.
+
+Do not report success based only on expected behavior. Use fresh command output.
+
+## 10. Git Rules
+
+- The main working branch is `main` unless the task explicitly states otherwise.
+- Do not commit or push unless the current task explicitly authorizes it.
+- Do not stage unrelated existing changes.
+- Stage files by explicit path, not broad commands such as `git add .`.
+- Keep code, tests, configuration, and governance documents in intentional checkpoints.
+- Do not commit generated Excel files, ZIP packages, images, model artifacts, caches, temporary files, or local backups.
+- CSV outputs are not committed unless explicitly designated as a tracked governance artifact.
+- Preserve existing uncommitted work that is outside the authorized task.
+- Before push, verify the commit subject, staged file list, tests, and remote branch.
+- After push, verify `git status --short` and `git log -1 --oneline`.
+
+## 11. Required Final Report
+
+Every repository task report must include:
+
+1. Current Phase and completed gate.
+2. Skills used and how they were applied.
+3. Skills unavailable.
+4. Root cause or implementation approach.
+5. Files changed.
+6. Tests executed and exact results.
+7. `git diff --check` result.
+8. Final `git status --short`.
+9. Commit hash and subject, when applicable.
+10. Push result, when applicable.
+11. Whether protected or formal outputs were touched.
+12. Any deviation, remaining risk, blocker, or next gate.
+13. Estimated token load: low, medium, or high.
+
+Do not paste full diffs or full logs unless explicitly requested.
+
+## 12. Stop Conditions
+
+Stop without modifying files and report the issue when:
+
+- the current Phase or prerequisite is unclear;
+- governance documents contradict each other;
+- the requested change violates an immutable decision;
+- protected data would be overwritten;
+- required source files are missing;
+- the worktree contains unexpected changes;
+- an applicable license is unknown or incompatible;
+- a test failure cannot be explained;
+- completing the task would require unauthorized scope expansion;
+- commit or push authorization is absent.
