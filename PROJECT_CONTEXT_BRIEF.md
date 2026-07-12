@@ -53,7 +53,7 @@
 - 車損正樣本數量不足
 - 輕微刮痕、凹陷、裂痕與不同拍攝條件分布可能不足
 - 一般正常照片過多，不能全部直接投入訓練
-- 首個 Roboflow 外部資料集已完成 Registry／License／下載與結構 QA，但尚未完成 perceptual hash、internal cross-dedup 與最終 acceptance review
+- 首個 Roboflow 外部資料集已完成 Registry／License／下載、結構 QA、production deduplication、group-safe split plan、COCO category canonicalization 與 annotation／split balance structural QA；尚待 targeted visual label QA 與最終 acceptance review
 
 ## 5. 固定資料策略
 
@@ -204,5 +204,10 @@ Phase 04.5 — External Dataset Intake and Audit **IN PROGRESS**。
 - Protected external assets 保持 untracked、未修改、不得 stage／commit
 - `training_acceptance=NOT_YET_APPROVED`
 - `dataset/01_raw` 未修改；未建立 YOLO labels、dataset split 或模型訓練
-- Pending：perceptual hash、internal cross-dedup、lineage acceptance review、Phase 04.5G acceptance report
-- Next functional Gate：Phase 04.5F — Deduplication preflight
+- Production deduplication：39,335 images hash success；0 hash errors；0 exact duplicate groups；33,844 external／external perceptual candidates；internal cross-perceptual scope disabled after low-precision review
+- Group-safe split plan：1,677 filename-lineage families；family leakage 0；planned model images 9,670（train 9,334／valid 168／test 168）；excluded correlated evaluation variants 2,005
+- COCO category canonicalization：source aliases `Car-Damage`／`damage-` 正規化為唯一 `damage`；source cleaned COCO 保持 byte-identical；canonical output 位於 `dataset/02_interim/.../canonical_coco`
+- Annotation／split balance structural QA：11,675 images；22,019 source annotations；18,246 model-included annotations；invalid bbox 0；unresolved joins 0；unannotated included images 0；annotation-count-inconsistent families 0
+- 當前 Gate：`ANNOTATION_QA_STRUCTURALLY_READY_FOR_TARGETED_VISUAL_REVIEW`
+- Pending：400 項 targeted visual bbox review、lineage acceptance review、Phase 04.5G acceptance report
+- Next functional Gate：Phase 04.5F targeted visual label QA（400 extreme-bbox samples）

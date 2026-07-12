@@ -7,9 +7,10 @@
 
 - 前一主 Phase：Phase 04 — Pilot Human Review and Reviewed Dataset — **COMPLETED**
 - 主 Phase：Phase 04.5 — External Dataset Intake and Audit — **IN PROGRESS**
-- 已完成 Gate：Phase 04C／04D／04E 全流程；Phase 04.5 Registry／License／download capture；raw structural QA；non-destructive bbox clipping verification；Registry promotion／post-execute recovery；Registry commit／push checkpoint
-- 當前 checkpoint：`17e2c915421a8f6bacacba87c01b3d09d55c62f6`
-- 下一功能 Gate：Phase 04.5F — Deduplication preflight
+- 已完成 Gate：Phase 04C／04D／04E 全流程；Phase 04.5 Registry／License／download capture；raw structural QA；non-destructive bbox clipping；Registry promotion；production deduplication；group-safe split plan；COCO category canonicalization；annotation／split balance structural QA
+- 本次任務起始 checkpoint：`b2bcf007f2124985ab607b5d478c3f7628b917d6`
+- 當前 Gate：`ANNOTATION_QA_STRUCTURALLY_READY_FOR_TARGETED_VISUAL_REVIEW`
+- 下一功能 Gate：Phase 04.5F targeted visual label QA（400 extreme-bbox samples）
 
 ## 2. 已完成項目
 
@@ -43,6 +44,12 @@
 - Registry commit／push：`17e2c915421a8f6bacacba87c01b3d09d55c62f6`
 - 91 regression tests passed；11 promotion fields、19 identity fields、12 protected v2 fields verified
 - `training_acceptance=NOT_YET_APPROVED`
+- Production deduplication：39,335 hash success；0 hash errors；0 exact duplicate groups；33,844 external／external perceptual candidates
+- Group-safe split plan：1,677 families；family leakage 0；train 9,334／valid 168／test 168；total 9,670；excluded correlated variants 2,005
+- Source category diagnosis：三個 split 皆有 category `damage-`（id 0，0 annotations）及 `Car-Damage`（id 1，22,019 annotations）；無 mixed-category image、無第三種 category
+- Canonical COCO：唯一 category `{id: 0, name: damage, supercategory: damage}`；11,675 images／22,019 annotations；bbox geometry checksum preserved；source cleaned COCO byte-identical
+- Annotation／split balance QA：18,246 model-included annotations；invalid bbox 0；unresolved joins 0；unannotated included images 0；annotation-count-inconsistent families 0
+- Targeted visual-review workload：smallest bbox 200＋largest bbox 200，共 400 items
 
 ## 3. Phase 04C／04D 完成狀態
 
@@ -112,7 +119,7 @@
 - R-001：人工結果遺失（已以凍結快照、formal merge provenance 與 SHA256 manifest 控制；後續步驟仍須維持唯讀）
 - R-002：舊 Package 連結不相容（Phase 04C 已完成驗證）
 - R-003：資料不平衡
-- R-004：首個外部資料集已完成 intake 與 Registry promotion，但尚未通過 perceptual hash、internal cross-dedup、lineage acceptance review，仍不得進入 train
+- R-004：首個外部資料集已完成 dedup、group-safe plan、canonicalization 與 structural annotation QA，但 targeted visual label QA／lineage acceptance review 尚未完成，仍不得進入 train
 - R-005：Internal holdout 尚未凍結
 
 ## 5. 最近 Git Checkpoints
@@ -132,6 +139,8 @@
 - `49e14cf feat: add human review schema promotion adapter`
 - `docs: close phase04 reviewed dataset workflow`
 - `17e2c91 chore(dataset): commit verified registry promotion`
+- `81758ca feat: add phase 04.5F deduplication audit`
+- `b2bcf00 fix: disable low-precision cross-source perceptual dedup`
 
 ## 6. 下一個正式執行順序
 
@@ -145,14 +154,17 @@
 4. 403 個 overflow bbox 的 non-destructive interim clipping 與驗證
 5. Class mapping metadata：`Car-Damage -> damage`
 6. Registry promotion、post-execute recovery、commit／push checkpoint
+7. Production exact／perceptual deduplication
+8. Group-safe source-family split plan
+9. `Car-Damage`／`damage-` -> `damage` canonical COCO
+10. Canonical annotation／bbox／split balance structural QA
 
 下一功能 Gate：
 
-1. Phase 04.5F deduplication preflight
-2. Perceptual hash inventory
-3. Internal／external exact and near-duplicate comparison
-4. Lineage acceptance review
-5. Phase 04.5G acceptance report
+1. 400 項 targeted visual bbox review
+2. Targeted review finding resolution（若有）
+3. Lineage acceptance review
+4. Phase 04.5G acceptance report
 
 在 `training_acceptance` 正式改為 approved 前，不得建立 YOLO labels、dataset split、`dataset/05_yolo/` 或開始模型訓練。
 

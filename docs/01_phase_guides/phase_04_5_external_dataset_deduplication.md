@@ -4,7 +4,7 @@
 
 本工具針對 `rf_car_damage_seg_v1` 建立可重現的 SHA256、pHash、dHash 稽核，以及 external／external、internal／external 候選比對。工具只產生人工複核候選，不會自動拒絕圖片，也不會修改 Registry、原始圖片、interim 資料、人工成果或 internal holdout。
 
-本 Gate 完成後，`training_acceptance` 仍維持 `NOT_YET_APPROVED`。在 Phase 04.5G lineage acceptance review 正式通過前，不得建立 YOLO labels、資料切分或開始訓練。
+Production deduplication 已於 2026-07-12 完成：39,335 images hash success、0 hash errors、0 exact duplicate groups、33,844 external／external perceptual candidates。後續已建立 1,677-family group-safe split plan。`training_acceptance` 仍維持 `NOT_YET_APPROVED`；targeted visual label QA 與 Phase 04.5G lineage acceptance review 正式通過前，不得建立 YOLO labels、materialize dataset 或開始訓練。
 
 ## 輸入
 

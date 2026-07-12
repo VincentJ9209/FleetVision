@@ -110,3 +110,19 @@
 - Acceptance boundary：`training_acceptance=NOT_YET_APPROVED`
 - Pending controls：perceptual hash、internal cross-dedup、lineage acceptance review、final acceptance report
 - 禁止事項：不得提前建立 YOLO labels、dataset split 或開始模型訓練
+
+## ADR-014 — Canonicalize Roboflow Damage Category Aliases Before Downstream QA
+
+- 日期：2026-07-12
+- 狀態：Active／Validated
+- Dataset ID：`rf_car_damage_seg_v1`
+- 根因證據：三個 cleaned COCO split 均含 `damage-`（category id 0）與 `Car-Damage`（category id 1）；全部 22,019 annotations 僅引用 `Car-Damage`，`damage-` 為 0 annotations，且是 `Car-Damage` 的 source supercategory；無 mixed-category image、無第三種 category
+- 決策：source aliases `Car-Damage` 與 `damage-` 均 canonicalize 為唯一類別 `{id: 0, name: damage, supercategory: damage}`
+- 非破壞邊界：`cleaned_coco` 不修改；canonical output 寫入 `dataset/02_interim/99_external/roboflow/rf_car_damage_seg_v1/canonical_coco`
+- Source cleaned COCO SHA256：train `B80D0601AEBEDDFF2E4AD98302A27F0DE4C6C91608F14B74398762654E8C86E6`；valid `28EC12ABDBC3A09D602D1B3F276DB3DE5F3571E2633EF4FC4401D92A761D1394`；test `E269A031DAF1A800264F333B961234F1AF6D182C8C6FA2A22B34DAE843BCDF4A`
+- Canonical COCO SHA256：train `64FEA6E47624F2DB6AB77C7485017DC50924F737C6084C250FB2FB74E890077C`；valid `CDB6EFB9547DBE1BAF0C5A0FF2250EF242A9B552BC85FD74C897B68FD1A344D8`；test `A4BE2674BB0009C7245E0DE08410D18413F3F71E14EFE9376CD858028C98C2CE`
+- Preservation Gate：11,675 images 與 22,019 annotations 前後一致；annotation IDs、image IDs、bbox、area、segmentation、iscrowd 與非 category metadata 保留；bbox geometry checksum 全部一致
+- 下游邊界：canonical COCO 是 annotation QA 與未來 dataset materialization 的唯一允許 COCO input；不得再接受 `Car-Damage` 或 `damage-`
+- Group-safe QA：1,677 families；leakage 0；9,670 model images；2,005 correlated eval variants excluded；invalid bbox 0；unresolved joins 0
+- QA 結論：`ANNOTATION_QA_STRUCTURALLY_READY_FOR_TARGETED_VISUAL_REVIEW`
+- Acceptance boundary：`training_acceptance=NOT_YET_APPROVED`，直到 400 項 targeted visual bbox review 完成且無 material label defect

@@ -1,0 +1,37 @@
+dataset_id: rf_car_damage_seg_v1
+
+canonical_coco_root: dataset/02_interim/99_external/roboflow/rf_car_damage_seg_v1/canonical_coco
+annotation_filename: _annotations.coco.json
+
+splits:
+  - train
+  - valid
+  - test
+
+class_mapping_path: outputs/metadata/external_assets/roboflow/rf_car_damage_seg_v1/class_mapping.csv
+class_mapping_sha256: 857CD97C8FA4FE85440920944C521E9A2B6530E4C79B1017D463CEF50AD11A8F
+split_plan_zip_sha256: A64013DBBC21C594ADF446AA110AE3A51BD7940DA96CF39CC982E4EC5734FED1
+
+canonical_coco_sha256:
+  train: 64FEA6E47624F2DB6AB77C7485017DC50924F737C6084C250FB2FB74E890077C
+  valid: CDB6EFB9547DBE1BAF0C5A0FF2250EF242A9B552BC85FD74C897B68FD1A344D8
+  test: A4BE2674BB0009C7245E0DE08410D18413F3F71E14EFE9376CD858028C98C2CE
+
+canonical_category:
+  id: 0
+  name: damage
+  supercategory: damage
+
+expected:
+  source_images: 11675
+  source_annotations: 22019
+  source_families: 1677
+  family_leakage: 0
+  model_included_images: 9670
+  excluded_correlated_eval_variants: 2005
+  per_split_model_images:
+    train: 9334
+    valid: 168
+    test: 168
+
+review_sample_size: 200
