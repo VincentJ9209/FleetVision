@@ -1,0 +1,33 @@
+dataset_id: rf_car_damage_seg_v1
+
+internal_metadata_path: outputs/metadata/image_metadata.csv
+external_image_inventory_path: outputs/metadata/external_assets/roboflow/rf_car_damage_seg_v1/image_inventory.csv
+external_raw_root: dataset/01_raw/99_external/roboflow/rf_car_damage_seg_v1
+output_root: outputs/metadata/external_dedup/roboflow/rf_car_damage_seg_v1
+
+hashing:
+  sha256_chunk_size_bytes: 1048576
+  phash_size: 8
+  dhash_size: 8
+  verify_external_sha256: true
+
+candidate_rules:
+  phash_hamming_distance_max: 6
+  dhash_hamming_distance_max: 8
+  aspect_ratio_relative_difference_max: 0.10
+  exclude_exact_matches_from_perceptual_candidates: true
+  max_candidates_per_record: 500
+  candidate_overflow_policy: fail
+
+scope:
+  external_external_exact: true
+  internal_external_exact: true
+  external_external_perceptual: true
+  internal_external_perceptual: true
+  internal_internal_exact: false
+  internal_internal_perceptual: false
+
+execution:
+  overwrite_existing_output: false
+  fail_on_any_hash_error: true
+  write_error_report_on_failure: true
