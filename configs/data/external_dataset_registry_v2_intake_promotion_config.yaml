@@ -1,0 +1,147 @@
+registry_csv: dataset/00_catalog/external_dataset_registry.csv
+proposal_csv: outputs/metadata/external_assets/roboflow/rf_car_damage_seg_v1/registry_update_proposal.csv
+target_dataset_id: rf_car_damage_seg_v1
+expected_registry_dataset_id_order:
+  - rf_car_damage_seg_v1
+expected_registry_sha256: e526cf539a2e66f58b87b4ae1c58a31e06986404b8628d30ffab40aae9f8eb0a
+expected_proposal_sha256: 8f6dabf8c201335566c280de1f521707eaa0ee0b0b432c81c522169520f4d44e
+
+expected_registry_columns:
+  - dataset_id
+  - platform
+  - dataset_name
+  - source_url
+  - publisher
+  - license
+  - license_evidence_url
+  - license_verified
+  - search_date
+  - download_date
+  - dataset_version
+  - task_type
+  - annotation_format
+  - original_classes
+  - image_count_reported
+  - image_count_downloaded
+  - bbox_count_reported
+  - bbox_count_valid
+  - accepted_image_count
+  - rejected_image_count
+  - mapping_to_damage
+  - domain_similarity
+  - bbox_quality_status
+  - sha256_dedup_status
+  - perceptual_hash_status
+  - internal_cross_dedup_status
+  - usage_status
+  - rejection_reason
+  - local_raw_path
+  - notes
+  - registry_schema_version
+  - lineage_status
+  - bbox_count_valid_raw
+  - bbox_count_invalid_raw
+  - bbox_quality_status_raw
+  - bbox_repair_count
+  - bbox_count_valid_interim
+  - bbox_count_invalid_interim
+  - bbox_quality_status_interim
+  - bbox_repair_status
+  - local_interim_path
+  - training_acceptance
+
+expected_proposal_columns:
+  - dataset_id
+  - platform
+  - dataset_name
+  - source_url
+  - publisher
+  - license
+  - license_evidence_url
+  - license_verified
+  - search_date
+  - download_date
+  - dataset_version
+  - task_type
+  - annotation_format
+  - original_classes
+  - image_count_reported
+  - image_count_downloaded
+  - bbox_count_reported
+  - bbox_count_valid
+  - accepted_image_count
+  - rejected_image_count
+  - mapping_to_damage
+  - domain_similarity
+  - bbox_quality_status
+  - sha256_dedup_status
+  - perceptual_hash_status
+  - internal_cross_dedup_status
+  - usage_status
+  - rejection_reason
+  - local_raw_path
+  - notes
+
+promotion_columns:
+  - download_date
+  - image_count_downloaded
+  - bbox_count_reported
+  - bbox_count_valid
+  - accepted_image_count
+  - rejected_image_count
+  - bbox_quality_status
+  - sha256_dedup_status
+  - usage_status
+  - local_raw_path
+  - notes
+
+identity_columns:
+  - dataset_id
+  - platform
+  - dataset_name
+  - source_url
+  - publisher
+  - license
+  - license_evidence_url
+  - license_verified
+  - search_date
+  - dataset_version
+  - task_type
+  - annotation_format
+  - original_classes
+  - image_count_reported
+  - mapping_to_damage
+  - domain_similarity
+  - perceptual_hash_status
+  - internal_cross_dedup_status
+  - rejection_reason
+
+protected_v2_columns:
+  - registry_schema_version
+  - lineage_status
+  - bbox_count_valid_raw
+  - bbox_count_invalid_raw
+  - bbox_quality_status_raw
+  - bbox_repair_count
+  - bbox_count_valid_interim
+  - bbox_count_invalid_interim
+  - bbox_quality_status_interim
+  - bbox_repair_status
+  - local_interim_path
+  - training_acceptance
+
+expected_protected_v2_values:
+  registry_schema_version: "2"
+  lineage_status: generated_augmented_v1
+  bbox_count_valid_raw: "21616"
+  bbox_count_invalid_raw: "403"
+  bbox_quality_status_raw: structural_qa_failed_bbox_overflow
+  bbox_repair_count: "403"
+  bbox_count_valid_interim: "22019"
+  bbox_count_invalid_interim: "0"
+  bbox_quality_status_interim: structural_bbox_qa_verified
+  bbox_repair_status: clipped_overflow_verified
+  local_interim_path: dataset/02_interim/99_external/roboflow/rf_car_damage_seg_v1
+  training_acceptance: NOT_YET_APPROVED
+
+expected_local_raw_path: dataset/01_raw/99_external/roboflow/rf_car_damage_seg_v1
