@@ -23,7 +23,7 @@ scope:
   external_external_exact: true
   internal_external_exact: true
   external_external_perceptual: true
-  internal_external_perceptual: true
+  internal_external_perceptual: false
   internal_internal_exact: false
   internal_internal_perceptual: false
 
