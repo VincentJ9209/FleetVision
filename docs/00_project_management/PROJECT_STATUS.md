@@ -5,9 +5,11 @@
 
 ## 1. 當前 Phase
 
-- 主 Phase：Phase 04 — Pilot Human Review and Reviewed Dataset — **COMPLETED**
-- 已完成 Gate：Phase 04C — Package／Assignment；Phase 04D — Human Review Execution；Phase 04E — Verified Freeze；Phase 04E — Formal Merge；Phase 04E — Schema Promotion；Phase 04E — Reviewed Dataset Build
-- 下一階段：Phase 04.5 — External Dataset Intake and Annotation Preparation（**PLANNED／NEXT**）
+- 前一主 Phase：Phase 04 — Pilot Human Review and Reviewed Dataset — **COMPLETED**
+- 主 Phase：Phase 04.5 — External Dataset Intake and Audit — **IN PROGRESS**
+- 已完成 Gate：Phase 04C／04D／04E 全流程；Phase 04.5 Registry／License／download capture；raw structural QA；non-destructive bbox clipping verification；Registry promotion／post-execute recovery；Registry commit／push checkpoint
+- 當前 checkpoint：`17e2c915421a8f6bacacba87c01b3d09d55c62f6`
+- 下一功能 Gate：Phase 04.5F — Deduplication preflight
 
 ## 2. 已完成項目
 
@@ -31,6 +33,16 @@
 - Phase 04E Schema Promotion（`SCHEMA_PROMOTION_VERIFIED`）
 - Phase 04E Reviewed Dataset Build（`REVIEWED_DATASET_BUILD_VERIFIED`）
 - Annotation candidates list 與 distribution／quality summary
+- Phase 04.5 Roboflow Dataset ID：`rf_car_damage_seg_v1`
+- License／source／version／download lineage 已登錄
+- Raw intake：11,675 images；22,019 annotations；21,616 valid bbox；403 invalid overflow bbox；0 invalid segmentation；0 missing images
+- 403 個 overflow bbox 已採非破壞式 interim clipping；interim 22,019 valid bbox、0 invalid bbox
+- Registry promotion：`REAL_REGISTRY_PROMOTION_VERIFIED`
+- Recovery：`POST_EXECUTE_VERIFICATION_RECOVERED`
+- Registry SHA256：`314b30242ed5ed4bce995bca9a2cae3c4cfa3b7aa89a7374e8dd531fe3193052`
+- Registry commit／push：`17e2c915421a8f6bacacba87c01b3d09d55c62f6`
+- 91 regression tests passed；11 promotion fields、19 identity fields、12 protected v2 fields verified
+- `training_acceptance=NOT_YET_APPROVED`
 
 ## 3. Phase 04C／04D 完成狀態
 
@@ -100,7 +112,7 @@
 - R-001：人工結果遺失（已以凍結快照、formal merge provenance 與 SHA256 manifest 控制；後續步驟仍須維持唯讀）
 - R-002：舊 Package 連結不相容（Phase 04C 已完成驗證）
 - R-003：資料不平衡
-- R-004：外部資料尚未建立正式接收流程
+- R-004：首個外部資料集已完成 intake 與 Registry promotion，但尚未通過 perceptual hash、internal cross-dedup、lineage acceptance review，仍不得進入 train
 - R-005：Internal holdout 尚未凍結
 
 ## 5. 最近 Git Checkpoints
@@ -119,20 +131,30 @@
 - `docs: record phase04e verified freeze and formal merge`
 - `49e14cf feat: add human review schema promotion adapter`
 - `docs: close phase04 reviewed dataset workflow`
+- `17e2c91 chore(dataset): commit verified registry promotion`
 
 ## 6. 下一個正式執行順序
 
-### Phase 04.5 — External Dataset Intake and Annotation Preparation（PLANNED／NEXT）
+### Phase 04.5 — External Dataset Intake and Audit（IN PROGRESS）
 
-1. Kaggle／Roboflow 外部車損資料搜尋
-2. 授權審查與來源 lineage 登錄
-3. 下載、版本記錄與 catalog
-4. class mapping 至 `damage`
-5. bbox 品質抽查
-6. SHA256／perceptual hash 去重
-7. 與內部 annotation candidates 整合前 Gate
+已完成：
 
-不得跳過 Phase 04.5 直接進入 YOLO labels、dataset split 或模型訓練。
+1. Roboflow candidate／License／source lineage 登錄
+2. Download、version capture、raw inventory
+3. Raw bbox／segmentation structural QA
+4. 403 個 overflow bbox 的 non-destructive interim clipping 與驗證
+5. Class mapping metadata：`Car-Damage -> damage`
+6. Registry promotion、post-execute recovery、commit／push checkpoint
+
+下一功能 Gate：
+
+1. Phase 04.5F deduplication preflight
+2. Perceptual hash inventory
+3. Internal／external exact and near-duplicate comparison
+4. Lineage acceptance review
+5. Phase 04.5G acceptance report
+
+在 `training_acceptance` 正式改為 approved 前，不得建立 YOLO labels、dataset split、`dataset/05_yolo/` 或開始模型訓練。
 
 ## 7. 明確禁止事項
 

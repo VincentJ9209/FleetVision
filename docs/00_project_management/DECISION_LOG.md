@@ -93,3 +93,20 @@
 - 資料保護：`dataset/01_raw` 不得修改
 - Annotation 邊界：annotation candidates 尚不是 YOLO labels
 - 後續 Gate：Phase 04.5 必須先處理外部資料授權、mapping、品質與去重，方可與內部 annotation candidates 整合
+
+## ADR-013 — Preserve Roboflow Raw Data and Repair Overflow Bboxes Non-destructively
+
+- 日期：2026-07-12
+- 狀態：Active／Validated
+- Dataset ID：`rf_car_damage_seg_v1`
+- 決策：`dataset/01_raw/99_external/roboflow/rf_car_damage_seg_v1` 保持 immutable；不得直接修寫 source annotation
+- Raw audit：11,675 images；22,019 annotations；21,616 valid raw bbox；403 invalid overflow bbox；0 invalid segmentation；0 missing images
+- Repair boundary：403 個 overflow bbox 僅於 `dataset/02_interim/99_external/roboflow/rf_car_damage_seg_v1` 執行 clipping
+- Interim result：22,019 valid bbox；0 invalid bbox；repair status `clipped_overflow_verified`
+- Registry promotion：`REAL_REGISTRY_PROMOTION_VERIFIED`；recovery `POST_EXECUTE_VERIFICATION_RECOVERED`
+- Registry SHA256：`314b30242ed5ed4bce995bca9a2cae3c4cfa3b7aa89a7374e8dd531fe3193052`
+- Registry commit：`17e2c915421a8f6bacacba87c01b3d09d55c62f6`
+- Protected assets：`outputs/metadata/external_assets/` 保持 untracked、不得 stage／commit
+- Acceptance boundary：`training_acceptance=NOT_YET_APPROVED`
+- Pending controls：perceptual hash、internal cross-dedup、lineage acceptance review、final acceptance report
+- 禁止事項：不得提前建立 YOLO labels、dataset split 或開始模型訓練

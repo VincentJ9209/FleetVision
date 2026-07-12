@@ -53,7 +53,7 @@
 - 車損正樣本數量不足
 - 輕微刮痕、凹陷、裂痕與不同拍攝條件分布可能不足
 - 一般正常照片過多，不能全部直接投入訓練
-- 外部資料尚未搜尋、授權審查與下載
+- 首個 Roboflow 外部資料集已完成 Registry／License／下載與結構 QA，但尚未完成 perceptual hash、internal cross-dedup 與最終 acceptance review
 
 ## 5. 固定資料策略
 
@@ -190,5 +190,19 @@ Phase 04 — Pilot Human Review and Reviewed Dataset **COMPLETED**。
 - Reviewed Dataset 輸出：`dataset/03_reviewed/` 分類清單、`dataset/04_annotations/annotation_candidates.csv`、`outputs/metadata/reviewed_dataset_summary.csv`
 - 分布：500 reviewed；exterior 446；low_quality 18；irrelevant 4；annotation_candidates 82；interior 26；unknown 6
 - Build provenance：`G:\Project\FleetVision_Backups\Phase04_Completed_Reviews\Reviewed_Dataset_Build\20260712_011049`
+
+Phase 04.5 — External Dataset Intake and Audit **IN PROGRESS**。
+
+- Dataset ID：`rf_car_damage_seg_v1`
+- Source／lineage：Roboflow Universe；`generated_augmented_v1`
+- Raw intake：11,675 images；22,019 annotations；21,616 valid raw bbox；403 invalid raw bbox；0 invalid segmentation；0 missing images
+- Raw invalid bbox：263 exceeds image width；147 exceeds image height；其中 7 筆同時超出右、下邊界
+- Non-destructive repair：403 overflow bbox 僅於 `dataset/02_interim/99_external/roboflow/rf_car_damage_seg_v1` clipping；interim 22,019 valid bbox、0 invalid bbox
+- Registry promotion：`REAL_REGISTRY_PROMOTION_VERIFIED`；recovery：`POST_EXECUTE_VERIFICATION_RECOVERED`
+- Registry SHA256：`314b30242ed5ed4bce995bca9a2cae3c4cfa3b7aa89a7374e8dd531fe3193052`
+- Registry commit／push checkpoint：`17e2c915421a8f6bacacba87c01b3d09d55c62f6`
+- Protected external assets 保持 untracked、未修改、不得 stage／commit
+- `training_acceptance=NOT_YET_APPROVED`
 - `dataset/01_raw` 未修改；未建立 YOLO labels、dataset split 或模型訓練
-- Next Gate：Phase 04.5 — External Dataset Intake
+- Pending：perceptual hash、internal cross-dedup、lineage acceptance review、Phase 04.5G acceptance report
+- Next functional Gate：Phase 04.5F — Deduplication preflight
