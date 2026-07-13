@@ -1,0 +1,18 @@
+schema_version: "1"
+
+source:
+  batch_root: G:/Project/FleetVision_Review_Packages/Phase04_5L/phase04_5l_20260714_v1
+  workbook_relative_path: workbook/validation_error_human_review.xlsx
+  workbook_sha256: 5DC9C1FDA69865D36C60EACB90A0AEA0FC9F4B263F30281723BB0E1172549DE5
+  frozen_zip_path: G:/Project/FleetVision_Review_Packages/Phase04_5L/phase04_5l_20260714_v1_PACKAGE.zip
+  frozen_zip_sha256: 6D6243FE8F3E12910C03A5EDCFF178CE20B180473EED43DED2B36301A877B42A
+  expected_case_count: 130
+  canonical_config_path: configs/data/validation_error_human_review_config.yaml
+
+workspace:
+  root: G:/Project/FleetVision_Review_Packages/Phase04_5L/phase04_5l_20260714_v1_review_workspace
+  reviewer: Vincent
+  timezone: Asia/Taipei
+  backup_every_successful_saves: 10
+  backup_retention: 20
+  completed_workbook_name: validation_error_human_review_completed.xlsx
