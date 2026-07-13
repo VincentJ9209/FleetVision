@@ -97,3 +97,11 @@ outputs/metadata/external_dedup/
 outputs/manual_review/pilot500_human_review_interface.xlsx
 outputs/manual_review/collaboration/
 outputs/metadata/pilot500_human_review_collaboration_*.csv
+
+# Phase 04.5L local review app accidental in-repo outputs
+**/review_state.sqlite3
+**/review_state.sqlite3-wal
+**/review_state.sqlite3-shm
+**/review_events.jsonl
+**/review_state_*.sqlite3
+**/validation_error_human_review_completed.xlsx
