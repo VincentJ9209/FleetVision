@@ -75,3 +75,42 @@ def test_notebook_maps_prediction_results_by_input_order_not_result_path() -> No
         line.strip() == "image_id = Path(result.path).name"
         for line in source.splitlines()
     )
+
+def test_notebook_is_canonical_template_without_runtime_outputs_or_recovery_cells() -> None:
+    root = Path(__file__).resolve().parents[1]
+    path = root / "notebooks/FleetVision_04_5K_Validation_Error_Analysis_8_4_93.ipynb"
+    notebook = json.loads(path.read_text(encoding="utf-8"))
+
+    code_cells = [
+        (index, cell)
+        for index, cell in enumerate(notebook["cells"])
+        if cell.get("cell_type") == "code"
+    ]
+    executed_code_cells = [
+        index
+        for index, cell in code_cells
+        if cell.get("execution_count") is not None
+    ]
+    output_code_cells = [
+        index
+        for index, cell in code_cells
+        if cell.get("outputs")
+    ]
+    temporary_recovery_cells = [
+        index
+        for index, cell in code_cells
+        if "".join(cell.get("source", [])).lstrip().startswith(
+            ("# Cell 4-DIAG", "# Cell 4-R1")
+        )
+    ]
+
+    assert not executed_code_cells, (
+        f"Canonical Notebook contains execution counts: {executed_code_cells}"
+    )
+    assert not output_code_cells, (
+        f"Canonical Notebook contains saved outputs: {output_code_cells}"
+    )
+    assert not temporary_recovery_cells, (
+        f"Canonical Notebook contains temporary recovery cells: "
+        f"{temporary_recovery_cells}"
+    )
