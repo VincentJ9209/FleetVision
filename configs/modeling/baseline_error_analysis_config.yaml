@@ -1,0 +1,52 @@
+gate_id: 04.5K
+
+input:
+  allowed_split: valid
+  expected_images: 168
+  expected_ground_truth_instances: 325
+  best_pt_sha256: 90A880513A42EF2DB1373902D98FF09D1756AB7A8A4EEA6A7AA231D4020B77BF
+
+inference:
+  ultralytics_version: 8.4.93
+  confidence_floor: 0.001
+  nms_iou: 0.70
+  imgsz: 640
+  max_det: 300
+
+matching:
+  iou_threshold: 0.50
+  localization_iou_min: 0.10
+
+thresholds:
+  - 0.05
+  - 0.10
+  - 0.15
+  - 0.20
+  - 0.25
+  - 0.30
+  - 0.35
+  - 0.40
+  - 0.45
+  - 0.50
+  - 0.55
+  - 0.60
+  - 0.65
+  - 0.70
+  - 0.75
+  - 0.80
+
+operating_points:
+  high_recall_fraction_of_max: 0.95
+  high_precision_fraction_of_max: 0.95
+
+bbox_size:
+  small_max_area_ratio: 0.01
+  medium_max_area_ratio: 0.05
+
+review:
+  max_overlay_images: 60
+
+safety:
+  forbid_test_tuning: true
+  forbid_training: true
+  deployment_acceptance: NOT_YET_APPROVED

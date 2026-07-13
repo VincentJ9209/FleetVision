@@ -211,3 +211,23 @@ Phase 04.5 — External Dataset Intake and Audit **IN PROGRESS**。
 - 當前 Gate：`ANNOTATION_QA_STRUCTURALLY_READY_FOR_TARGETED_VISUAL_REVIEW`
 - Pending：400 項 targeted visual bbox review、lineage acceptance review、Phase 04.5G acceptance report
 - Next functional Gate：Phase 04.5F targeted visual label QA（400 extreme-bbox samples）
+
+<!-- PHASE_04_5J_04_5K_RECOVERY_20260713 -->
+
+## 13. 最新 Checkpoint Recovery（2026-07-13）
+
+本節取代本文件中較早的「最新 checkpoint」敘述，但不刪除歷史紀錄。
+
+- Repository checkpoint：`0fa698a21be5fcc737fe4b000364cdccd743ec5f`
+- Phase 04.5J：`PASS`
+- Classification：`CONTROLLED_COLAB_BASELINE_TRAINING_COMPLETED`
+- Model：YOLOv8s Detect，single class `damage`
+- Training：33 epochs；best epoch 13；early stopping
+- Validation best：P 0.4868／R 0.3508／mAP50 0.3516／mAP50-95 0.1620
+- Test：P 0.5423／R 0.3883／mAP50 0.3804／mAP50-95 0.1756
+- `best.pt` SHA256：`90A880513A42EF2DB1373902D98FF09D1756AB7A8A4EEA6A7AA231D4020B77BF`
+- `last.pt` SHA256：`9D97A7053CA4400F45E9365C3FB9BFBE3EFFF20E6F3D37A403EC505186B386AC`
+- Deployment acceptance：`NOT_YET_APPROVED`
+- Test set 已正式評估一次；後續禁止用於 threshold tuning、候選選擇或資料改善排序。
+- 當前階段：Phase 04.5K Baseline Error Analysis。
+- 04.5K 僅使用 validation split；執行 error analysis、threshold sweep、人工複核工作清單與資料改善排序；禁止重新訓練。

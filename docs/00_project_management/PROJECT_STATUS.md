@@ -178,3 +178,37 @@
 - 不下載未登錄或未確認 License 的外部資料
 - 不將外部資料混入 internal test
 - 不覆蓋已有人工審核結果
+
+<!-- PHASE_04_5J_04_5K_RECOVERY_20260713 -->
+
+## 8. Phase 04.5J–04.5K Recovery Addendum（2026-07-13）
+
+本 Addendum 是目前有效狀態；上方 Phase 04.5F 舊狀態保留作歷史紀錄。
+
+### 已完成 Gate
+
+- Phase 04.5J：`PASS`
+- Classification：`CONTROLLED_COLAB_BASELINE_TRAINING_COMPLETED`
+- Final ZIP：`04_5J_20260713_082857_6c719a70_ZIP_LOG.zip`
+- ZIP SHA256：`98F0A04301FD08862941CB9033E23A932929F646494EE5917CD043DE3A815CEB`
+- Model：YOLOv8s Detect，single class `damage`
+- Training：33 epochs；best epoch 13；early stopping
+- Validation best：P 0.4868／R 0.3508／mAP50 0.3516／mAP50-95 0.1620
+- Test：P 0.5423／R 0.3883／mAP50 0.3804／mAP50-95 0.1756
+- `best.pt` SHA256：`90A880513A42EF2DB1373902D98FF09D1756AB7A8A4EEA6A7AA231D4020B77BF`
+- `last.pt` SHA256：`9D97A7053CA4400F45E9365C3FB9BFBE3EFFF20E6F3D37A403EC505186B386AC`
+
+### 當前 Gate
+
+- Phase：`04.5K Baseline Error Analysis`
+- Status：`IMPLEMENTATION_READY_FOR_CONTROLLED_EXECUTION`
+- Approved approach：automatic quantitative analysis + human-review worklist
+- Target classification：`VALIDATION_ERROR_ANALYSIS_AND_THRESHOLD_CANDIDATES_COMPLETED`
+- Deployment acceptance：`NOT_YET_APPROVED`
+
+### 強制邊界
+
+- Test set 已正式評估一次，禁止再用於 threshold tuning、候選選擇或資料改善排序。
+- 04.5K 只允許讀取 validation split。
+- 不重新訓練、不 fine-tune、不修改 annotation、canonical COCO、`dataset/01_raw`、Registry 或固定 split。
+- 04.5K threshold 只能標記為 `VALIDATION_THRESHOLD_CANDIDATE`，不得宣告 deployment threshold。

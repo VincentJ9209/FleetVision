@@ -126,3 +126,17 @@
 - Group-safe QA：1,677 families；leakage 0；9,670 model images；2,005 correlated eval variants excluded；invalid bbox 0；unresolved joins 0
 - QA 結論：`ANNOTATION_QA_STRUCTURALLY_READY_FOR_TARGETED_VISUAL_REVIEW`
 - Acceptance boundary：`training_acceptance=NOT_YET_APPROVED`，直到 400 項 targeted visual bbox review 完成且無 material label defect
+
+<!-- PHASE_04_5J_04_5K_RECOVERY_20260713 -->
+
+## ADR-015 — Test Set Is Single-Evaluation-Only; Phase 04.5K Tuning Uses Validation Only
+
+- 日期：2026-07-13
+- 狀態：Active／Validated by Phase 04.5J evidence
+- 決策：Phase 04.5J 已使用 `best.pt` 對 test split 正式評估一次。後續 test split 不得用於 confidence threshold tuning、operating-point selection、error prioritization、資料改善排序或模型選擇。
+- Phase 04.5K 唯一允許的 tuning／error-analysis split：`valid`
+- Validation scale：168 images／325 ground-truth instances
+- Matching：one-to-one greedy matching，IoU threshold 0.50；localization analysis floor 0.10
+- Threshold outputs：high-recall、balanced、high-precision 三組 `VALIDATION_THRESHOLD_CANDIDATE`
+- Deployment boundary：所有候選均不構成 deployment approval；`deployment_acceptance=NOT_YET_APPROVED`
+- Training boundary：Phase 04.5K 不重新訓練、不 fine-tune、不修改 labels 或固定 split
