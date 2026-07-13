@@ -54,3 +54,24 @@ def test_notebook_normalizes_manifest_relative_paths_to_tar_namespace() -> None:
     assert "if extracted_set != manifest_set:" in source
     assert "if len(extracted_relpaths) != len(extracted_set):" in source
     assert "if set(extracted_relpaths) != set(manifest_valid):" not in source
+
+def test_notebook_maps_prediction_results_by_input_order_not_result_path() -> None:
+    root = Path(__file__).resolve().parents[1]
+    path = root / "notebooks/FleetVision_04_5K_Validation_Error_Analysis_8_4_93.ipynb"
+    notebook = json.loads(path.read_text(encoding="utf-8"))
+    source = "\n".join(
+        line
+        for cell in notebook["cells"]
+        for line in cell.get("source", [])
+    )
+
+    assert "for result_index, result in enumerate(results):" in source
+    assert "source_path = image_paths[result_index]" in source
+    assert "reported_image_id = Path(result.path).name" in source
+    assert "expected_synthetic_id = f'image{result_index}.jpg'" in source
+    assert "image_id = source_path.name" in source
+    assert "if len(processed_image_ids) != len(image_paths):" in source
+    assert not any(
+        line.strip() == "image_id = Path(result.path).name"
+        for line in source.splitlines()
+    )
