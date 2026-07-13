@@ -1,4 +1,4 @@
-# FleetVision Decision Log
+﻿# FleetVision Decision Log
 
 > ADR = Architecture／Data／Workflow Decision Record。新決策不得刪除舊決策；若取代，使用 `Superseded by ADR-XXX`。
 
@@ -155,3 +155,20 @@
 - Threshold boundary：`0.20` 是 balanced `VALIDATION_THRESHOLD_CANDIDATE`，不是 deployment threshold。
 - Next control：完成人工複核與資料改善決策前，`retraining_status=NOT_YET_APPROVED`。
 - Deployment boundary：`deployment_acceptance=NOT_YET_APPROVED`
+
+<!-- FLEETVISION-MANAGED:DEC-GOV-2026-0713-01:BEGIN -->
+## DEC-GOV-2026-0713-01 — Repository-backed cross-conversation state
+
+**Decision:** Adopt Scheme C: Git repository Markdown is the formal cross-conversation source of truth, combined with a minimal new-chat bootstrap prompt.
+
+**Rationale:** FleetVision has expanding datasets, long-running Phases, many Gates, one-time promotions, protected assets, and cryptographic evidence. Reconstructing state from chat summaries alone creates avoidable omission and staleness risk.
+
+**Consequences:**
+
+- Every new conversation starts from `START_HERE.md`.
+- Gate completion includes project-state document synchronization.
+- Large datasets and outputs remain outside Markdown; documents store paths, counts, lineage, timestamps, classifications, and SHA256 values.
+- Direct GitHub writes are prohibited when local and remote state have not been reconciled.
+- Local HEAD, `origin/main`, and remote HEAD must agree before controlled repository writes.
+<!-- FLEETVISION-MANAGED:DEC-GOV-2026-0713-01:END -->
+

@@ -1,4 +1,4 @@
-# FleetVision Agent Instructions
+﻿# FleetVision Agent Instructions
 
 This file applies to the repository root and all descendant directories.
 
@@ -239,3 +239,32 @@ Stop without modifying files and report the issue when:
 - a test failure cannot be explained;
 - completing the task would require unauthorized scope expansion;
 - commit or push authorization is absent.
+
+<!-- FLEETVISION-MANAGED:GOVERNANCE-CONTRACT:BEGIN -->
+## FleetVision repository-governance contract
+
+All AI-assisted work must follow this startup order before proposing or executing a change:
+
+1. Read `docs/00_project_management/START_HERE.md`.
+2. Read `docs/00_project_management/PROJECT_STATUS.md`.
+3. Read `docs/00_project_management/HANDOFF_CURRENT.md`.
+4. Read `docs/00_project_management/PROTECTED_ASSETS.md`.
+5. Read the current phase log identified by `PROJECT_STATUS.md`.
+6. Reconcile the documents against the live Git branch, HEAD, `origin/main`, and worktree status.
+
+### Mandatory operating rules
+
+- Repository root: `G:\Project\FleetVision`.
+- Production branch: `main`.
+- Codex is disabled unless Vincent explicitly reauthorizes it.
+- Cursor Agent is disabled unless Vincent explicitly reauthorizes it.
+- Do not provide Codex prompts or instruct Cursor Agent to modify, test, commit, or push.
+- ChatGPT may provide Windows PowerShell 5.1 scripts and VS Code manual procedures.
+- Process one technical Gate at a time.
+- High-risk work must use Audit → Apply/Execute → Verify → Commit/Push.
+- Never stage, commit, delete, clean, move, or rewrite `outputs/metadata/external_assets/`.
+- Do not directly modify canonical COCO, raw datasets, or Registry assets without a Gate that explicitly authorizes that exact mutation.
+- A Gate is not complete until technical verification, project-state documents, Git commit, push, and remote-HEAD verification all agree.
+- Live repository facts and cryptographic hashes override narrative summaries when they conflict.
+<!-- FLEETVISION-MANAGED:GOVERNANCE-CONTRACT:END -->
+

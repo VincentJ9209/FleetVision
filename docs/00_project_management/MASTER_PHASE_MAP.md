@@ -1,4 +1,4 @@
-# FleetVision Master Phase Map
+﻿# FleetVision Master Phase Map
 
 > 本文件是 FleetVision 的正式執行路線。任何後續工作都必須對應到明確 Phase、前置條件與驗收 Gate。
 
@@ -237,3 +237,18 @@ Gate：
 - ZIP SHA256：`4D54D2BD1DA9D4B4067B9B91001291E8A1FB3691D1F4CB4D4FFCDEED78872F89`
 - Deployment acceptance：`NOT_YET_APPROVED`
 - 下一工作 Gate：完成人工複核 130 個 validation error cases，形成資料改善與是否重新訓練的正式決策
+
+<!-- FLEETVISION-MANAGED:CURRENT-CHECKPOINT:BEGIN -->
+## Current repository checkpoint
+
+| Area | Status |
+|---|---|
+| Phase 00–04 | Completed according to prior project governance records; retain existing detailed records |
+| Phase 04.5 | In progress |
+| Current technical checkpoint | 04.5K |
+| Repository checkpoint | `16e08121da22bf59989f1b2de5882274d30a2b4a` |
+| Governance migration | GOV-C-01 — PASS after commit/push remote verification |
+
+This managed block is a high-level index. Detailed Gate evidence belongs in phase logs and artifacts, not in this table.
+<!-- FLEETVISION-MANAGED:CURRENT-CHECKPOINT:END -->
+

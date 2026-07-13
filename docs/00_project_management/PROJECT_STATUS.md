@@ -1,4 +1,4 @@
-# FleetVision Project Status
+﻿# FleetVision Project Status
 
 > 更新原則：每次正式 checkpoint 後更新。
 > 基準日期：2026-07-13
@@ -236,3 +236,44 @@
 - 後續人工複核只使用 04.5K validation error artifacts。
 - 未完成複核與資料改善決策前，不重新訓練、不 fine-tune、不修改固定 split。
 - `0.20` 只能標記為 balanced `VALIDATION_THRESHOLD_CANDIDATE`，不得宣告 deployment threshold。
+
+<!-- FLEETVISION-MANAGED:CURRENT-STATE:BEGIN -->
+## Machine-readable state
+
+``yaml
+schema_version: 1
+project: FleetVision
+repository_root: "G:\Project\FleetVision"
+branch: main
+local_head_at_governance_migration: "16e08121da22bf59989f1b2de5882274d30a2b4a"
+origin_main_at_governance_migration: "16e08121da22bf59989f1b2de5882274d30a2b4a"
+github_remote_head_at_governance_migration: "16e08121da22bf59989f1b2de5882274d30a2b4a"
+technical_phase: "04.5K"
+latest_repository_checkpoint_subject: "fix: restore canonical phase 04.5K notebook"
+governance_gate: "GOV-C-01"
+governance_gate_outcome: "PASS"
+governance_classification: "PROJECT_GOVERNANCE_SOURCE_OF_TRUTH_ESTABLISHED"
+worktree_policy: "CLEAN_OR_PROTECTED_UNTRACKED_ONLY"
+protected_untracked_path: "outputs/metadata/external_assets/"
+training_acceptance: "REQUIRES_RECONCILIATION_FROM_AUTHORITATIVE_PHASE_ARTIFACT"
+updated_at: "2026-07-13T23:06:12+08:00"
+``
+
+## Current checkpoint
+
+- Technical phase: **04.5K**
+- Repository checkpoint before governance migration: `16e08121da22bf59989f1b2de5882274d30a2b4a`
+- Commit subject: **fix: restore canonical phase 04.5K notebook**
+- Governance migration Gate: **GOV-C-01 — PASS when this document is committed and remote-verified**
+- Target classification: **PROJECT_GOVERNANCE_SOURCE_OF_TRUTH_ESTABLISHED**
+- Worktree state before Apply: **PROTECTED_UNTRACKED_ONLY**
+
+## Current authorization
+
+The authorized task is limited to establishing and verifying repository-backed project governance documentation. No canonical dataset, raw dataset, Registry, training artifact, model artifact, or protected external asset may be modified by this Gate.
+
+## Required reconciliation
+
+Detailed training acceptance and the exact technical sub-Gate after the restored Phase 04.5K notebook must be reconciled from the authoritative notebook/output artifacts before the next technical Gate starts.
+<!-- FLEETVISION-MANAGED:CURRENT-STATE:END -->
+

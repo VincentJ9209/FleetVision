@@ -1,4 +1,4 @@
-# FleetVision Project Context Brief
+﻿# FleetVision Project Context Brief
 
 > 本文件是 FleetVision 專案的核心上下文鎖定文件。任何 ChatGPT、Codex、Cursor 或人工協作者在執行專案工作前，必須先閱讀本文件。
 
@@ -231,3 +231,16 @@ Phase 04.5 — External Dataset Intake and Audit **IN PROGRESS**。
 - Test set 已正式評估一次；後續禁止用於 threshold tuning、候選選擇或資料改善排序。
 - 當前階段：Phase 04.5K Baseline Error Analysis。
 - 04.5K 僅使用 validation split；執行 error analysis、threshold sweep、人工複核工作清單與資料改善排序；禁止重新訓練。
+
+<!-- FLEETVISION-MANAGED:SOURCE-OF-TRUTH:BEGIN -->
+## Repository-backed project state
+
+FleetVision uses the repository as the cross-conversation source of truth. Start every new work session from:
+
+- `docs/00_project_management/START_HERE.md`
+- `docs/00_project_management/PROJECT_STATUS.md`
+- `docs/00_project_management/HANDOFF_CURRENT.md`
+
+Chat history is supporting context only. It must not override a newer verified repository state.
+<!-- FLEETVISION-MANAGED:SOURCE-OF-TRUTH:END -->
+
