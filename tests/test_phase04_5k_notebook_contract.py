@@ -37,3 +37,20 @@ def test_all_notebook_code_cells_are_valid_python_syntax() -> None:
             continue
         source = "".join(cell.get("source", []))
         compile(source, f"notebook_cell_{index}", "exec")
+
+def test_notebook_normalizes_manifest_relative_paths_to_tar_namespace() -> None:
+    root = Path(__file__).resolve().parents[1]
+    path = root / "notebooks/FleetVision_04_5K_Validation_Error_Analysis_8_4_93.ipynb"
+    notebook = json.loads(path.read_text(encoding="utf-8"))
+    source = "\n".join(
+        line
+        for cell in notebook["cells"]
+        for line in cell.get("source", [])
+    )
+
+    assert 'prefix = "dataset/05_yolo/"' in source
+    assert "return relative if relative.startswith(prefix) else prefix + relative" in source
+    assert "manifest_valid = {}" in source
+    assert "if extracted_set != manifest_set:" in source
+    assert "if len(extracted_relpaths) != len(extracted_set):" in source
+    assert "if set(extracted_relpaths) != set(manifest_valid):" not in source
