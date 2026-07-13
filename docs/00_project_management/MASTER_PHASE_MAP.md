@@ -218,15 +218,22 @@ Gate：`CONTROLLED_COLAB_BASELINE_TRAINING_COMPLETED`。
 
 ## Phase 04.5K — Baseline Error Analysis
 
-**狀態：READY／ACTIVE WHEN EXECUTED**
+**狀態：DONE**
 
 目標：只使用 validation split 完成逐影像 TP／FP／FN matching、confidence threshold sweep、三種 validation operating-point candidates、error taxonomy、人工複核工作清單與資料改善優先排序。
 
 Gate：
 
-- `best.pt` SHA256 與 04.5J 一致
+- `best.pt` SHA256 與 04.5J 一致：`90A880513A42EF2DB1373902D98FF09D1756AB7A8A4EEA6A7AA231D4020B77BF`
 - validation 168 images／325 GT instances
+- raw predictions：20,566
+- validation threshold candidates：high-recall `0.05`、balanced `0.20`、high-precision `0.80`
+- review cases：130；representative overlays：60；data-improvement priority categories：6
 - test split 未被讀取或用於 tuning
-- 未開始任何 training／fine-tuning
+- 未開始任何 training／fine-tuning；annotation 未修改
 - 產出可追蹤 manifest、checksums、error records 與 improvement priorities
 - Classification：`VALIDATION_ERROR_ANALYSIS_AND_THRESHOLD_CANDIDATES_COMPLETED`
+- Final ZIP：`04_5K_20260713_114517_02a146be_ZIP_LOG.zip`
+- ZIP SHA256：`4D54D2BD1DA9D4B4067B9B91001291E8A1FB3691D1F4CB4D4FFCDEED78872F89`
+- Deployment acceptance：`NOT_YET_APPROVED`
+- 下一工作 Gate：完成人工複核 130 個 validation error cases，形成資料改善與是否重新訓練的正式決策

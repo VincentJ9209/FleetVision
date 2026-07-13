@@ -140,3 +140,18 @@
 - Threshold outputs：high-recall、balanced、high-precision 三組 `VALIDATION_THRESHOLD_CANDIDATE`
 - Deployment boundary：所有候選均不構成 deployment approval；`deployment_acceptance=NOT_YET_APPROVED`
 - Training boundary：Phase 04.5K 不重新訓練、不 fine-tune、不修改 labels 或固定 split
+
+## ADR-016 — Complete Validation-only Error Analysis Before Any Retraining
+
+- 日期：2026-07-13
+- 狀態：Active／Validated by Phase 04.5K evidence
+- 決策：YOLOv8s baseline training 已於 Phase 04.5J 完成；Phase 04.5K 僅執行 validation-only threshold sweep、error taxonomy 與 human-review worklist，沒有重新訓練或 fine-tuning。
+- Gate：`VALIDATION_ERROR_ANALYSIS_AND_THRESHOLD_CANDIDATES_COMPLETED`
+- Evidence ZIP：`04_5K_20260713_114517_02a146be_ZIP_LOG.zip`
+- ZIP SHA256：`4D54D2BD1DA9D4B4067B9B91001291E8A1FB3691D1F4CB4D4FFCDEED78872F89`
+- Validation evidence：168 images／325 GT／20,566 raw predictions／379 detailed errors
+- Candidate thresholds：high-recall `0.05`、balanced `0.20`、high-precision `0.80`
+- Human-review evidence：130 cases／60 overlays／6 data-improvement priority categories
+- Threshold boundary：`0.20` 是 balanced `VALIDATION_THRESHOLD_CANDIDATE`，不是 deployment threshold。
+- Next control：完成人工複核與資料改善決策前，`retraining_status=NOT_YET_APPROVED`。
+- Deployment boundary：`deployment_acceptance=NOT_YET_APPROVED`

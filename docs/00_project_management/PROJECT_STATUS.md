@@ -1,16 +1,19 @@
 # FleetVision Project Status
 
 > 更新原則：每次正式 checkpoint 後更新。
-> 基準日期：2026-07-12
+> 基準日期：2026-07-13
 
 ## 1. 當前 Phase
 
 - 前一主 Phase：Phase 04 — Pilot Human Review and Reviewed Dataset — **COMPLETED**
-- 主 Phase：Phase 04.5 — External Dataset Intake and Audit — **IN PROGRESS**
-- 已完成 Gate：Phase 04C／04D／04E 全流程；Phase 04.5 Registry／License／download capture；raw structural QA；non-destructive bbox clipping；Registry promotion；production deduplication；group-safe split plan；COCO category canonicalization；annotation／split balance structural QA
-- 本次任務起始 checkpoint：`b2bcf007f2124985ab607b5d478c3f7628b917d6`
-- 當前 Gate：`ANNOTATION_QA_STRUCTURALLY_READY_FOR_TARGETED_VISUAL_REVIEW`
-- 下一功能 Gate：Phase 04.5F targeted visual label QA（400 extreme-bbox samples）
+- 主 Phase：Phase 04.5 — External Dataset Intake, Controlled Baseline, and Audit — **IN PROGRESS**
+- 已完成 Gate：Phase 04C／04D／04E 全流程；Phase 04.5 external-data controls；Phase 04.5J controlled YOLOv8s baseline training；Phase 04.5K validation-only baseline error analysis
+- 最新 Git checkpoint：`9edb2031de8358bac22fd3af8b318aff96d3a365`
+- 最新完成 Gate：`VALIDATION_ERROR_ANALYSIS_AND_THRESHOLD_CANDIDATES_COMPLETED`
+- 當前工作：04.5K protected evidence intake／governance closure
+- 下一功能 Gate：人工複核 130 個 validation error cases，完成資料改善與是否重新訓練的決策
+- Current model state：baseline training 已完成；目前沒有 training／fine-tuning 正在執行
+- Deployment acceptance：`NOT_YET_APPROVED`
 
 ## 2. 已完成項目
 
@@ -198,17 +201,38 @@
 - `best.pt` SHA256：`90A880513A42EF2DB1373902D98FF09D1756AB7A8A4EEA6A7AA231D4020B77BF`
 - `last.pt` SHA256：`9D97A7053CA4400F45E9365C3FB9BFBE3EFFF20E6F3D37A403EC505186B386AC`
 
-### 當前 Gate
+### Phase 04.5K 完成 Gate
 
 - Phase：`04.5K Baseline Error Analysis`
-- Status：`IMPLEMENTATION_READY_FOR_CONTROLLED_EXECUTION`
-- Approved approach：automatic quantitative analysis + human-review worklist
-- Target classification：`VALIDATION_ERROR_ANALYSIS_AND_THRESHOLD_CANDIDATES_COMPLETED`
+- Outcome：`PASS`
+- Classification：`VALIDATION_ERROR_ANALYSIS_AND_THRESHOLD_CANDIDATES_COMPLETED`
+- Final ZIP：`04_5K_20260713_114517_02a146be_ZIP_LOG.zip`
+- ZIP SHA256：`4D54D2BD1DA9D4B4067B9B91001291E8A1FB3691D1F4CB4D4FFCDEED78872F89`
+- Validation images／GT：168／325
+- Raw predictions：20,566
+- Candidate thresholds：high-recall `0.05`／balanced `0.20`／high-precision `0.80`
+- Balanced candidate metrics：P `0.409396`／R `0.375385`／F1 `0.391653`
+- Detailed errors：379
+- Human-review cases：130
+- Representative overlays：60
+- Data-improvement priority categories：6
+- Test set used for tuning：`false`
+- Test set read：`false`
+- Training started in 04.5K：`false`
+- Annotation modified：`false`
 - Deployment acceptance：`NOT_YET_APPROVED`
+
+### 當前 Gate
+
+- 工作：人工複核 130 個 validation error cases
+- 目的：確認 no-detection、low-confidence miss、localization error、background false positive 與 duplicate prediction 的真實原因
+- 輸出：資料改善優先順序、annotation／data-quality findings、是否需要重新訓練的正式建議
+- Model state：04.5J baseline training 已完成；目前沒有 training／fine-tuning 正在執行
+- Retraining status：`NOT_YET_APPROVED`
 
 ### 強制邊界
 
 - Test set 已正式評估一次，禁止再用於 threshold tuning、候選選擇或資料改善排序。
-- 04.5K 只允許讀取 validation split。
-- 不重新訓練、不 fine-tune、不修改 annotation、canonical COCO、`dataset/01_raw`、Registry 或固定 split。
-- 04.5K threshold 只能標記為 `VALIDATION_THRESHOLD_CANDIDATE`，不得宣告 deployment threshold。
+- 後續人工複核只使用 04.5K validation error artifacts。
+- 未完成複核與資料改善決策前，不重新訓練、不 fine-tune、不修改固定 split。
+- `0.20` 只能標記為 balanced `VALIDATION_THRESHOLD_CANDIDATE`，不得宣告 deployment threshold。
