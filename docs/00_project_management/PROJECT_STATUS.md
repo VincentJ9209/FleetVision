@@ -7,13 +7,19 @@
 
 - 前一主 Phase：Phase 04 — Pilot Human Review and Reviewed Dataset — **COMPLETED**
 - 主 Phase：Phase 04.5 — External Dataset Intake, Controlled Baseline, and Audit — **IN PROGRESS**
-- 已完成 Gate：Phase 04C／04D／04E 全流程；Phase 04.5 external-data controls；Phase 04.5J controlled YOLOv8s baseline training；Phase 04.5K validation-only baseline error analysis
-- 最新 Git checkpoint：`9edb2031de8358bac22fd3af8b318aff96d3a365`
-- 最新完成 Gate：`VALIDATION_ERROR_ANALYSIS_AND_THRESHOLD_CANDIDATES_COMPLETED`
-- 當前工作：04.5K protected evidence intake／governance closure
-- 下一功能 Gate：人工複核 130 個 validation error cases，完成資料改善與是否重新訓練的決策
-- Current model state：baseline training 已完成；目前沒有 training／fine-tuning 正在執行
-- Deployment acceptance：`NOT_YET_APPROVED`
+- Current technical Phase：**Phase 04.5L — Validation Error Human Review**
+- Latest completed technical Gate：**04.5L-2C Implementation Closure**
+- Outcome：PASS
+- Classification：VALIDATION_ERROR_HUMAN_REVIEW_IMPLEMENTATION_VERIFIED
+- Repository base checkpoint：25e104bcf997699cd3cf573b813059612616ca2e
+- Implementation files：8
+- Formal review Workbook：尚未建立
+- Test split read：false
+- Annotation modified：false
+- Training／fine-tuning：未執行
+- Retraining status：NOT_YET_APPROVED
+- Deployment acceptance：NOT_YET_APPROVED
+- Next authorized Gate after commit/push verification：**04.5L-3 Review Package Preparation Audit**
 
 ## 2. 已完成項目
 
@@ -240,40 +246,43 @@
 <!-- FLEETVISION-MANAGED:CURRENT-STATE:BEGIN -->
 ## Machine-readable state
 
-``yaml
+~~~yaml
 schema_version: 1
 project: FleetVision
 repository_root: "G:\Project\FleetVision"
 branch: main
-local_head_at_governance_migration: "16e08121da22bf59989f1b2de5882274d30a2b4a"
-origin_main_at_governance_migration: "16e08121da22bf59989f1b2de5882274d30a2b4a"
-github_remote_head_at_governance_migration: "16e08121da22bf59989f1b2de5882274d30a2b4a"
-technical_phase: "04.5K"
-latest_repository_checkpoint_subject: "fix: restore canonical phase 04.5K notebook"
-governance_gate: "GOV-C-01"
-governance_gate_outcome: "PASS"
-governance_classification: "PROJECT_GOVERNANCE_SOURCE_OF_TRUTH_ESTABLISHED"
+repository_base_head: "25e104bcf997699cd3cf573b813059612616ca2e"
+repository_base_subject: "docs(governance): adopt repository-backed project state"
+technical_phase: "04.5L"
+technical_gate: "04.5L-2C"
+technical_gate_outcome: "PASS"
+technical_classification: "VALIDATION_ERROR_HUMAN_REVIEW_IMPLEMENTATION_VERIFIED"
+implementation_files_created: 8
+implementation_evidence_zip_sha256: "1151664A258C1DB4F01B16C900279F976F9EAEF3FFCC74D98F97EB87A804B07C"
+focused_tests: "exit_code_0"
+full_tests: "exit_code_0"
+formal_workbook_created: false
+test_split_read: false
+annotation_modified: false
+training_started: false
+retraining_status: "NOT_YET_APPROVED"
+deployment_acceptance: "NOT_YET_APPROVED"
 worktree_policy: "CLEAN_OR_PROTECTED_UNTRACKED_ONLY"
 protected_untracked_path: "outputs/metadata/external_assets/"
-training_acceptance: "REQUIRES_RECONCILIATION_FROM_AUTHORITATIVE_PHASE_ARTIFACT"
-updated_at: "2026-07-13T23:06:12+08:00"
-``
+next_authorized_action: "04.5L-3_REVIEW_PACKAGE_PREPARATION_AUDIT"
+updated_at: "2026-07-14T00:13:18+08:00"
+~~~
 
 ## Current checkpoint
 
-- Technical phase: **04.5K**
-- Repository checkpoint before governance migration: `16e08121da22bf59989f1b2de5882274d30a2b4a`
-- Commit subject: **fix: restore canonical phase 04.5K notebook**
-- Governance migration Gate: **GOV-C-01 — PASS when this document is committed and remote-verified**
-- Target classification: **PROJECT_GOVERNANCE_SOURCE_OF_TRUTH_ESTABLISHED**
-- Worktree state before Apply: **PROTECTED_UNTRACKED_ONLY**
-
-## Current authorization
-
-The authorized task is limited to establishing and verifying repository-backed project governance documentation. No canonical dataset, raw dataset, Registry, training artifact, model artifact, or protected external asset may be modified by this Gate.
-
-## Required reconciliation
-
-Detailed training acceptance and the exact technical sub-Gate after the restored Phase 04.5K notebook must be reconciled from the authoritative notebook/output artifacts before the next technical Gate starts.
+- Technical phase: **04.5L — Validation Error Human Review**
+- Latest completed technical Gate: **04.5L-2C Implementation Closure**
+- Outcome: **PASS**
+- Classification: **VALIDATION_ERROR_HUMAN_REVIEW_IMPLEMENTATION_VERIFIED**
+- Repository base checkpoint: 25e104bcf997699cd3cf573b813059612616ca2e
+- Formal review Workbook created: **NO**
+- Test split read: **NO**
+- Training started: **NO**
+- Next authorized action after remote verification: **04.5L-3 Review Package Preparation Audit**
 <!-- FLEETVISION-MANAGED:CURRENT-STATE:END -->
 

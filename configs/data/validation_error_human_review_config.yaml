@@ -1,0 +1,101 @@
+schema_version: "1"
+
+expected_source:
+  zip_filename: 04_5K_20260713_114517_02a146be_ZIP_LOG.zip
+  zip_sha256: 4D54D2BD1DA9D4B4067B9B91001291E8A1FB3691D1F4CB4D4FFCDEED78872F89
+  gate_classification: VALIDATION_ERROR_ANALYSIS_AND_THRESHOLD_CANDIDATES_COMPLETED
+  case_count: 130
+  validation_image_count: 168
+  validation_ground_truth_instances: 325
+  raw_prediction_count: 20566
+  threshold_candidate: 0.20
+  threshold_designation: BALANCED_VALIDATION_THRESHOLD_CANDIDATE
+
+source_files:
+  gate_result: 04_5K_gate_result.json
+  worklist: review/validation_error_review_worklist.csv
+  predictions: records/validation_predictions.csv
+  ground_truth: records/validation_ground_truth.csv
+  artifact_manifest: manifest/phase_04_5k_artifact_manifest.csv
+  checksums: manifest/phase_04_5k_checksums.sha256
+
+output:
+  base_dir: outputs/metadata/phase_04_5l
+
+workbook:
+  filename: validation_error_human_review.xlsx
+  thumbnail_width: 300
+  thumbnail_height: 190
+
+options:
+  review_status:
+    - pending
+    - reviewed
+    - needs_adjudication
+  error_disposition:
+    - confirmed_model_error
+    - annotation_issue
+    - ambiguous_case
+    - expected_threshold_tradeoff
+    - invalid_review_case
+  primary_root_cause:
+    - missed_small_damage
+    - weak_visual_signal
+    - difficult_lighting_or_reflection
+    - occlusion_or_crop
+    - localization_error
+    - duplicate_prediction
+    - background_false_positive
+    - annotation_missing
+    - annotation_inaccurate_bbox
+    - ambiguous_visual_evidence
+    - invalid_or_low_quality_image
+    - other
+  secondary_root_cause:
+    - none
+    - missed_small_damage
+    - weak_visual_signal
+    - difficult_lighting_or_reflection
+    - occlusion_or_crop
+    - localization_error
+    - duplicate_prediction
+    - background_false_positive
+    - annotation_missing
+    - annotation_inaccurate_bbox
+    - ambiguous_visual_evidence
+    - invalid_or_low_quality_image
+    - other
+  annotation_quality:
+    - correct
+    - questionable
+    - defect_suspected
+    - not_applicable
+  annotation_defect_type:
+    - none
+    - missing_bbox
+    - extra_bbox
+    - inaccurate_bbox
+    - wrong_damage_scope
+    - ambiguous_annotation
+    - invalid_image_assignment
+    - other
+  recommended_action:
+    - no_action
+    - add_hard_negative
+    - add_positive_sample
+    - improve_annotation_guideline
+    - create_annotation_correction_proposal
+    - investigate_preprocessing
+    - investigate_image_quality
+    - adjust_model_strategy
+    - threshold_analysis_only
+    - exclude_invalid_image_proposal
+    - other
+  retraining_priority:
+    - not_applicable
+    - low
+    - medium
+    - high
+  correction_proposal_required:
+    - "no"
+    - "yes"

@@ -238,17 +238,43 @@ Gate：
 - Deployment acceptance：`NOT_YET_APPROVED`
 - 下一工作 Gate：完成人工複核 130 個 validation error cases，形成資料改善與是否重新訓練的正式決策
 
+<!-- FLEETVISION-MANAGED:PHASE_04_5L:BEGIN -->
+## Phase 04.5L — Validation Error Human Review
+
+**狀態：ACTIVE**
+
+目標：只使用 Phase 04.5K validation error artifacts，對 130 個 error cases 進行人工複核，確認模型錯誤、annotation／data-quality 問題、資料改善動作與重新訓練優先順序。
+
+目前 checkpoint：
+
+- 04.5L-2 implementation：PASS
+- 04.5L-2C verification／governance sync／commit-push：PASS after remote verification
+- Classification：VALIDATION_ERROR_HUMAN_REVIEW_IMPLEMENTATION_VERIFIED
+- Config／workflow／prepare／export／validate／summarize／tests／guide：已建立
+- Implementation files：8
+- Formal review Workbook：尚未建立
+- Canonical review CSV：尚未建立
+- Test split read：false
+- Annotation modified：false
+- Training／fine-tuning：未執行
+- Retraining status：NOT_YET_APPROVED
+- Deployment acceptance：NOT_YET_APPROVED
+
+下一 Gate：04.5L-3 Review Package Preparation Audit。Audit 必須先確認 authoritative 04.5K evidence、130-case identity、validation-only boundary、asset completeness、output no-overwrite 與 protected-assets boundary，才能授權建立正式人工複核套件。
+<!-- FLEETVISION-MANAGED:PHASE_04_5L:END -->
+
 <!-- FLEETVISION-MANAGED:CURRENT-CHECKPOINT:BEGIN -->
 ## Current repository checkpoint
 
 | Area | Status |
 |---|---|
-| Phase 00–04 | Completed according to prior project governance records; retain existing detailed records |
+| Phase 00–04 | Completed according to prior project governance records |
 | Phase 04.5 | In progress |
-| Current technical checkpoint | 04.5K |
-| Repository checkpoint | `16e08121da22bf59989f1b2de5882274d30a2b4a` |
-| Governance migration | GOV-C-01 — PASS after commit/push remote verification |
-
-This managed block is a high-level index. Detailed Gate evidence belongs in phase logs and artifacts, not in this table.
+| Current technical phase | 04.5L — Validation Error Human Review |
+| Latest completed Gate | 04.5L-2C Implementation Closure — PASS |
+| Classification | VALIDATION_ERROR_HUMAN_REVIEW_IMPLEMENTATION_VERIFIED |
+| Repository base checkpoint | 25e104bcf997699cd3cf573b813059612616ca2e |
+| Formal review Workbook | Not created |
+| Next authorized action | 04.5L-3 Review Package Preparation Audit |
 <!-- FLEETVISION-MANAGED:CURRENT-CHECKPOINT:END -->
 
