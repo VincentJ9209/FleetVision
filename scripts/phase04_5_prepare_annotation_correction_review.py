@@ -15,10 +15,16 @@ def main() -> int:
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--f2-workspace-root", type=Path, required=True)
     parser.add_argument("--timestamp", default=None)
+    parser.add_argument("--source-04-5k-zip", type=Path, default=None)
     args = parser.parse_args()
     try:
         config = load_correction_review_config(args.config, args.project_root)
-        package = prepare_correction_review_package(config, args.f2_workspace_root, timestamp=args.timestamp)
+        package = prepare_correction_review_package(
+            config,
+            args.f2_workspace_root,
+            timestamp=args.timestamp,
+            source_04_5k_zip=args.source_04_5k_zip,
+        )
     except Exception as exc:
         print("Gate classification: PHASE_04_5M_ANNOTATION_CORRECTION_REVIEW_PACKAGE_BLOCKED")
         print(f"Reason: {exc}")

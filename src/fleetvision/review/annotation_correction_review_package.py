@@ -15,6 +15,11 @@ import pandas as pd
 import yaml
 from PIL import Image, ImageDraw
 
+from fleetvision.review.annotation_correction_review_records import (
+    ValidationRecordSourceError,
+    load_verified_validation_records,
+)
+
 
 class CorrectionPackageVerificationError(RuntimeError):
     """Raised when Phase 04.5M source evidence cannot be trusted."""
@@ -421,6 +426,7 @@ def prepare_correction_review_package(
     f2_root: Path,
     *,
     timestamp: str | None = None,
+    source_04_5k_zip: Path | None = None,
 ) -> VerifiedCorrectionReviewPackage:
     evidence = verify_f2_predecessor(config, f2_root)
     token = timestamp or datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
@@ -438,10 +444,16 @@ def prepare_correction_review_package(
     if not source_csv.is_file() or not extracted_root.is_dir():
         raise CorrectionPackageVerificationError("F1 source snapshot 不完整")
     source_frame = pd.read_csv(source_csv, dtype=str, keep_default_na=False, encoding="utf-8-sig").fillna("").astype(str)
-    gt_path = _find_unique(extracted_root, "validation_ground_truth.csv")
-    pred_path = _find_unique(extracted_root, "validation_predictions.csv")
-    gt_frame = pd.read_csv(gt_path, dtype=str, keep_default_na=False, encoding="utf-8-sig").fillna("").astype(str)
-    pred_frame = pd.read_csv(pred_path, dtype=str, keep_default_na=False, encoding="utf-8-sig").fillna("").astype(str)
+    try:
+        validation_records = load_verified_validation_records(
+            extracted_root=extracted_root,
+            project_root=config.project_root,
+            source_04_5k_zip=source_04_5k_zip,
+        )
+    except ValidationRecordSourceError as exc:
+        raise CorrectionPackageVerificationError(str(exc)) from exc
+    gt_frame = validation_records.ground_truth
+    pred_frame = validation_records.predictions
     for required, frame, label in (({"split", "image_id", "x1", "y1", "x2", "y2"}, gt_frame, "GT"), ({"split", "image_id", "confidence", "x1", "y1", "x2", "y2"}, pred_frame, "prediction")):
         missing = sorted(required - set(frame.columns))
         if missing:
@@ -554,6 +566,8 @@ def prepare_correction_review_package(
             "source_f2_gate_sha256": evidence.gate_result_sha256,
             "source_findings_report_sha256": evidence.findings_report_sha256,
             "completed_scope_workbook_sha256": evidence.completed_scope_workbook_sha256,
+            "source_record_origin": validation_records.origin,
+            "source_04_5k_zip_sha256": validation_records.source_zip_sha256,
         }
         contract_path = staging / "source/source_contract.json"
         contract_path.write_text(json.dumps(contract, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")

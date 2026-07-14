@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import zipfile
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -30,6 +31,7 @@ class CorrectionFixture:
     config_path: Path
     workspace_base: Path
     extracted_root: Path
+    source_zip: Path
 
 
 def build_fixture(tmp_path: Path) -> CorrectionFixture:
@@ -62,6 +64,30 @@ def build_fixture(tmp_path: Path) -> CorrectionFixture:
         writer.writeheader()
         writer.writerow({"split": "valid", "image_id": images[0], "confidence": 0.8, "x1": 18, "y1": 28, "x2": 220, "y2": 190})
         writer.writerow({"split": "valid", "image_id": images[1], "confidence": 0.7, "x1": 39, "y1": 49, "x2": 241, "y2": 221})
+
+    source_zip = tmp_path / "04_5K_fixture_ZIP_LOG.zip"
+    with zipfile.ZipFile(source_zip, mode="w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.write(
+            records / "validation_ground_truth.csv",
+            "records/validation_ground_truth.csv",
+        )
+        archive.write(
+            records / "validation_predictions.csv",
+            "records/validation_predictions.csv",
+        )
+
+    review_config = project_root / "configs/data/validation_error_human_review_config.yaml"
+    review_config.parent.mkdir(parents=True)
+    review_config.write_text(
+        f"""expected_source:
+  zip_filename: {source_zip.name}
+  zip_sha256: {sha256(source_zip)}
+source_files:
+  ground_truth: records/validation_ground_truth.csv
+  predictions: records/validation_predictions.csv
+""",
+        encoding="utf-8",
+    )
 
     scope_dir = f2_root / "scope_review"
     scope_dir.mkdir(parents=True)
@@ -128,4 +154,4 @@ exports:
   completed_workbook: annotation_correction_proposals_completed.xlsx
   result_json: correction_review_export_result.json
 ''', encoding="utf-8")
-    return CorrectionFixture(project_root, f2_root, config_path, workspace_base, extracted)
+    return CorrectionFixture(project_root, f2_root, config_path, workspace_base, extracted, source_zip)

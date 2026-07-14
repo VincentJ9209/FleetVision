@@ -1,5 +1,6 @@
 import csv
 import json
+import shutil
 from pathlib import Path
 
 import pytest
@@ -59,3 +60,18 @@ def test_package_is_no_overwrite(tmp_path: Path) -> None:
 def test_bbox_ids_are_stable_and_ordered() -> None:
     assert stable_bbox_id("gt", 1) == "gt_001"
     assert stable_bbox_id("pred", 12) == "pred_012"
+
+def test_package_loads_records_from_verified_04_5k_zip(tmp_path: Path) -> None:
+    fixture = build_fixture(tmp_path)
+    shutil.rmtree(fixture.extracted_root / "records")
+    config = load_correction_review_config(fixture.config_path, fixture.project_root)
+    package = prepare_correction_review_package(
+        config,
+        fixture.f2_root,
+        timestamp="20260714T180004Z",
+        source_04_5k_zip=fixture.source_zip,
+    )
+    assert len(package.cases) == 2
+    contract = json.loads(package.source_contract_path.read_text(encoding="utf-8"))
+    assert contract["source_record_origin"] == "VERIFIED_04_5K_SOURCE_ZIP"
+    assert len(contract["source_04_5k_zip_sha256"]) == 64
