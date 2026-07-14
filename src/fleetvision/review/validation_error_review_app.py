@@ -4,7 +4,7 @@ import argparse
 from dataclasses import dataclass, replace
 from datetime import datetime
 from pathlib import Path
-from typing import Mapping, Sequence
+from typing import Mapping, MutableMapping, Sequence
 from zoneinfo import ZoneInfo
 
 import streamlit as st
@@ -51,6 +51,9 @@ DISPLAY_MODE_LABELS: Mapping[str, str] = {
     "original": "只看原圖",
     "overlay": "只看 Overlay",
 }
+
+PENDING_CASE_SELECTION_KEY = "_pending_case_selection"
+
 
 AUTO_CATEGORY_OUTCOMES: Mapping[str, str] = {
     "false_negative": "model_miss",
@@ -170,6 +173,42 @@ def next_case_id(
         min(len(case_ids) - 1, current_index + direction),
     )
     return case_ids[target_index]
+
+
+def queue_case_selection(
+    state: MutableMapping[str, object],
+    case_id: str,
+) -> None:
+    """Queue a selector change for the next Streamlit rerun."""
+
+    state[PENDING_CASE_SELECTION_KEY] = case_id
+
+
+def apply_pending_case_selection(
+    state: MutableMapping[str, object],
+    selector_key: str,
+    case_ids: Sequence[str],
+    fallback_case_id: str,
+) -> str:
+    """Apply queued navigation before the selector widget is instantiated."""
+
+    if not case_ids:
+        raise ValueError("case_ids cannot be empty")
+
+    fallback = (
+        fallback_case_id
+        if fallback_case_id in case_ids
+        else case_ids[0]
+    )
+    pending = state.pop(PENDING_CASE_SELECTION_KEY, None)
+    if isinstance(pending, str) and pending in case_ids:
+        state[selector_key] = pending
+
+    current = state.get(selector_key)
+    if not isinstance(current, str) or current not in case_ids:
+        state[selector_key] = fallback
+
+    return str(state[selector_key])
 
 
 def backup_due(successful_save_count: int, interval: int) -> bool:
@@ -639,9 +678,15 @@ def _render_review_controls(
                 case.review_case_id,
                 selection,
             )
-            runtime.store.set_last_viewed(
+            target_case_id = (
                 next_id if save_next else case.review_case_id
             )
+            runtime.store.set_last_viewed(target_case_id)
+            if save_next:
+                queue_case_selection(
+                    st.session_state,
+                    target_case_id,
+                )
             backup_text = (
                 f"；已建立備份 {result.backup_path.name}"
                 if result.backup_path is not None
@@ -693,6 +738,12 @@ def render_review_app(runtime: ReviewRuntime) -> None:
         runtime.store.set_last_viewed(last_viewed)
 
     selector_key = f"case_selector:{filter_name}"
+    apply_pending_case_selection(
+        st.session_state,
+        selector_key,
+        case_ids,
+        last_viewed,
+    )
     _seed_widget(
         selector_key,
         last_viewed,
@@ -714,27 +765,31 @@ def render_review_app(runtime: ReviewRuntime) -> None:
         "上一筆",
         use_container_width=True,
     ):
-        runtime.store.set_last_viewed(
-            next_case_id(
-                case_ids,
-                selected_case_id,
-                direction=-1,
-            )
+        target_case_id = next_case_id(
+            case_ids,
+            selected_case_id,
+            direction=-1,
         )
-        st.session_state[selector_key] = runtime.store.get_last_viewed()
+        runtime.store.set_last_viewed(target_case_id)
+        queue_case_selection(
+            st.session_state,
+            target_case_id,
+        )
         st.rerun()
     if next_column.button(
         "下一筆",
         use_container_width=True,
     ):
-        runtime.store.set_last_viewed(
-            next_case_id(
-                case_ids,
-                selected_case_id,
-                direction=1,
-            )
+        target_case_id = next_case_id(
+            case_ids,
+            selected_case_id,
+            direction=1,
         )
-        st.session_state[selector_key] = runtime.store.get_last_viewed()
+        runtime.store.set_last_viewed(target_case_id)
+        queue_case_selection(
+            st.session_state,
+            target_case_id,
+        )
         st.rerun()
 
     case = runtime.case_by_id[selected_case_id]

@@ -7,9 +7,11 @@ from fleetvision.review.validation_error_review_app import (
     annotation_quality_options,
     backup_due,
     build_case_view_model,
+    apply_pending_case_selection,
     load_review_runtime,
     next_case_id,
     priority_options,
+    queue_case_selection,
     save_review_selection,
     selection_for_case,
     suggest_outcome,
@@ -117,6 +119,48 @@ def test_navigation_is_bounded() -> None:
     assert next_case_id(case_ids, "a", direction=1) == "b"
     assert next_case_id(case_ids, "c", direction=1) == "c"
     assert next_case_id(case_ids, "missing", direction=1) == "a"
+
+
+def test_navigation_is_queued_without_mutating_live_selector() -> None:
+    selector_key = "case_selector:all"
+    state: dict[str, object] = {
+        selector_key: "case-a",
+    }
+
+    queue_case_selection(state, "case-b")
+
+    # The already-instantiated widget key is not touched in the same run.
+    assert state[selector_key] == "case-a"
+
+    selected = apply_pending_case_selection(
+        state,
+        selector_key,
+        ["case-a", "case-b", "case-c"],
+        "case-a",
+    )
+
+    assert selected == "case-b"
+    assert state[selector_key] == "case-b"
+    assert "_pending_case_selection" not in state
+
+
+def test_pending_navigation_falls_back_when_filter_removes_target() -> None:
+    selector_key = "case_selector:pending"
+    state: dict[str, object] = {
+        selector_key: "case-reviewed",
+    }
+    queue_case_selection(state, "case-reviewed")
+
+    selected = apply_pending_case_selection(
+        state,
+        selector_key,
+        ["case-next"],
+        "case-next",
+    )
+
+    assert selected == "case-next"
+    assert state[selector_key] == "case-next"
+    assert "_pending_case_selection" not in state
 
 
 def test_backup_schedule_is_deterministic() -> None:
