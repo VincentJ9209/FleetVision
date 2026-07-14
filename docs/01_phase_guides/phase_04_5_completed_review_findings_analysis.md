@@ -164,3 +164,34 @@ DEPLOYMENT_ACCEPTANCE=NOT_YET_APPROVED
 
 Threshold `0.20` 永遠只是 `BALANCED_VALIDATION_THRESHOLD_CANDIDATE`，不是 deployment threshold。
 F2 PASS 只形成 advisory recommendation，不核准 retraining 或 deployment。
+
+<!-- FLEETVISION-MANAGED:PHASE_04_5L_F2_COMPLETION_HANDOFF:BEGIN -->
+## F2 completion record and Phase 04.5M handoff
+
+Phase 04.5L F2 completed successfully:
+
+```text
+CLASSIFICATION=PHASE_04_5L_COMPLETED_REVIEW_VALIDATION_AND_FINDINGS_ANALYSIS_COMPLETED
+PRIMARY_RECOMMENDATION=DATA_CORRECTION_REQUIRED_BEFORE_RETRAINING
+REVIEW_CASES=130
+SCOPE_REVIEWED=130
+PENDING=0
+NEEDS_ADJUDICATION=0
+ANNOTATION_CORRECTION_PROPOSAL_COUNT=2
+COMPLETED_SCOPE_WORKBOOK_SHA256=AC0EE5882E8E6C7A3E9300BF6AD1589EC18C169681AA6720F0C36132A42B3946
+```
+
+The two correction proposals are:
+
+1. `l_687b939a3a89bb8e` — `wrong_damage_scope`
+2. `l_e5875a8f94620ff1` — `extra_bbox`
+
+The F2 recommendation is advisory. It does not authorize annotation changes or
+retraining. The next controlled work is Phase 04.5M design review and a detailed
+implementation plan for a dedicated two-case Streamlit/SQLite correction-review
+workflow.
+
+Controlling design:
+
+`docs/superpowers/specs/2026-07-14-phase04-5m-data-correction-proposal-review-design.md`
+<!-- FLEETVISION-MANAGED:PHASE_04_5L_F2_COMPLETION_HANDOFF:END -->

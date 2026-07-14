@@ -125,3 +125,54 @@ Read:
 
 Created at：`2026-07-14T05:34:03.9170198Z`
 <!-- FLEETVISION-MANAGED:CURRENT-HANDOFF:END -->
+
+<!-- FLEETVISION-MANAGED:PHASE_04_5L_F2_04_5M_DESIGN_HANDOFF:BEGIN -->
+## Current repository-backed handoff
+
+### Completed predecessor Gate
+
+```text
+PHASE=04.5L
+OUTCOME=PASS
+CLASSIFICATION=PHASE_04_5L_COMPLETED_REVIEW_VALIDATION_AND_FINDINGS_ANALYSIS_COMPLETED
+REVIEW_CASES=130
+SCOPE_REVIEWED=130
+PENDING=0
+NEEDS_ADJUDICATION=0
+PRIMARY_RECOMMENDATION=DATA_CORRECTION_REQUIRED_BEFORE_RETRAINING
+COMPLETED_SCOPE_WORKBOOK_SHA256=AC0EE5882E8E6C7A3E9300BF6AD1589EC18C169681AA6720F0C36132A42B3946
+CORRECTION_PROPOSALS=2
+```
+
+Correction cases:
+
+- `l_687b939a3a89bb8e` — `wrong_damage_scope`
+- `l_e5875a8f94620ff1` — `extra_bbox`
+
+### Approved Phase 04.5M design
+
+Approach A is approved: a dedicated two-case, local Traditional Chinese
+Streamlit review application using SQLite live state, append-only JSONL audit
+events, automatic backups, and a no-overwrite completed export.
+
+Controlling design:
+
+`docs/superpowers/specs/2026-07-14-phase04-5m-data-correction-proposal-review-design.md`
+
+### Next authorized action
+
+```text
+PHASE_04_5M_DETAILED_IMPLEMENTATION_PLAN
+```
+
+Do not implement Phase 04.5M until the written design is reviewed and the
+implementation plan is separately approved.
+
+### Prohibited actions
+
+- Do not read the test split.
+- Do not rerun inference.
+- Do not modify annotation, GT, canonical COCO, dataset, Registry, or fixed splits.
+- Do not begin retraining or fine-tuning.
+- Do not reinterpret threshold `0.20` as a deployment threshold.
+<!-- FLEETVISION-MANAGED:PHASE_04_5L_F2_04_5M_DESIGN_HANDOFF:END -->

@@ -441,3 +441,70 @@ updated_at: "2026-07-14T05:50:55.4623273Z"
 - Next authorized action：
   `PHASE_04_5L_COMPLETED_REVIEW_VALIDATION_AND_FINDINGS_ANALYSIS`
 <!-- FLEETVISION-MANAGED:CURRENT-STATE:END -->
+
+<!-- FLEETVISION-MANAGED:PHASE_04_5L_F2_04_5M_DESIGN:BEGIN -->
+## Phase 04.5L F2 completion and Phase 04.5M design handoff（2026-07-14）
+
+This addendum is the controlling current state and supersedes earlier lines
+that still identify Completed Workbook Export or F2 as the next Gate.
+
+### Completed Gate
+
+- Technical Phase: **Phase 04.5L — Validation Error Human Review**
+- Gate outcome: **PASS**
+- Classification:
+  `PHASE_04_5L_COMPLETED_REVIEW_VALIDATION_AND_FINDINGS_ANALYSIS_COMPLETED`
+- Review cases: **130**
+- Scope reviewed: **130**
+- Pending: **0**
+- Needs adjudication: **0**
+- Primary advisory recommendation:
+  `DATA_CORRECTION_REQUIRED_BEFORE_RETRAINING`
+- Completed scope Workbook SHA256:
+  `AC0EE5882E8E6C7A3E9300BF6AD1589EC18C169681AA6720F0C36132A42B3946`
+- Annotation correction proposals: **2**
+- Annotation defects suspected: **2**
+- In-scope confirmed model error share: **0.935064935065**
+- In-scope medium/high priority share: **0.935064935065**
+- Non-scope share: **0.407692307692**
+- Maximum total variation distance: **0.155144855145**
+
+### Scope distribution
+
+- `IN_SCOPE_LIGHT_MODERATE`: **77**
+- `BOUNDARY_HEAVY_DAMAGE`: **28**
+- `OUT_OF_SCOPE_CATASTROPHIC`: **25**
+
+### Approved next design
+
+- Next technical Phase: **Phase 04.5M — Data Correction Proposal Review**
+- Approved approach: **A — dedicated two-case correction-review application**
+- Human interface: local Traditional Chinese Streamlit
+- Live state: SQLite
+- Audit: append-only JSONL
+- Backup: required
+- Completed export: no-overwrite
+- Direct Excel review: prohibited
+
+### Current authorization
+
+The next authorized work is a detailed Phase 04.5M implementation plan based on:
+
+`docs/superpowers/specs/2026-07-14-phase04-5m-data-correction-proposal-review-design.md`
+
+Implementation, annotation promotion, dataset mutation, retraining, and
+deployment remain unauthorized.
+
+```text
+TEST_SPLIT_READ=NO
+MODEL_INFERENCE_EXECUTED=NO
+ANNOTATION_MODIFIED=NO
+DATASET_MODIFIED=NO
+REGISTRY_MODIFIED=NO
+FIXED_SPLITS_MODIFIED=NO
+TRAINING_STARTED=NO
+RETRAINING_STATUS=NOT_YET_APPROVED
+DEPLOYMENT_ACCEPTANCE=NOT_YET_APPROVED
+NEXT_AUTHORIZED_ACTION=PHASE_04_5M_DETAILED_IMPLEMENTATION_PLAN
+```
+<!-- FLEETVISION-MANAGED:PHASE_04_5L_F2_04_5M_DESIGN:END -->
