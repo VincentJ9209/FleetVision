@@ -109,9 +109,77 @@ def _scope_frames(count: int = 130) -> tuple[pd.DataFrame, pd.DataFrame]:
     return reviewed, source
 
 
+class _FakeCell:
+    def __init__(self, value: str) -> None:
+        self.value = value
+
+
+class _FakeScopeSheet:
+    def iter_rows(self, *, min_row: int, max_row: int | None = None):
+        if min_row == 1:
+            headers = (
+                "Original Preview",
+                "Overlay Preview",
+                *findings.SCOPE_EXPORT_COLUMNS,
+            )
+            return iter((tuple(_FakeCell(value) for value in headers),))
+        return iter(())
+
+
+class _FakeScopeWorkbook:
+    def __init__(self, *, valid_contract: bool = True) -> None:
+        self.sheetnames = (
+            findings.SCOPE_WORKBOOK_SHEETS
+            if valid_contract
+            else ("Unexpected",)
+        )
+        self.closed = False
+        self.sheet = _FakeScopeSheet()
+
+    def __getitem__(self, name: str):
+        assert name == "Scope_Review"
+        return self.sheet
+
+    def close(self) -> None:
+        self.closed = True
+
+
+def test_read_scope_workbook_closes_read_only_handle(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = tmp_path / "scope.xlsx"
+    path.write_bytes(b"fixture")
+    workbook = _FakeScopeWorkbook()
+    monkeypatch.setattr(findings, "load_workbook", lambda *_args, **_kwargs: workbook)
+
+    frame = findings.read_scope_workbook(path)
+
+    assert frame.empty
+    assert workbook.closed is True
+
+
+def test_read_scope_workbook_closes_handle_on_contract_error(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = tmp_path / "scope.xlsx"
+    path.write_bytes(b"fixture")
+    workbook = _FakeScopeWorkbook(valid_contract=False)
+    monkeypatch.setattr(findings, "load_workbook", lambda *_args, **_kwargs: workbook)
+
+    with pytest.raises(findings.FindingsAnalysisError, match="sheet contract"):
+        findings.read_scope_workbook(path)
+
+    assert workbook.closed is True
+
+
 def test_load_findings_config_has_exact_scope_contract(tmp_path: Path) -> None:
     config = _materialized_config(tmp_path)
     assert config.expected_case_count == 130
+    assert config.scope_completed_workbook_filename == (
+        "severity_scope_review_completed.xlsx"
+    )
     assert config.scope_options["scope_group"] == (
         "IN_SCOPE_LIGHT_MODERATE",
         "BOUNDARY_HEAVY_DAMAGE",
@@ -547,7 +615,12 @@ def test_run_f1_and_f2_orchestration_with_controlled_dependencies(
     assert (paths.root / "evidence/f1_gate_result.json").is_file()
     assert (paths.root / "evidence/workspace_before.csv").is_file()
 
-    workbook = load_workbook(paths.scope_workbook)
+    template_hash = findings.sha256_file(paths.scope_workbook)
+    paths.scope_completed_workbook.parent.mkdir(parents=True, exist_ok=True)
+    import shutil
+
+    shutil.copy2(paths.scope_workbook, paths.scope_completed_workbook)
+    workbook = load_workbook(paths.scope_completed_workbook)
     sheet = workbook["Scope_Review"]
     header_map = {cell.value: cell.column for cell in sheet[1]}
     for row_index in range(2, sheet.max_row + 1):
@@ -563,7 +636,34 @@ def test_run_f1_and_f2_orchestration_with_controlled_dependencies(
         }
         for column, value in values.items():
             sheet.cell(row=row_index, column=header_map[column], value=value)
-    workbook.save(paths.scope_workbook)
+    workbook.save(paths.scope_completed_workbook)
+    export_evidence = {
+        "outcome": "PASS",
+        "classification": "LOCAL_SCOPE_REVIEW_APP_COMPLETED_WORKBOOK_EXPORTED",
+        "completed_scope_workbook": str(paths.scope_completed_workbook),
+        "completed_scope_workbook_sha256": findings.sha256_file(
+            paths.scope_completed_workbook
+        ),
+        "review_cases": 2,
+        "reviewed": 2,
+        "pending": 0,
+        "needs_adjudication": 0,
+        "source_scope_csv_sha256": findings.sha256_file(paths.scope_source_csv),
+        "source_scope_template_sha256": findings.sha256_file(paths.scope_workbook),
+        "source_scope_asset_manifest_sha256": findings.sha256_file(
+            paths.scope_asset_manifest
+        ),
+        "test_split_read": False,
+        "model_inference_executed": False,
+        "annotation_modified": False,
+        "training_started": False,
+        "retraining_status": "NOT_YET_APPROVED",
+        "deployment_acceptance": "NOT_YET_APPROVED",
+    }
+    (paths.scope_completed_workbook.parent / "scope_review_export_result.json").write_text(
+        json.dumps(export_evidence), encoding="utf-8"
+    )
+    assert findings.sha256_file(paths.scope_workbook) == template_hash
 
     recommendation = findings.run_f2(
         config,
@@ -579,7 +679,9 @@ def test_run_f1_and_f2_orchestration_with_controlled_dependencies(
     assert (paths.root / "evidence/SHA256SUMS.csv").is_file()
 
 
-def test_f1_checksum_manifest_detects_immutable_output_tamper(tmp_path: Path) -> None:
+def test_f1_checksum_manifest_treats_scope_template_as_immutable(
+    tmp_path: Path,
+) -> None:
     root = tmp_path / "workspace"
     (root / "evidence").mkdir(parents=True)
     (root / "scope_review").mkdir(parents=True)
@@ -587,7 +689,7 @@ def test_f1_checksum_manifest_detects_immutable_output_tamper(tmp_path: Path) ->
     immutable.parent.mkdir(parents=True)
     immutable.write_text("a,b\n1,2\n", encoding="utf-8")
     scope_workbook = root / "scope_review/severity_scope_review.xlsx"
-    scope_workbook.write_bytes(b"human editable")
+    scope_workbook.write_bytes(b"readonly template")
     pd.DataFrame(
         [
             {
@@ -606,18 +708,69 @@ def test_f1_checksum_manifest_detects_immutable_output_tamper(tmp_path: Path) ->
         index=False,
         encoding="utf-8-sig",
     )
-    findings._verify_f1_checksum_manifest(
-        root, "scope_review/severity_scope_review.xlsx"
-    )
-    scope_workbook.write_bytes(b"expected human change")
-    findings._verify_f1_checksum_manifest(
-        root, "scope_review/severity_scope_review.xlsx"
-    )
-    immutable.write_text("tampered", encoding="utf-8")
+    findings._verify_f1_checksum_manifest(root)
+    scope_workbook.write_bytes(b"direct Excel edit is forbidden")
     with pytest.raises(findings.FindingsAnalysisError, match="checksummed output"):
-        findings._verify_f1_checksum_manifest(
-            root, "scope_review/severity_scope_review.xlsx"
-        )
+        findings._verify_f1_checksum_manifest(root)
+
+
+def test_completed_scope_export_verifier_rejects_hash_mismatch(
+    tmp_path: Path,
+) -> None:
+    from types import SimpleNamespace
+
+    root = tmp_path / "workspace"
+    scope_dir = root / "scope_review"
+    export_dir = root / "scope_review_app/exports"
+    scope_dir.mkdir(parents=True)
+    export_dir.mkdir(parents=True)
+    source = scope_dir / "severity_scope_review_source.csv"
+    template = scope_dir / "severity_scope_review.xlsx"
+    asset_manifest = scope_dir / "scope_asset_manifest.csv"
+    completed = export_dir / "severity_scope_review_completed.xlsx"
+    for path, payload in (
+        (source, b"source"),
+        (template, b"template"),
+        (asset_manifest, b"assets"),
+        (completed, b"completed"),
+    ):
+        path.write_bytes(payload)
+    paths = SimpleNamespace(
+        root=root,
+        scope_source_csv=source,
+        scope_workbook=template,
+        scope_asset_manifest=asset_manifest,
+        scope_completed_workbook=completed,
+    )
+    config = SimpleNamespace(
+        expected_case_count=130,
+        retraining_status="NOT_YET_APPROVED",
+        deployment_acceptance="NOT_YET_APPROVED",
+    )
+    evidence = {
+        "outcome": "PASS",
+        "classification": "LOCAL_SCOPE_REVIEW_APP_COMPLETED_WORKBOOK_EXPORTED",
+        "completed_scope_workbook": str(completed),
+        "completed_scope_workbook_sha256": "0" * 64,
+        "review_cases": 130,
+        "reviewed": 130,
+        "pending": 0,
+        "needs_adjudication": 0,
+        "source_scope_csv_sha256": findings.sha256_file(source),
+        "source_scope_template_sha256": findings.sha256_file(template),
+        "source_scope_asset_manifest_sha256": findings.sha256_file(asset_manifest),
+        "test_split_read": False,
+        "model_inference_executed": False,
+        "annotation_modified": False,
+        "training_started": False,
+        "retraining_status": "NOT_YET_APPROVED",
+        "deployment_acceptance": "NOT_YET_APPROVED",
+    }
+    (export_dir / "scope_review_export_result.json").write_text(
+        json.dumps(evidence), encoding="utf-8"
+    )
+    with pytest.raises(findings.FindingsAnalysisError, match="SHA256 mismatch"):
+        findings.verify_completed_scope_review_export(config, paths)
 
 
 def test_ranked_action_recommendations_are_priority_weighted() -> None:

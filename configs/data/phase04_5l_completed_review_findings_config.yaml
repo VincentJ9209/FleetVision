@@ -28,6 +28,7 @@ workspace:
   prefix: phase04_5l_completed_review_findings
   canonical_filename: validation_error_human_review.csv
   scope_workbook_filename: severity_scope_review.xlsx
+  scope_completed_workbook_filename: severity_scope_review_completed.xlsx
   scope_source_filename: severity_scope_review_source.csv
   scope_asset_manifest_filename: scope_asset_manifest.csv
   scope_export_filename: severity_scope_classification.csv

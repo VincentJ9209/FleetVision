@@ -1,0 +1,14 @@
+schema_version: "1"
+
+source:
+  findings_config_path: configs/data/phase04_5l_completed_review_findings_config.yaml
+  analysis_root: G:/Project/FleetVision_Review_Packages/Phase04_5L/phase04_5l_20260714_v1_review_workspace/analysis
+  expected_case_count: 130
+
+workspace:
+  reviewer: Vincent
+  timezone: Asia/Taipei
+  backup_every_successful_saves: 10
+  backup_retention: 20
+  app_directory_name: scope_review_app
+  completed_workbook_name: severity_scope_review_completed.xlsx

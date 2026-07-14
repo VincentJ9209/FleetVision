@@ -10,12 +10,13 @@ This file is the mandatory entry point for every new FleetVision conversation or
 1. `/AGENTS.md`
 2. `/PROJECT_CONTEXT_BRIEF.md`
 3. `docs/00_project_management/WORKFLOW_GOVERNANCE.md`
-4. `docs/00_project_management/PROTECTED_ASSETS.md`
-5. `docs/00_project_management/PROJECT_STATUS.md`
-6. `docs/00_project_management/HANDOFF_CURRENT.md`
-7. `docs/00_project_management/MASTER_PHASE_MAP.md`
-8. The current phase log referenced by `PROJECT_STATUS.md`
-9. `docs/00_project_management/DECISION_LOG.md` when a prior architectural or governance decision is relevant
+4. `docs/00_project_management/HUMAN_REVIEW_INTERFACE_STANDARD.md`
+5. `docs/00_project_management/PROTECTED_ASSETS.md`
+6. `docs/00_project_management/PROJECT_STATUS.md`
+7. `docs/00_project_management/HANDOFF_CURRENT.md`
+8. `docs/00_project_management/MASTER_PHASE_MAP.md`
+9. The current phase log referenced by `PROJECT_STATUS.md`
+10. `docs/00_project_management/DECISION_LOG.md` when a prior architectural or governance decision is relevant
 
 ## Conflict precedence
 

@@ -10,6 +10,7 @@ Before planning, inspecting, editing, testing, committing, or pushing, read the 
 - `docs/00_project_management/MASTER_PHASE_MAP.md`
 - `docs/00_project_management/PROJECT_STATUS.md`
 - `docs/00_project_management/WORKFLOW_GOVERNANCE.md`
+- `docs/00_project_management/HUMAN_REVIEW_INTERFACE_STANDARD.md`
 - `docs/00_project_management/DECISION_LOG.md`
 
 Use `PROJECT_STATUS.md` to determine the current Phase and active gate. Do not rely on chat history as the primary project record.
@@ -120,6 +121,58 @@ Rules:
 - Use SHA256 comparisons for high-risk file promotion.
 - External data must remain separated from the frozen FleetVision internal holdout.
 - Never mix external data into internal evaluation data.
+
+### Human-review interface standard
+
+All current and future multi-case human-review workflows must follow
+`docs/00_project_management/HUMAN_REVIEW_INTERFACE_STANDARD.md` unless an
+explicit Gate approves a controlled offline-collaboration exception.
+
+Fixed defaults:
+
+```text
+HUMAN_REVIEW_DEFAULT_INTERFACE=LOCAL_STREAMLIT_TRADITIONAL_CHINESE
+LIVE_REVIEW_STATE=SQLITE
+EXCEL_ROLE=EXPORT_EXCHANGE_ARCHIVE_ONLY
+DIRECT_EXCEL_REVIEW_DEFAULT=PROHIBITED
+```
+
+Rules:
+
+- Use a local Traditional Chinese Streamlit interface for the operator-facing workflow.
+- Store active progress transactionally in SQLite with resumable state, audit events, and scheduled backups.
+- Auto-populate reviewer identity and timezone-aware review timestamps.
+- Treat Excel as a completed export, exchange, archive, or explicitly approved no-Python collaboration format—not the default live state.
+- Before designing a new review tool, inspect and reuse the existing Streamlit/SQLite review patterns where safe.
+- A plan that defaults to direct Excel editing without an approved exception must be blocked at the Start-of-Task Gate.
+
+<!-- FLEETVISION-MANAGED:ONE-SHOT-DELIVERY:BEGIN -->
+### One-shot artifact delivery gate
+
+User-visible installers, correction ZIPs, and operational scripts must be
+release candidates rather than debug builds.
+
+Before delivery:
+
+- rehearse the exact installer against a repository at the target commit;
+- use Windows-compatible checkout behavior, including CRLF, UTF-8 BOM, EOF,
+  file-handle, and PowerShell 5.1 constraints;
+- run cheap structural checks before focused, regression, or full tests;
+- verify exact changed-path allowlists, protected assets, transaction rollback,
+  and idempotency;
+- do not use Vincent's production workspace as the first integration test;
+- do not expose successive internal versions unless the target environment
+  reveals evidence that could not reasonably be reproduced during rehearsal.
+
+Required declaration:
+
+```text
+USER_VISIBLE_ARTIFACT=RELEASE_CANDIDATE_ONLY
+TARGET_ENVIRONMENT_REHEARSAL=REQUIRED
+CHEAP_CHECKS_BEFORE_FULL_SUITE=REQUIRED
+PRODUCTION_WORKSPACE_AS_FIRST_TEST=PROHIBITED
+```
+<!-- FLEETVISION-MANAGED:ONE-SHOT-DELIVERY:END -->
 
 ## 7. Implementation Discipline
 

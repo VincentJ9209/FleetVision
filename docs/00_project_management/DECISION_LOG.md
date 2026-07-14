@@ -172,3 +172,25 @@
 - Local HEAD, `origin/main`, and remote HEAD must agree before controlled repository writes.
 <!-- FLEETVISION-MANAGED:DEC-GOV-2026-0713-01:END -->
 
+## ADR-017 — Human-review workflows default to Traditional Chinese Streamlit and SQLite
+
+- 日期：2026-07-14
+- 狀態：Active
+- 決策：FleetVision 所有多筆人工審核預設使用本機繁體中文 Streamlit 介面；active progress 使用 SQLite transaction 保存，並具備 resume、audit events 與定期 backup。
+- Excel 邊界：Excel 僅作 completed export、交換、封存或明確 Gate 核准的無 Python 協作 package；直接編輯 Excel 不得作為單人本機人工審核的預設 live state。
+- 自動欄位：reviewer 與 timezone-aware reviewed timestamp 由系統寫入。
+- 完成邊界：正式 completed Workbook／CSV 必須由 no-overwrite exporter 產生，並通過 identity、row order、immutable source fields、schema、SHA256 與 downstream validator。
+- 復用要求：新人工審核工具在 design 階段必須先檢查並安全復用既有 Streamlit／SQLite review framework。
+- 受控例外：協作者無法執行 Python／Streamlit 時，需由獨立 Gate 核准 Excel collaboration package，且保留 source hash、backup、欄位鎖定、assignment、identity-key merge、原始 reviewer 檔、no-overwrite merger 與 post-merge validator。
+- 正式規範：`docs/00_project_management/HUMAN_REVIEW_INTERFACE_STANDARD.md`。
+- 安全邊界：本決策不授權讀取 test、重新 inference、修改 annotation／GT／dataset／Registry／fixed splits、training、retraining 或 deployment。
+
+## ADR-018 — User-visible artifacts require target-environment rehearsal
+
+- 日期：2026-07-14
+- 狀態：Active
+- 決策：提供給 Vincent 的 installer、correction ZIP 與操作腳本必須是通過 target-environment rehearsal 的 release candidate，不得把正式 FleetVision workspace 當作第一個 integration-test environment。
+- Windows 契約：rehearsal 必須涵蓋 PowerShell 5.1、Git `core.autocrlf`、CRLF、UTF-8 BOM、EOF、openpyxl／Windows file-handle semantics。
+- 驗證順序：先執行 exact-path allowlist、`git diff --check`、parser／compile 與其他低成本檢查；通過後才執行 focused、regression 與必要的 full suite。
+- 安裝器契約：必須具備 no-overwrite、transaction rollback、idempotency、protected-asset preservation 與 consolidated PASS／BLOCKED result。
+- 交付邊界：內部 debug versions 不對使用者逐版交付；同一 Gate 原則上只交付一個正式 release candidate。

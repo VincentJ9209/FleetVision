@@ -72,7 +72,15 @@ F1 必須產出：
 
 ## 人工 scope review hard stop
 
-F1 PASS 後停止自動流程。Vincent 在 `severity_scope_review.xlsx` 完成 130 筆 scope 欄位；F2 不得在以下條件達成前執行：
+F1 PASS 後停止自動流程。`severity_scope_review.xlsx` 是唯讀 template／稽核 artifact，**不得直接作為 live 人工審核檔**。正式人工審核固定使用本機繁體中文 Streamlit app、SQLite state、JSONL audit events 與定期 backup。
+
+啟動：
+
+```powershell
+.\scripts\phase04_5_launch_severity_scope_review_app.ps1
+```
+
+完成條件：
 
 ```text
 rows = 130
@@ -81,36 +89,42 @@ pending = 0
 needs adjudication = 0
 ```
 
-### Scope 欄位
+完成後匯出：
 
-- `scope_review_status`：`pending`／`reviewed`／`needs_adjudication`
-- `scope_group`：`IN_SCOPE_LIGHT_MODERATE`／`BOUNDARY_HEAVY_DAMAGE`／`OUT_OF_SCOPE_CATASTROPHIC`
-- `scope_reason`
-- `operability`
-- `scope_confidence`
-- `scope_reviewer_notes`
-- `scope_reviewer`
-- `scope_reviewed_at_utc`
+```powershell
+.\scripts\phase04_5_export_severity_scope_review_app_workbook.ps1
+```
+
+F2 只接受：
+
+```text
+<F1_WORKSPACE_ROOT>\scope_review_app\exports\
+severity_scope_review_completed.xlsx
+```
+
+以及同目錄的 `scope_review_export_result.json`。詳細操作與 controlled values 見 `docs/01_phase_guides/phase_04_5_severity_scope_review_app.md`。
 
 ### Conditional rules
 
-- reviewed row 必須有 reviewer 與 timezone-aware timestamp。
+- reviewer 與 timezone-aware timestamp 由 Streamlit app 自動填入。
 - low confidence、`other`、`insufficient_visual_evidence` 必須填 notes。
 - catastrophic group 必須使用 approved catastrophic reason。
 - catastrophic + likely drivable 必須填 notes。
 - `IN_SCOPE_LIGHT_MODERATE` 不可使用 `catastrophic_collision` 或 `vehicle_integrity_compromised`。
 - `insufficient_visual_evidence` 必須是 low confidence 且有 notes。
-- 不可插入／刪除／重排 row，不可修改任何 canonical/source field。
+- F1 source／template／asset manifest 不可修改；completed output 預設 no-overwrite。
 
 ## F2 執行
 
-只在 scope review 130／130 完成後：
+只在 Streamlit scope review 130／130 完成、completed scope Workbook 已由受控 exporter 產生後：
 
 ```powershell
 .\scripts\phase04_5_run_completed_review_findings_f2.ps1 `
   -ExpectedHead <IMPLEMENTATION_CLOSURE_SHA> `
   -WorkspaceRoot '<F1_WORKSPACE_ROOT>'
 ```
+
+F2 會驗證 completed scope Workbook、export evidence、F1 immutable checksum 與 source hash contract；直接修改 F1 template Workbook 會 fail closed。
 
 預期 PASS classification：
 

@@ -109,6 +109,7 @@ class FindingsConfig:
     workspace_prefix: str
     canonical_filename: str
     scope_workbook_filename: str
+    scope_completed_workbook_filename: str
     scope_source_filename: str
     scope_asset_manifest_filename: str
     scope_export_filename: str
@@ -138,6 +139,7 @@ class WorkspacePaths:
     validation_report: Path
     validation_errors: Path
     scope_workbook: Path
+    scope_completed_workbook: Path
     scope_source_csv: Path
     scope_asset_manifest: Path
     scope_export_csv: Path
@@ -346,6 +348,9 @@ def load_findings_config(config_path: Path, project_root: Path) -> FindingsConfi
         workspace_prefix=_normalize(workspace.get("prefix")),
         canonical_filename=_normalize(workspace.get("canonical_filename")),
         scope_workbook_filename=_normalize(workspace.get("scope_workbook_filename")),
+        scope_completed_workbook_filename=_normalize(
+            workspace.get("scope_completed_workbook_filename")
+        ),
         scope_source_filename=_normalize(workspace.get("scope_source_filename")),
         scope_asset_manifest_filename=_normalize(
             workspace.get("scope_asset_manifest_filename")
@@ -366,6 +371,7 @@ def load_findings_config(config_path: Path, project_root: Path) -> FindingsConfi
         config.workspace_prefix,
         config.canonical_filename,
         config.scope_workbook_filename,
+        config.scope_completed_workbook_filename,
         config.scope_source_filename,
         config.scope_asset_manifest_filename,
         config.scope_export_filename,
@@ -543,6 +549,9 @@ def create_workspace(
         validation_report=root / "reports/validation_report.json",
         validation_errors=root / "reports/validation_errors.csv",
         scope_workbook=root / "scope_review" / config.scope_workbook_filename,
+        scope_completed_workbook=root
+        / "scope_review_app/exports"
+        / config.scope_completed_workbook_filename,
         scope_source_csv=root / "scope_review" / config.scope_source_filename,
         scope_asset_manifest=root
         / "scope_review"
@@ -908,30 +917,44 @@ def build_scope_review_package(
 
 
 def read_scope_workbook(path: Path) -> pd.DataFrame:
-    """Read only the source and scope columns from the controlled Workbook."""
+    """Read source and scope columns, always releasing the Workbook handle."""
 
     if not path.is_file():
         raise FindingsAnalysisError(f"scope Workbook not found: {path}")
     workbook = load_workbook(path, data_only=False, read_only=True)
-    if tuple(workbook.sheetnames) != SCOPE_WORKBOOK_SHEETS:
-        raise FindingsAnalysisError(
-            f"scope Workbook sheet contract mismatch: {workbook.sheetnames}"
+    try:
+        if tuple(workbook.sheetnames) != SCOPE_WORKBOOK_SHEETS:
+            raise FindingsAnalysisError(
+                f"scope Workbook sheet contract mismatch: {workbook.sheetnames}"
+            )
+        sheet = workbook["Scope_Review"]
+        headers = [
+            _normalize(cell.value)
+            for cell in next(sheet.iter_rows(min_row=1, max_row=1))
+        ]
+        if headers[:2] != ["Original Preview", "Overlay Preview"]:
+            raise FindingsAnalysisError(
+                "scope Workbook preview-column contract mismatch"
+            )
+        if headers[2:] != list(SCOPE_EXPORT_COLUMNS):
+            raise FindingsAnalysisError(
+                "scope Workbook column contract mismatch"
+            )
+        rows: list[dict[str, str]] = []
+        for cells in sheet.iter_rows(min_row=2):
+            row = {
+                column: _normalize(cells[offset + 2].value)
+                for offset, column in enumerate(SCOPE_EXPORT_COLUMNS)
+            }
+            if any(row.values()):
+                rows.append(row)
+        return (
+            pd.DataFrame(rows, columns=SCOPE_EXPORT_COLUMNS)
+            .fillna("")
+            .astype(str)
         )
-    sheet = workbook["Scope_Review"]
-    headers = [_normalize(cell.value) for cell in next(sheet.iter_rows(min_row=1, max_row=1))]
-    if headers[:2] != ["Original Preview", "Overlay Preview"]:
-        raise FindingsAnalysisError("scope Workbook preview-column contract mismatch")
-    if headers[2:] != list(SCOPE_EXPORT_COLUMNS):
-        raise FindingsAnalysisError("scope Workbook column contract mismatch")
-    rows: list[dict[str, str]] = []
-    for cells in sheet.iter_rows(min_row=2):
-        row = {
-            column: _normalize(cells[offset + 2].value)
-            for offset, column in enumerate(SCOPE_EXPORT_COLUMNS)
-        }
-        if any(row.values()):
-            rows.append(row)
-    return pd.DataFrame(rows, columns=SCOPE_EXPORT_COLUMNS).fillna("").astype(str)
+    finally:
+        workbook.close()
 
 
 def _parse_timestamp(value: str) -> bool:
@@ -1655,6 +1678,9 @@ def run_f1(
             "scope_source_csv_sha256": sha256_file(paths.scope_source_csv),
             "scope_workbook_sha256": sha256_file(paths.scope_workbook),
             "scope_asset_manifest_sha256": sha256_file(paths.scope_asset_manifest),
+            "human_review_interface": "LOCAL_STREAMLIT_TRADITIONAL_CHINESE",
+            "live_review_state": "SQLITE",
+            "scope_workbook_role": "READ_ONLY_EXPORT_TEMPLATE",
             "test_split_read": False,
             "model_inference_executed": False,
             "annotation_modified": False,
@@ -1686,11 +1712,8 @@ def run_f1(
         raise
 
 
-def _verify_f1_checksum_manifest(
-    root: Path,
-    scope_workbook_relative: str,
-) -> None:
-    """Verify immutable F1 outputs while allowing the human-edited scope Workbook."""
+def _verify_f1_checksum_manifest(root: Path) -> None:
+    """Verify every immutable F1 output before reading app-completed results."""
 
     manifest_path = root / "evidence/F1_SHA256SUMS.csv"
     if not manifest_path.is_file():
@@ -1707,8 +1730,6 @@ def _verify_f1_checksum_manifest(
         raise FindingsAnalysisError("F1 checksum manifest contains blank or duplicate paths")
     for row in manifest.to_dict(orient="records"):
         relative = row["relative_path"].replace("\\", "/")
-        if relative == scope_workbook_relative:
-            continue
         pure = PurePosixPath(relative)
         if pure.is_absolute() or ".." in pure.parts:
             raise FindingsAnalysisError(f"unsafe F1 checksum path: {relative}")
@@ -1738,6 +1759,9 @@ def _verify_f1_workspace(config: FindingsConfig, root: Path) -> WorkspacePaths:
         validation_report=root / "reports/validation_report.json",
         validation_errors=root / "reports/validation_errors.csv",
         scope_workbook=root / "scope_review" / config.scope_workbook_filename,
+        scope_completed_workbook=root
+        / "scope_review_app/exports"
+        / config.scope_completed_workbook_filename,
         scope_source_csv=root / "scope_review" / config.scope_source_filename,
         scope_asset_manifest=root
         / "scope_review"
@@ -1773,11 +1797,74 @@ def _verify_f1_workspace(config: FindingsConfig, root: Path) -> WorkspacePaths:
         raise FindingsAnalysisError("F1 scope source CSV changed")
     if gate.get("scope_asset_manifest_sha256") != sha256_file(paths.scope_asset_manifest):
         raise FindingsAnalysisError("F1 scope asset manifest changed")
-    _verify_f1_checksum_manifest(
-        root,
-        paths.scope_workbook.relative_to(root).as_posix(),
-    )
+    _verify_f1_checksum_manifest(root)
     return paths
+
+
+
+def verify_completed_scope_review_export(
+    config: FindingsConfig,
+    paths: WorkspacePaths,
+) -> Path:
+    """Verify the app-completed scope Workbook and its export evidence."""
+
+    completed = paths.scope_completed_workbook
+    evidence = completed.parent / "scope_review_export_result.json"
+    if not completed.is_file():
+        raise FindingsAnalysisError(
+            f"completed scope Workbook is missing: {completed}"
+        )
+    if not evidence.is_file():
+        raise FindingsAnalysisError(
+            f"scope review export evidence is missing: {evidence}"
+        )
+    payload = json.loads(evidence.read_text(encoding="utf-8"))
+    if payload.get("outcome") != "PASS" or payload.get("classification") != (
+        "LOCAL_SCOPE_REVIEW_APP_COMPLETED_WORKBOOK_EXPORTED"
+    ):
+        raise FindingsAnalysisError(
+            "scope review export evidence does not contain the expected PASS classification"
+        )
+    if (
+        int(payload.get("review_cases", -1)) != config.expected_case_count
+        or int(payload.get("reviewed", -1)) != config.expected_case_count
+        or int(payload.get("pending", -1)) != 0
+        or int(payload.get("needs_adjudication", -1)) != 0
+    ):
+        raise FindingsAnalysisError("scope review export completion counts are invalid")
+
+    declared_path = Path(_normalize(payload.get("completed_scope_workbook"))).resolve()
+    if declared_path != completed.resolve():
+        raise FindingsAnalysisError("scope review export path does not match F2 workspace")
+    declared_hash = _require_hash(
+        "scope review completed Workbook SHA256",
+        payload.get("completed_scope_workbook_sha256"),
+    )
+    if sha256_file(completed) != declared_hash:
+        raise FindingsAnalysisError("completed scope Workbook SHA256 mismatch")
+
+    source_hash_contract = {
+        "source_scope_csv_sha256": sha256_file(paths.scope_source_csv),
+        "source_scope_template_sha256": sha256_file(paths.scope_workbook),
+        "source_scope_asset_manifest_sha256": sha256_file(paths.scope_asset_manifest),
+    }
+    for key, actual in source_hash_contract.items():
+        if _normalize(payload.get(key)).upper() != actual:
+            raise FindingsAnalysisError(f"scope review export source hash mismatch: {key}")
+
+    for key in (
+        "test_split_read",
+        "model_inference_executed",
+        "annotation_modified",
+        "training_started",
+    ):
+        if payload.get(key) is not False:
+            raise FindingsAnalysisError(f"scope review export safety declaration changed: {key}")
+    if payload.get("retraining_status") != config.retraining_status:
+        raise FindingsAnalysisError("scope review export retraining status changed")
+    if payload.get("deployment_acceptance") != config.deployment_acceptance:
+        raise FindingsAnalysisError("scope review export deployment status changed")
+    return completed
 
 
 def _ranked_action_recommendations(combined: pd.DataFrame) -> list[dict[str, Any]]:
@@ -1823,6 +1910,7 @@ def run_f2(
     verify_authoritative_inputs(config)
     root = workspace_root.resolve()
     paths = _verify_f1_workspace(config, root)
+    completed_scope_workbook = verify_completed_scope_review_export(config, paths)
     final_outputs = (
         paths.scope_export_csv,
         root / "final_findings/severity_scope_summary.json",
@@ -1839,7 +1927,7 @@ def run_f2(
     try:
         scope_result = export_scope_classification(
             config,
-            paths.scope_workbook,
+            completed_scope_workbook,
             paths.scope_source_csv,
             paths.scope_export_csv,
         )

@@ -105,3 +105,12 @@ outputs/metadata/pilot500_human_review_collaboration_*.csv
 **/review_events.jsonl
 **/review_state_*.sqlite3
 **/validation_error_human_review_completed.xlsx
+
+# Phase 04.5L severity-scope local review app
+**/scope_review_state.sqlite3
+**/scope_review_state.sqlite3-wal
+**/scope_review_state.sqlite3-shm
+**/scope_review_events.jsonl
+**/scope_review_state_*.sqlite3
+**/severity_scope_review_completed.xlsx
+**/scope_review_export_result.json
