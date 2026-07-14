@@ -1,25 +1,31 @@
 ﻿# FleetVision Project Status
 
 > 更新原則：每次正式 checkpoint 後更新。
-> 基準日期：2026-07-13
+> 基準日期：2026-07-14
 
 ## 1. 當前 Phase
 
 - 前一主 Phase：Phase 04 — Pilot Human Review and Reviewed Dataset — **COMPLETED**
 - 主 Phase：Phase 04.5 — External Dataset Intake, Controlled Baseline, and Audit — **IN PROGRESS**
 - Current technical Phase：**Phase 04.5L — Validation Error Human Review**
-- Latest completed technical Gate：**04.5L-2C Implementation Closure**
-- Outcome：PASS
-- Classification：VALIDATION_ERROR_HUMAN_REVIEW_IMPLEMENTATION_VERIFIED
-- Repository base checkpoint：25e104bcf997699cd3cf573b813059612616ca2e
-- Implementation files：8
-- Formal review Workbook：尚未建立
-- Test split read：false
-- Annotation modified：false
-- Training／fine-tuning：未執行
-- Retraining status：NOT_YET_APPROVED
-- Deployment acceptance：NOT_YET_APPROVED
-- Next authorized Gate after commit/push verification：**04.5L-3 Review Package Preparation Audit**
+- Latest completed operational Gate：**Completed Workbook Export**
+- Outcome：**PASS**
+- Classification：`LOCAL_REVIEW_APP_COMPLETED_WORKBOOK_EXPORTED`
+- Latest verified code checkpoint before this governance handoff：`53e742d40430e4419c1da63bca384e237578486a`
+- Code checkpoint subject：`fix: repair local review case navigation`
+- Formal human review：**130／130 reviewed**
+- Pending：**0**
+- Needs adjudication：**0**
+- Completed Workbook：**CREATED／FROZEN**
+- Completed Workbook SHA256：`C9DF0A38B115406791DF03BFDC714901A66A47BE95CE0E2047E573FCC8D6FB6C`
+- Logical fingerprint：`F87882E8F6DBF20B6603FC5106BE5A78BD61E4A22A6500E9586E51498B4AAC35`
+- Test split read：**false**
+- Model inference executed in 04.5L：**false**
+- Annotation modified：**false**
+- Training／fine-tuning：**未執行**
+- Retraining status：`NOT_YET_APPROVED`
+- Deployment acceptance：`NOT_YET_APPROVED`
+- Next authorized Gate：**`PHASE_04_5L_COMPLETED_REVIEW_VALIDATION_AND_FINDINGS_ANALYSIS`**
 
 ## 2. 已完成項目
 
@@ -243,46 +249,168 @@
 - 未完成複核與資料改善決策前，不重新訓練、不 fine-tune、不修改固定 split。
 - `0.20` 只能標記為 balanced `VALIDATION_THRESHOLD_CANDIDATE`，不得宣告 deployment threshold。
 
+<!-- PHASE_04_5L_COMPLETED_REVIEW_20260714 -->
+
+## 9. Phase 04.5L Completed Review Addendum（2026-07-14）
+
+本 Addendum 取代較早的「Formal review Workbook 尚未建立」與
+「下一步為 Review Package Preparation Audit」等狀態敘述。歷史內容保留供追溯，
+但不可覆蓋本節與下方 machine-readable current state。
+
+### Repository-backed checkpoints
+
+- Local review app implementation checkpoint：
+  `45314caf31c4c94784757bd93212c75d2bb44262`
+- Implementation classification：
+  `LOCAL_REVIEW_APP_IMPLEMENTED_TESTED_COMMITTED_AND_REMOTE_VERIFIED`
+- Navigation hotfix checkpoint：
+  `53e742d40430e4419c1da63bca384e237578486a`
+- Navigation hotfix subject：
+  `fix: repair local review case navigation`
+- Navigation hotfix remote commit independently verified：**YES**
+- Formal review app workspace remained outside the repository：**YES**
+
+### Formal review completion
+
+- Formal review package：
+  `G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1`
+- Formal review workspace：
+  `G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_review_workspace`
+- Review cases：**130**
+- Reviewed：**130**
+- Pending：**0**
+- Needs adjudication：**0**
+- Reviewer：**Vincent**
+- Export classification：
+  `LOCAL_REVIEW_APP_COMPLETED_WORKBOOK_EXPORTED`
+
+### Frozen artifacts
+
+- Completed Workbook：
+  `G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_review_workspace\exports\validation_error_human_review_completed.xlsx`
+- Completed Workbook size：`31871231` bytes
+- Completed Workbook SHA256：
+  `C9DF0A38B115406791DF03BFDC714901A66A47BE95CE0E2047E573FCC8D6FB6C`
+- Logical fingerprint：
+  `F87882E8F6DBF20B6603FC5106BE5A78BD61E4A22A6500E9586E51498B4AAC35`
+- Pre-export backup：
+  `G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_review_workspace\backups\review_state_20260714T045900084110Z.sqlite3`
+- Pre-export backup SHA256：
+  `2BE5EC790D9A712127CAAF61DEFC676D9B334A40C15DB9C9508F81612978DA2C`
+- Current review-state SQLite SHA256：
+  `C75184C516B468433AA8F4D47DE4E6F451F09D7A8FE468BB3D653440AB676DDB`
+- Current review event log SHA256：
+  `6DB25DBF7AA37239A883A31AD4659145C7DFB2EDADAF0F199D48871319B3B89E`
+- Source Workbook SHA256：
+  `5DC9C1FDA69865D36C60EACB90A0AEA0FC9F4B263F30281723BB0E1172549DE5`
+- Frozen package ZIP SHA256：
+  `6D6243FE8F3E12910C03A5EDCFF178CE20B180473EED43DED2B36301A877B42A`
+
+### Scope finding requiring governance
+
+人工複核期間確認，外部資料中含有相當數量的重大／疑似全損、可能無法繼續行駛
+案例。第一版 FleetVision 的真實產品情境應以輕微至中度外觀損傷為核心。
+
+後續分析必須建立下列 scope 分組，但本 Gate 不可修改任何資料或標註：
+
+- `IN_SCOPE_LIGHT_MODERATE`
+- `BOUNDARY_HEAVY_DAMAGE`
+- `OUT_OF_SCOPE_CATASTROPHIC`
+
+重大／疑似全損案例不得直接刪除；應保留為 out-of-scope／OOD 治理素材，且在
+完成 scope analysis 前不得直接驅動 retraining 或 deployment threshold 決策。
+
+### Mandatory safety boundary
+
+- Completed Workbook 不可再次匯出、覆寫、開啟後儲存或人工修改。
+- Source Workbook、frozen package、SQLite state、audit events 與 backups 維持唯讀。
+- 不讀 test split。
+- 不重新執行 model inference。
+- 不修改 annotation／GT／canonical COCO／Registry／raw dataset／fixed splits。
+- 不開始 retraining／fine-tuning。
+- Threshold `0.20` 仍只是 balanced validation candidate，不是 deployment threshold。
+- `RETRAINING_STATUS=NOT_YET_APPROVED`
+- `DEPLOYMENT_ACCEPTANCE=NOT_YET_APPROVED`
+
+### Next authorized Gate
+
+`PHASE_04_5L_COMPLETED_REVIEW_VALIDATION_AND_FINDINGS_ANALYSIS`
+
+該 Gate 只允許：
+
+1. 驗證 Completed Workbook 與 logical fingerprint。
+2. 執行既有 completed-review validator。
+3. 統計人工判斷、root cause、annotation quality、recommended action 與 priority。
+4. 建立 annotation correction proposal 清單，但不可直接修改 annotation。
+5. 分析重大／疑似全損案例並建立 scope 治理方案。
+6. 產出是否需要資料補強、threshold analysis 或 retraining proposal 的正式建議。
+
+
 <!-- FLEETVISION-MANAGED:CURRENT-STATE:BEGIN -->
 ## Machine-readable state
 
 ~~~yaml
-schema_version: 1
+schema_version: 2
 project: FleetVision
-repository_root: "G:\Project\FleetVision"
+repository_root: 'G:\Project\FleetVision'
 branch: main
-repository_base_head: "25e104bcf997699cd3cf573b813059612616ca2e"
-repository_base_subject: "docs(governance): adopt repository-backed project state"
+repository_checkpoint_before_handoff: "53e742d40430e4419c1da63bca384e237578486a"
+repository_checkpoint_subject: "fix: repair local review case navigation"
 technical_phase: "04.5L"
-technical_gate: "04.5L-2C"
+technical_gate: "COMPLETED_REVIEW_EXPORT"
 technical_gate_outcome: "PASS"
-technical_classification: "VALIDATION_ERROR_HUMAN_REVIEW_IMPLEMENTATION_VERIFIED"
-implementation_files_created: 8
-implementation_evidence_zip_sha256: "1151664A258C1DB4F01B16C900279F976F9EAEF3FFCC74D98F97EB87A804B07C"
-focused_tests: "exit_code_0"
-full_tests: "exit_code_0"
-formal_workbook_created: false
+technical_classification: "LOCAL_REVIEW_APP_COMPLETED_WORKBOOK_EXPORTED"
+app_implementation_checkpoint: "45314caf31c4c94784757bd93212c75d2bb44262"
+navigation_hotfix_checkpoint: "53e742d40430e4419c1da63bca384e237578486a"
+review_cases: 130
+reviewed: 130
+pending: 0
+needs_adjudication: 0
+formal_workbook_created: true
+completed_workbook_path: 'G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_review_workspace\exports\validation_error_human_review_completed.xlsx'
+completed_workbook_size: 31871231
+completed_workbook_sha256: "C9DF0A38B115406791DF03BFDC714901A66A47BE95CE0E2047E573FCC8D6FB6C"
+logical_fingerprint: "F87882E8F6DBF20B6603FC5106BE5A78BD61E4A22A6500E9586E51498B4AAC35"
+pre_export_backup_path: 'G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_review_workspace\backups\review_state_20260714T045900084110Z.sqlite3'
+pre_export_backup_sha256: "2BE5EC790D9A712127CAAF61DEFC676D9B334A40C15DB9C9508F81612978DA2C"
+source_workbook_sha256: "5DC9C1FDA69865D36C60EACB90A0AEA0FC9F4B263F30281723BB0E1172549DE5"
+frozen_package_zip_sha256: "6D6243FE8F3E12910C03A5EDCFF178CE20B180473EED43DED2B36301A877B42A"
+scope_risk: "SEVERE_OR_CATASTROPHIC_DAMAGE_OVERREPRESENTATION"
+target_scope: "LIGHT_TO_MODERATE_EXTERIOR_DAMAGE"
+required_scope_groups:
+  - "IN_SCOPE_LIGHT_MODERATE"
+  - "BOUNDARY_HEAVY_DAMAGE"
+  - "OUT_OF_SCOPE_CATASTROPHIC"
 test_split_read: false
+model_inference_executed: false
 annotation_modified: false
 training_started: false
 retraining_status: "NOT_YET_APPROVED"
 deployment_acceptance: "NOT_YET_APPROVED"
 worktree_policy: "CLEAN_OR_PROTECTED_UNTRACKED_ONLY"
 protected_untracked_path: "outputs/metadata/external_assets/"
-next_authorized_action: "04.5L-3_REVIEW_PACKAGE_PREPARATION_AUDIT"
-updated_at: "2026-07-14T00:13:18+08:00"
+completed_workbook_reexport_allowed: false
+next_authorized_action: "PHASE_04_5L_COMPLETED_REVIEW_VALIDATION_AND_FINDINGS_ANALYSIS"
+updated_at: "2026-07-14T05:34:03.9170198Z"
 ~~~
 
 ## Current checkpoint
 
-- Technical phase: **04.5L — Validation Error Human Review**
-- Latest completed technical Gate: **04.5L-2C Implementation Closure**
-- Outcome: **PASS**
-- Classification: **VALIDATION_ERROR_HUMAN_REVIEW_IMPLEMENTATION_VERIFIED**
-- Repository base checkpoint: 25e104bcf997699cd3cf573b813059612616ca2e
-- Formal review Workbook created: **NO**
-- Test split read: **NO**
-- Training started: **NO**
-- Next authorized action after remote verification: **04.5L-3 Review Package Preparation Audit**
+- Technical phase：**Phase 04.5L — Validation Error Human Review**
+- Latest completed Gate：**Completed Workbook Export**
+- Outcome：**PASS**
+- Classification：`LOCAL_REVIEW_APP_COMPLETED_WORKBOOK_EXPORTED`
+- Latest verified code checkpoint before this governance handoff：
+  `53e742d40430e4419c1da63bca384e237578486a`
+- Formal review：**130／130 reviewed；pending 0；needs adjudication 0**
+- Completed Workbook SHA256：
+  `C9DF0A38B115406791DF03BFDC714901A66A47BE95CE0E2047E573FCC8D6FB6C`
+- Test split read：**NO**
+- Model inference executed：**NO**
+- Annotation modified：**NO**
+- Training started：**NO**
+- Retraining status：`NOT_YET_APPROVED`
+- Deployment acceptance：`NOT_YET_APPROVED`
+- Next authorized action：
+  `PHASE_04_5L_COMPLETED_REVIEW_VALIDATION_AND_FINDINGS_ANALYSIS`
 <!-- FLEETVISION-MANAGED:CURRENT-STATE:END -->
-
