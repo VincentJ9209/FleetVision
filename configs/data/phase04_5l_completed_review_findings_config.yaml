@@ -1,0 +1,77 @@
+schema_version: "1"
+
+existing_review_config: configs/data/validation_error_human_review_config.yaml
+expected_validator_classification: VALIDATION_ERROR_HUMAN_REVIEW_VERIFIED
+
+repository:
+  branch: main
+  protected_untracked_path: outputs/metadata/external_assets/
+
+completed_review:
+  workbook_path: 'G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_review_workspace\exports\validation_error_human_review_completed.xlsx'
+  workbook_size_bytes: 31871231
+  workbook_sha256: C9DF0A38B115406791DF03BFDC714901A66A47BE95CE0E2047E573FCC8D6FB6C
+  logical_fingerprint: F87882E8F6DBF20B6603FC5106BE5A78BD61E4A22A6500E9586E51498B4AAC35
+  source_workbook_path: 'G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1\workbook\validation_error_human_review.xlsx'
+  source_workbook_sha256: 5DC9C1FDA69865D36C60EACB90A0AEA0FC9F4B263F30281723BB0E1172549DE5
+  frozen_package_path: 'G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_PACKAGE.zip'
+  frozen_package_sha256: 6D6243FE8F3E12910C03A5EDCFF178CE20B180473EED43DED2B36301A877B42A
+  review_cases: 130
+  reviewed: 130
+  pending: 0
+  needs_adjudication: 0
+  reviewer: Vincent
+  export_classification: LOCAL_REVIEW_APP_COMPLETED_WORKBOOK_EXPORTED
+
+workspace:
+  parent_dir: 'G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_review_workspace\analysis'
+  prefix: phase04_5l_completed_review_findings
+  canonical_filename: validation_error_human_review.csv
+  scope_workbook_filename: severity_scope_review.xlsx
+  scope_source_filename: severity_scope_review_source.csv
+  scope_asset_manifest_filename: scope_asset_manifest.csv
+  scope_export_filename: severity_scope_classification.csv
+
+scope_options:
+  scope_review_status:
+    - pending
+    - reviewed
+    - needs_adjudication
+  scope_group:
+    - IN_SCOPE_LIGHT_MODERATE
+    - BOUNDARY_HEAVY_DAMAGE
+    - OUT_OF_SCOPE_CATASTROPHIC
+  scope_reason:
+    - light_surface_damage
+    - moderate_external_damage
+    - heavy_external_damage
+    - structural_damage
+    - catastrophic_collision
+    - extensive_multi_panel_damage
+    - vehicle_integrity_compromised
+    - insufficient_visual_evidence
+    - other
+  operability:
+    - drivable_or_likely_drivable
+    - uncertain
+    - non_drivable_or_likely_non_drivable
+  scope_confidence:
+    - high
+    - medium
+    - low
+
+recommendation_rules:
+  additional_review_low_confidence_share: 0.10
+  scope_rebalancing_non_scope_share: 0.20
+  distribution_total_variation_threshold: 0.10
+  threshold_tradeoff_share_delta: 0.10
+  retraining_in_scope_priority_share: 0.30
+  retraining_in_scope_confirmed_error_share: 0.30
+
+safety:
+  test_split_read: false
+  model_inference_executed: false
+  annotation_modified: false
+  training_started: false
+  retraining_status: NOT_YET_APPROVED
+  deployment_acceptance: NOT_YET_APPROVED

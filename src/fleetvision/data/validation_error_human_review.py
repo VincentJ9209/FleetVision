@@ -1439,20 +1439,35 @@ def _write_validation_outputs(
         raise
 
 
+def write_validation_outputs(
+    result: ValidationResult,
+    report_json: Path,
+    errors_csv: Path,
+) -> None:
+    """Write deterministic validation evidence without overwriting outputs."""
+
+    _write_validation_outputs(result, report_json, errors_csv)
+
+
 def summarize_canonical_review(
     config: ReviewConfig,
     canonical_csv: Path,
     batch_root: Path,
+    *,
+    asset_root: Path | None = None,
 ) -> SummaryResult:
     """Create summary, action queue, and non-applied annotation proposals."""
 
     batch_root = batch_root.resolve()
+    resolved_asset_root = (
+        asset_root.resolve() if asset_root is not None else batch_root
+    )
     frame = _load_csv(canonical_csv, CANONICAL_COLUMNS)
     validation = validate_canonical_dataframe(
         frame,
         config,
         require_complete=True,
-        batch_root=batch_root,
+        batch_root=resolved_asset_root,
     )
     if not validation.passed:
         raise HumanReviewError(
