@@ -311,3 +311,29 @@ Gate sequence:
 Phase 04.5M produces reviewed proposals only. It does not modify canonical
 annotations or approve retraining.
 <!-- FLEETVISION-MANAGED:PHASE_04_5L_F2_AND_04_5M:END -->
+
+<!-- FLEETVISION-MANAGED:PHASE_04_5M_IMPLEMENTED:BEGIN -->
+## Phase 04.5M — Data Correction Proposal Review Implementation
+
+**Status: IMPLEMENTED／TESTED／PACKAGE NOT YET CREATED**
+
+Implemented components:
+
+1. correction decision and bbox geometry domain contract;
+2. exact two-case validation-only package builder;
+3. SQLite live state, JSONL audit, every-save backup;
+4. Traditional Chinese Streamlit interface;
+5. completed CSV／JSON／XLSX／proposed-overlay export;
+6. PowerShell 5.1 operational wrappers;
+7. focused, regression, and full-suite verification.
+
+Implementation classification:
+
+`PHASE_04_5M_IMPLEMENTED_TESTED_AND_READY_FOR_PACKAGE_PREPARATION`
+
+Next Gate:
+
+`PHASE_04_5M_1_CORRECTION_REVIEW_PACKAGE_PREPARATION`
+
+Phase 04.5N annotation promotion remains unstarted and separately governed.
+<!-- FLEETVISION-MANAGED:PHASE_04_5M_IMPLEMENTED:END -->

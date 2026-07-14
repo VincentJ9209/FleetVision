@@ -1,0 +1,31 @@
+schema_version: "1"
+source:
+  expected_f2_classification: PHASE_04_5L_COMPLETED_REVIEW_VALIDATION_AND_FINDINGS_ANALYSIS_COMPLETED
+  expected_primary_recommendation: DATA_CORRECTION_REQUIRED_BEFORE_RETRAINING
+  expected_case_count: 2
+  completed_scope_workbook_sha256: AC0EE5882E8E6C7A3E9300BF6AD1589EC18C169681AA6720F0C36132A42B3946
+  expected_cases:
+    - review_case_id: l_687b939a3a89bb8e
+      image_id: 147_jpg.rf.83b3e9e399d2f3546d5676a902148f0c.jpg
+      annotation_defect_type: wrong_damage_scope
+      review_notes: 模型框的是對的
+    - review_case_id: l_e5875a8f94620ff1
+      image_id: test_set_188_jpg.rf.ed3c01d255f1c18dd0c5dd2667c7a096.jpg
+      annotation_defect_type: extra_bbox
+      review_notes: 重複標註
+workspace:
+  base_root: G:\Project\FleetVision_Review_Packages\Phase04_5M
+  directory_prefix: phase04_5m_annotation_correction_review
+  reviewer: Vincent
+  timezone: Asia/Taipei
+  backup_every_successful_saves: 1
+  backup_retention: 20
+exports:
+  reviewed_csv: annotation_correction_proposals_reviewed.csv
+  reviewed_json: annotation_correction_proposals_reviewed.json
+  completed_workbook: annotation_correction_proposals_completed.xlsx
+  result_json: correction_review_export_result.json
+options:
+  correction_review_status: [pending, reviewed, needs_adjudication]
+  correction_decision: [CONFIRM_GT_CORRECTION_REQUIRED, REJECT_CORRECTION_KEEP_CURRENT_GT, NEEDS_ADJUDICATION]
+  correction_operation: [RESIZE_OR_REDRAW_BBOX, REMOVE_DUPLICATE_BBOX, REMOVE_INVALID_BBOX, ADD_MISSING_BBOX, OTHER, NOT_APPLICABLE]
