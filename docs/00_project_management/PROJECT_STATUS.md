@@ -303,6 +303,8 @@
   `6DB25DBF7AA37239A883A31AD4659145C7DFB2EDADAF0F199D48871319B3B89E`
 - Source Workbook SHA256：
   `5DC9C1FDA69865D36C60EACB90A0AEA0FC9F4B263F30281723BB0E1172549DE5`
+- Frozen package ZIP path：
+  `G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_PACKAGE.zip`
 - Frozen package ZIP SHA256：
   `6D6243FE8F3E12910C03A5EDCFF178CE20B180473EED43DED2B36301A877B42A`
 
@@ -346,6 +348,27 @@
 6. 產出是否需要資料補強、threshold analysis 或 retraining proposal 的正式建議。
 
 
+<!-- PHASE_04_5L_PACKAGE_PATH_ERRATUM_20260714 -->
+
+## 10. Phase 04.5L Handoff Package Path Erratum（2026-07-14）
+
+The immutable completed-review snapshot records an incorrect nested path for the
+frozen package ZIP. The snapshot remains unchanged for audit history; this erratum
+is the controlling correction for artifact location only.
+
+- Incorrect historical path：
+  `G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1\phase04_5l_20260714_v1_PACKAGE.zip`
+- Correct authoritative path：
+  `G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_PACKAGE.zip`
+- Artifact SHA256 remains：
+  `6D6243FE8F3E12910C03A5EDCFF178CE20B180473EED43DED2B36301A877B42A`
+- Immutable snapshot retained unchanged：
+  `docs/00_project_management/handoffs/2026-07-14_phase04_5l_completed_review.md`
+- Controlling erratum：
+  `docs/00_project_management/handoffs/2026-07-14_phase04_5l_completed_review_path_erratum.md`
+- Review results、logical fingerprint、scope findings、safety declarations and
+  next authorized Gate are unchanged.
+
 <!-- FLEETVISION-MANAGED:CURRENT-STATE:BEGIN -->
 ## Machine-readable state
 
@@ -374,7 +397,11 @@ logical_fingerprint: "F87882E8F6DBF20B6603FC5106BE5A78BD61E4A22A6500E9586E51498B
 pre_export_backup_path: 'G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_review_workspace\backups\review_state_20260714T045900084110Z.sqlite3'
 pre_export_backup_sha256: "2BE5EC790D9A712127CAAF61DEFC676D9B334A40C15DB9C9508F81612978DA2C"
 source_workbook_sha256: "5DC9C1FDA69865D36C60EACB90A0AEA0FC9F4B263F30281723BB0E1172549DE5"
+frozen_package_zip_path: 'G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_PACKAGE.zip'
 frozen_package_zip_sha256: "6D6243FE8F3E12910C03A5EDCFF178CE20B180473EED43DED2B36301A877B42A"
+handoff_path_erratum_status: "APPLIED"
+handoff_path_erratum_file: "docs/00_project_management/handoffs/2026-07-14_phase04_5l_completed_review_path_erratum.md"
+handoff_path_erratum_parent_checkpoint: "54350ec4865ce643116cb4109b971f55dbbaeea9"
 scope_risk: "SEVERE_OR_CATASTROPHIC_DAMAGE_OVERREPRESENTATION"
 target_scope: "LIGHT_TO_MODERATE_EXTERIOR_DAMAGE"
 required_scope_groups:
@@ -391,7 +418,7 @@ worktree_policy: "CLEAN_OR_PROTECTED_UNTRACKED_ONLY"
 protected_untracked_path: "outputs/metadata/external_assets/"
 completed_workbook_reexport_allowed: false
 next_authorized_action: "PHASE_04_5L_COMPLETED_REVIEW_VALIDATION_AND_FINDINGS_ANALYSIS"
-updated_at: "2026-07-14T05:34:03.9170198Z"
+updated_at: "2026-07-14T05:50:55.4623273Z"
 ~~~
 
 ## Current checkpoint

@@ -61,8 +61,30 @@ Chat history is supporting context only and cannot override a newer verified rep
   `2BE5EC790D9A712127CAAF61DEFC676D9B334A40C15DB9C9508F81612978DA2C`
 - Source Workbook SHA256：
   `5DC9C1FDA69865D36C60EACB90A0AEA0FC9F4B263F30281723BB0E1172549DE5`
+- Frozen package ZIP path：
+  `G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_PACKAGE.zip`
 - Frozen package ZIP SHA256：
   `6D6243FE8F3E12910C03A5EDCFF178CE20B180473EED43DED2B36301A877B42A`
+
+<!-- PHASE_04_5L_PACKAGE_PATH_ERRATUM_20260714 -->
+## Handoff package path erratum
+
+The original immutable snapshot contains a historical path error. Use this
+authoritative frozen package ZIP path：
+
+`G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_PACKAGE.zip`
+
+SHA256：
+
+`6D6243FE8F3E12910C03A5EDCFF178CE20B180473EED43DED2B36301A877B42A`
+
+The original snapshot is intentionally not rewritten. Read the controlling
+erratum：
+
+`docs/00_project_management/handoffs/2026-07-14_phase04_5l_completed_review_path_erratum.md`
+
+This correction changes only the artifact location string. All completed-review
+results, safety boundaries and the next authorized Gate remain unchanged.
 
 ## Scope finding
 
