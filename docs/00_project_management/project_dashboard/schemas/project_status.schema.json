@@ -1,0 +1,800 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "fleetvision://project-dashboard/project_status.schema.json",
+  "title": "FleetVision Project Dashboard Status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "snapshot_id",
+    "generated_at_utc",
+    "display_timezone",
+    "project",
+    "repository",
+    "state_alignment",
+    "current_focus",
+    "safety_gates",
+    "phases",
+    "gates",
+    "evidence",
+    "warnings"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "snapshot_id": {
+      "type": "string",
+      "pattern": "^sha256:[A-Fa-f0-9]{64}$"
+    },
+    "generated_at_utc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "display_timezone": {
+      "const": "Asia/Taipei"
+    },
+    "project": {
+      "$ref": "#/$defs/project"
+    },
+    "repository": {
+      "$ref": "#/$defs/repository"
+    },
+    "state_alignment": {
+      "$ref": "#/$defs/alignment"
+    },
+    "current_focus": {
+      "$ref": "#/$defs/currentFocus"
+    },
+    "safety_gates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/safetyGate"
+      }
+    },
+    "phases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/phase"
+      }
+    },
+    "gates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/gate"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/warning"
+      }
+    }
+  },
+  "$defs": {
+    "status": {
+      "enum": [
+        "COMPLETED",
+        "IN_PROGRESS",
+        "PENDING_REVIEW",
+        "READY",
+        "PENDING_EXECUTION",
+        "BLOCKED",
+        "NOT_APPROVED",
+        "PLANNED",
+        "FUTURE",
+        "FROZEN",
+        "DEPRECATED"
+      ]
+    },
+    "outcome": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "BLOCKED",
+        "NOT_RUN",
+        "NOT_APPLICABLE",
+        "UNKNOWN"
+      ]
+    },
+    "trustLevel": {
+      "enum": [
+        "REPOSITORY_VERIFIED",
+        "ARTIFACT_VERIFIED",
+        "WORKTREE_VERIFIED",
+        "OPERATOR_REPORTED",
+        "STALE_OR_CONFLICTING",
+        "UNVERIFIED"
+      ]
+    },
+    "sourceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "path",
+        "ref",
+        "section"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "repository_file",
+            "git_fact",
+            "artifact",
+            "operator_report",
+            "local_preflight"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "section": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "display_name",
+        "dashboard_kind",
+        "progress_label",
+        "overall_progress"
+      ],
+      "properties": {
+        "name": {
+          "const": "FleetVision"
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dashboard_kind": {
+          "const": "PROJECT_GOVERNANCE_AND_EVIDENCE"
+        },
+        "progress_label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "overall_progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "candidateWorktree": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "worktree_id",
+        "purpose",
+        "path",
+        "branch",
+        "head",
+        "status_lines",
+        "implementation_committed",
+        "push_completed",
+        "trust_level"
+      ],
+      "properties": {
+        "worktree_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "branch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "head": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status_lines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "implementation_committed": {
+          "type": "boolean"
+        },
+        "push_completed": {
+          "type": "boolean"
+        },
+        "trust_level": {
+          "$ref": "#/$defs/trustLevel"
+        }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_name",
+        "repository_root",
+        "branch",
+        "local_head",
+        "origin_main",
+        "remote_head",
+        "checkpoint_subject",
+        "production_worktree_status",
+        "allowed_untracked_paths",
+        "candidate_worktrees",
+        "verification_level",
+        "verified_at_utc"
+      ],
+      "properties": {
+        "repository_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "repository_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "branch": {
+          "const": "main"
+        },
+        "local_head": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "origin_main": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "remote_head": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "checkpoint_subject": {
+          "type": "string",
+          "minLength": 1
+        },
+        "production_worktree_status": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowed_untracked_paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "candidate_worktrees": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/candidateWorktree"
+          }
+        },
+        "verification_level": {
+          "$ref": "#/$defs/trustLevel"
+        },
+        "verified_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "alignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "summary",
+        "trust_level"
+      ],
+      "properties": {
+        "value": {
+          "enum": [
+            "SYNCED",
+            "LOCAL_AHEAD",
+            "REMOTE_AHEAD",
+            "DIVERGED",
+            "CANDIDATE_UNCOMMITTED",
+            "CANDIDATE_COMMITTED_NOT_PUSHED",
+            "FORMAL_CANDIDATE_CONFLICT",
+            "UNKNOWN"
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trust_level": {
+          "$ref": "#/$defs/trustLevel"
+        }
+      }
+    },
+    "currentFocus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "technical_phase",
+        "technical_gate",
+        "formal_status",
+        "candidate_status",
+        "current_work_summary",
+        "next_authorized_action",
+        "prohibited_actions",
+        "blocking_conditions"
+      ],
+      "properties": {
+        "technical_phase": {
+          "type": "string",
+          "minLength": 1
+        },
+        "technical_gate": {
+          "type": "string",
+          "minLength": 1
+        },
+        "formal_status": {
+          "$ref": "#/$defs/status"
+        },
+        "candidate_status": {
+          "$ref": "#/$defs/status"
+        },
+        "current_work_summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "next_authorized_action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prohibited_actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blocking_conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "safetyGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "value",
+        "expected_safe_value",
+        "status",
+        "trust_level",
+        "source_refs",
+        "verified_at_utc"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "type": "string"
+        },
+        "expected_safe_value": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "CLEAR",
+            "SAFE_REPORTED",
+            "BLOCKED",
+            "UNKNOWN",
+            "CONFLICT"
+          ]
+        },
+        "trust_level": {
+          "$ref": "#/$defs/trustLevel"
+        },
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/sourceRef"
+          }
+        },
+        "verified_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "phase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "phase_id",
+        "title",
+        "status",
+        "progress",
+        "weight",
+        "gate_ids",
+        "summary",
+        "source_refs"
+      ],
+      "properties": {
+        "phase_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "weight": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "gate_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/sourceRef"
+          }
+        }
+      }
+    },
+    "testCount": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "passed",
+            "total",
+            "trust_level"
+          ],
+          "properties": {
+            "passed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "trust_level": {
+              "$ref": "#/$defs/trustLevel"
+            }
+          }
+        }
+      ]
+    },
+    "testSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "focused",
+        "regression",
+        "full",
+        "skipped",
+        "failed"
+      ],
+      "properties": {
+        "focused": {
+          "$ref": "#/$defs/testCount"
+        },
+        "regression": {
+          "$ref": "#/$defs/testCount"
+        },
+        "full": {
+          "$ref": "#/$defs/testCount"
+        },
+        "skipped": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gate_id",
+        "phase_id",
+        "title",
+        "status",
+        "outcome",
+        "classification",
+        "progress",
+        "weight",
+        "trust_level",
+        "test_summary",
+        "evidence_ids",
+        "git_checkpoint",
+        "authorized_actions",
+        "prohibited_actions",
+        "blocking_conditions",
+        "source_refs"
+      ],
+      "properties": {
+        "gate_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "phase_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "outcome": {
+          "$ref": "#/$defs/outcome"
+        },
+        "classification": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "weight": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "trust_level": {
+          "$ref": "#/$defs/trustLevel"
+        },
+        "test_summary": {
+          "$ref": "#/$defs/testSummary"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "git_checkpoint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "authorized_actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "prohibited_actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blocking_conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/sourceRef"
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "type",
+        "filename",
+        "path",
+        "sha256",
+        "size_bytes",
+        "classification",
+        "created_at_utc",
+        "verification_status",
+        "commit_policy",
+        "source_refs"
+      ],
+      "properties": {
+        "evidence_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": [
+            "RESULT_ZIP",
+            "WORKBOOK",
+            "GIT_CHECKPOINT",
+            "PREFLIGHT",
+            "TEST_SUMMARY",
+            "AUTHORIZATION",
+            "DOCUMENT",
+            "PACKAGE",
+            "OTHER"
+          ]
+        },
+        "filename": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "size_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "classification": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created_at_utc": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "verification_status": {
+          "$ref": "#/$defs/trustLevel"
+        },
+        "commit_policy": {
+          "enum": [
+            "DO_NOT_COMMIT",
+            "MAY_COMMIT_AFTER_REVIEW",
+            "TRACKED_GOVERNANCE"
+          ]
+        },
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/sourceRef"
+          }
+        }
+      }
+    },
+    "warning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "warning_id",
+        "severity",
+        "title",
+        "message",
+        "trust_level",
+        "source_refs"
+      ],
+      "properties": {
+        "warning_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "severity": {
+          "enum": [
+            "INFO",
+            "WARNING",
+            "CRITICAL"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trust_level": {
+          "$ref": "#/$defs/trustLevel"
+        },
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/sourceRef"
+          }
+        }
+      }
+    }
+  }
+}

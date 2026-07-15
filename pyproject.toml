@@ -15,6 +15,7 @@ dependencies = [
     "pillow",
     "openpyxl==3.1.5",
     "pyyaml",
+    "jsonschema>=4.23,<5",
     "scikit-learn",
     "matplotlib",
     "plotly",
