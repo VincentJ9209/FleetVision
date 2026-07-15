@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "fleetvision://project-dashboard/project_history.schema.json",
+  "title": "FleetVision Project Dashboard History",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "snapshot_id", "generated_at_utc", "events"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "snapshot_id": {"type": "string", "pattern": "^sha256:[A-Fa-f0-9]{64}$"},
+    "generated_at_utc": {"type": "string", "format": "date-time"},
+    "events": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/event"}
+    }
+  },
+  "$defs": {
+    "status": {
+      "enum": [
+        "COMPLETED",
+        "IN_PROGRESS",
+        "PENDING_REVIEW",
+        "READY",
+        "PENDING_EXECUTION",
+        "BLOCKED",
+        "NOT_APPROVED",
+        "PLANNED",
+        "FUTURE",
+        "FROZEN",
+        "DEPRECATED"
+      ]
+    },
+    "outcome": {
+      "enum": ["PASS", "FAIL", "BLOCKED", "NOT_RUN", "NOT_APPLICABLE", "UNKNOWN"]
+    },
+    "trustLevel": {
+      "enum": [
+        "REPOSITORY_VERIFIED",
+        "ARTIFACT_VERIFIED",
+        "WORKTREE_VERIFIED",
+        "OPERATOR_REPORTED",
+        "STALE_OR_CONFLICTING",
+        "UNVERIFIED"
+      ]
+    },
+    "sourceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "path", "ref", "section"],
+      "properties": {
+        "type": {"enum": ["repository_file", "git_fact", "artifact", "operator_report", "local_preflight"]},
+        "path": {"type": "string", "minLength": 1},
+        "ref": {"type": ["string", "null"]},
+        "section": {"type": ["string", "null"]}
+      }
+    },
+    "testCount": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["passed", "total", "trust_level"],
+          "properties": {
+            "passed": {"type": "integer", "minimum": 0},
+            "total": {"type": "integer", "minimum": 0},
+            "trust_level": {"$ref": "#/$defs/trustLevel"}
+          }
+        }
+      ]
+    },
+    "testSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["focused", "regression", "full", "skipped", "failed"],
+      "properties": {
+        "focused": {"$ref": "#/$defs/testCount"},
+        "regression": {"$ref": "#/$defs/testCount"},
+        "full": {"$ref": "#/$defs/testCount"},
+        "skipped": {"type": "integer", "minimum": 0},
+        "failed": {"type": "integer", "minimum": 0}
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id",
+        "occurred_at_utc",
+        "recorded_at_utc",
+        "phase_id",
+        "gate_id",
+        "event_type",
+        "status",
+        "outcome",
+        "classification",
+        "summary",
+        "git_checkpoint",
+        "test_summary",
+        "evidence_ids",
+        "safety_snapshot",
+        "trust_level",
+        "source_refs",
+        "corrects_event_id"
+      ],
+      "properties": {
+        "event_id": {"type": "string", "minLength": 1},
+        "occurred_at_utc": {"type": "string", "format": "date-time"},
+        "recorded_at_utc": {"type": "string", "format": "date-time"},
+        "phase_id": {"type": "string", "minLength": 1},
+        "gate_id": {"type": "string", "minLength": 1},
+        "event_type": {"enum": ["GATE_COMPLETED", "GATE_STARTED", "DESIGN_APPROVED", "IMPLEMENTATION_CANDIDATE", "CHECKPOINT", "WARNING", "CORRECTION"]},
+        "status": {"$ref": "#/$defs/status"},
+        "outcome": {"$ref": "#/$defs/outcome"},
+        "classification": {"type": ["string", "null"]},
+        "summary": {"type": "string", "minLength": 1},
+        "git_checkpoint": {"type": ["string", "null"]},
+        "test_summary": {"$ref": "#/$defs/testSummary"},
+        "evidence_ids": {"type": "array", "items": {"type": "string"}},
+        "safety_snapshot": {"type": "object", "additionalProperties": {"type": "string"}},
+        "trust_level": {"$ref": "#/$defs/trustLevel"},
+        "source_refs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sourceRef"}},
+        "corrects_event_id": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

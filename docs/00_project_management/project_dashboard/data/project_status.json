@@ -1,0 +1,1960 @@
+{
+  "schema_version": "1.0",
+  "snapshot_id": "sha256:68B2F225B4FFF25626DA287E77310C377D9689AF2749D9BFAFF819B14D305DD9",
+  "generated_at_utc": "2026-07-15T09:55:00Z",
+  "display_timezone": "Asia/Taipei",
+  "project": {
+    "name": "FleetVision",
+    "display_name": "FleetVision 車損辨識",
+    "dashboard_kind": "PROJECT_GOVERNANCE_AND_EVIDENCE",
+    "progress_label": "治理里程碑完成度，不代表工期完成度",
+    "overall_progress": 63.3663
+  },
+  "repository": {
+    "repository_name": "VincentJ9209/FleetVision",
+    "repository_root": "G:/Project/FleetVision",
+    "branch": "main",
+    "local_head": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+    "origin_main": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+    "remote_head": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+    "checkpoint_subject": "docs: add phase04.5N design and implementation plan",
+    "production_worktree_status": [
+      "?? outputs/metadata/external_assets/"
+    ],
+    "allowed_untracked_paths": [
+      "outputs/metadata/external_assets/"
+    ],
+    "candidate_worktrees": [
+      {
+        "worktree_id": "PHASE04_5N_IMPLEMENTATION",
+        "purpose": "PHASE_04_5N_IMPLEMENTATION",
+        "path": "C:/Users/Vincent/AppData/Local/Temp/FleetVision_phase04_5n_implementation_374b2b9",
+        "branch": "phase04-5n-implementation",
+        "head": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+        "status_lines": [
+          "?? configs/data/phase04_5n_annotation_correction_promotion_config.yaml",
+          "?? src/fleetvision/review/annotation_correction_promotion_contract.py",
+          "?? src/fleetvision/review/annotation_correction_staging.py",
+          "?? tests/annotation_correction_promotion_fixtures.py",
+          "?? tests/test_annotation_correction_promotion_contract.py",
+          "?? tests/test_annotation_correction_staging.py"
+        ],
+        "implementation_committed": false,
+        "push_completed": false,
+        "trust_level": "WORKTREE_VERIFIED"
+      },
+      {
+        "worktree_id": "LOCAL_PROJECT_DASHBOARD",
+        "purpose": "DASHBOARD",
+        "path": null,
+        "branch": "feature/local-project-dashboard",
+        "head": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+        "status_lines": [
+          "Dedicated worktree not yet created in the recorded snapshot."
+        ],
+        "implementation_committed": false,
+        "push_completed": false,
+        "trust_level": "UNVERIFIED"
+      }
+    ],
+    "verification_level": "WORKTREE_VERIFIED",
+    "verified_at_utc": "2026-07-15T09:55:00Z"
+  },
+  "state_alignment": {
+    "value": "CANDIDATE_UNCOMMITTED",
+    "summary": "Production main is synchronized. Phase 04.5N implementation files exist only as an uncommitted candidate worktree.",
+    "trust_level": "WORKTREE_VERIFIED"
+  },
+  "current_focus": {
+    "technical_phase": "Phase 04.5N — Controlled Annotation Correction Promotion",
+    "technical_gate": "Implementation candidate before N1 execution",
+    "formal_status": "READY",
+    "candidate_status": "IN_PROGRESS",
+    "current_work_summary": "Task 1 and Task 2 passed independent review; Task 3 and reported focused/regression tests passed. Candidate files remain uncommitted and unpushed.",
+    "next_authorized_action": "Complete controlled implementation closure and publish the isolated implementation branch; N1/N2 execution remains separate.",
+    "prohibited_actions": [
+      "Execute N1 against production canonical COCO",
+      "Authorize or execute N2",
+      "Read test split",
+      "Run model inference",
+      "Modify dataset, Registry, fixed splits or canonical data",
+      "Start training or retraining"
+    ],
+    "blocking_conditions": [
+      "Candidate test counts remain operator-reported until structured test evidence is verified.",
+      "N2 requires a separate explicit authorization after an N1 PASS."
+    ]
+  },
+  "safety_gates": [
+    {
+      "key": "TEST_SPLIT_READ",
+      "value": "NO",
+      "expected_safe_value": "NO",
+      "status": "SAFE_REPORTED",
+      "trust_level": "OPERATOR_REPORTED",
+      "source_refs": [
+        {
+          "type": "operator_report",
+          "path": "operator_report",
+          "ref": null,
+          "section": "Task 1-3 implementation status"
+        }
+      ],
+      "verified_at_utc": "2026-07-15T09:55:00Z"
+    },
+    {
+      "key": "MODEL_INFERENCE_EXECUTED",
+      "value": "NO",
+      "expected_safe_value": "NO",
+      "status": "SAFE_REPORTED",
+      "trust_level": "OPERATOR_REPORTED",
+      "source_refs": [
+        {
+          "type": "operator_report",
+          "path": "operator_report",
+          "ref": null,
+          "section": "Task 1-3 implementation status"
+        }
+      ],
+      "verified_at_utc": "2026-07-15T09:55:00Z"
+    },
+    {
+      "key": "CANONICAL_ANNOTATION_MODIFIED",
+      "value": "NO",
+      "expected_safe_value": "NO",
+      "status": "SAFE_REPORTED",
+      "trust_level": "OPERATOR_REPORTED",
+      "source_refs": [
+        {
+          "type": "operator_report",
+          "path": "operator_report",
+          "ref": null,
+          "section": "Task 1-3 implementation status"
+        }
+      ],
+      "verified_at_utc": "2026-07-15T09:55:00Z"
+    },
+    {
+      "key": "CANONICAL_COCO_MODIFIED",
+      "value": "NO",
+      "expected_safe_value": "NO",
+      "status": "SAFE_REPORTED",
+      "trust_level": "OPERATOR_REPORTED",
+      "source_refs": [
+        {
+          "type": "operator_report",
+          "path": "operator_report",
+          "ref": null,
+          "section": "Task 1-3 implementation status"
+        }
+      ],
+      "verified_at_utc": "2026-07-15T09:55:00Z"
+    },
+    {
+      "key": "DATASET_MODIFIED",
+      "value": "NO",
+      "expected_safe_value": "NO",
+      "status": "SAFE_REPORTED",
+      "trust_level": "OPERATOR_REPORTED",
+      "source_refs": [
+        {
+          "type": "operator_report",
+          "path": "operator_report",
+          "ref": null,
+          "section": "Task 1-3 implementation status"
+        }
+      ],
+      "verified_at_utc": "2026-07-15T09:55:00Z"
+    },
+    {
+      "key": "REGISTRY_MODIFIED",
+      "value": "NO",
+      "expected_safe_value": "NO",
+      "status": "SAFE_REPORTED",
+      "trust_level": "OPERATOR_REPORTED",
+      "source_refs": [
+        {
+          "type": "operator_report",
+          "path": "operator_report",
+          "ref": null,
+          "section": "Task 1-3 implementation status"
+        }
+      ],
+      "verified_at_utc": "2026-07-15T09:55:00Z"
+    },
+    {
+      "key": "FIXED_SPLITS_MODIFIED",
+      "value": "NO",
+      "expected_safe_value": "NO",
+      "status": "SAFE_REPORTED",
+      "trust_level": "OPERATOR_REPORTED",
+      "source_refs": [
+        {
+          "type": "operator_report",
+          "path": "operator_report",
+          "ref": null,
+          "section": "Task 1-3 implementation status"
+        }
+      ],
+      "verified_at_utc": "2026-07-15T09:55:00Z"
+    },
+    {
+      "key": "TRAINING_STARTED",
+      "value": "NO",
+      "expected_safe_value": "NO",
+      "status": "SAFE_REPORTED",
+      "trust_level": "OPERATOR_REPORTED",
+      "source_refs": [
+        {
+          "type": "operator_report",
+          "path": "operator_report",
+          "ref": null,
+          "section": "Task 1-3 implementation status"
+        }
+      ],
+      "verified_at_utc": "2026-07-15T09:55:00Z"
+    },
+    {
+      "key": "RETRAINING_STATUS",
+      "value": "NOT_YET_APPROVED",
+      "expected_safe_value": "NOT_YET_APPROVED",
+      "status": "CLEAR",
+      "trust_level": "REPOSITORY_VERIFIED",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/superpowers/specs/2026-07-15-phase04-5n-controlled-annotation-correction-promotion-design.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Authorization stop"
+        }
+      ],
+      "verified_at_utc": "2026-07-15T09:55:00Z"
+    },
+    {
+      "key": "DEPLOYMENT_ACCEPTANCE",
+      "value": "NOT_YET_APPROVED",
+      "expected_safe_value": "NOT_YET_APPROVED",
+      "status": "CLEAR",
+      "trust_level": "REPOSITORY_VERIFIED",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/superpowers/specs/2026-07-15-phase04-5n-controlled-annotation-correction-promotion-design.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Authorization stop"
+        }
+      ],
+      "verified_at_utc": "2026-07-15T09:55:00Z"
+    }
+  ],
+  "phases": [
+    {
+      "phase_id": "PHASE_00",
+      "title": "Phase 00 — Project Governance and Architecture",
+      "status": "COMPLETED",
+      "progress": 100.0,
+      "weight": 4,
+      "gate_ids": [
+        "00-GOVERNANCE"
+      ],
+      "summary": "Repository governance remains continuously maintained.",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "phase_id": "PHASE_01",
+      "title": "Phase 01 — Metadata Catalog",
+      "status": "COMPLETED",
+      "progress": 100.0,
+      "weight": 5,
+      "gate_ids": [
+        "01-METADATA"
+      ],
+      "summary": "Metadata catalog completed.",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "phase_id": "PHASE_02",
+      "title": "Phase 02 — Review Queue",
+      "status": "COMPLETED",
+      "progress": 100.0,
+      "weight": 5,
+      "gate_ids": [
+        "02-REVIEW-QUEUE"
+      ],
+      "summary": "Review queue completed.",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "phase_id": "PHASE_03",
+      "title": "Phase 03 — Human Review Schema and Validation",
+      "status": "COMPLETED",
+      "progress": 100.0,
+      "weight": 5,
+      "gate_ids": [
+        "03-SCHEMA-VALIDATOR"
+      ],
+      "summary": "Human review schema and validator completed.",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "phase_id": "PHASE_03_5",
+      "title": "Phase 03.5 — Auto Prelabel Pilot",
+      "status": "FROZEN",
+      "progress": 100.0,
+      "weight": 5,
+      "gate_ids": [
+        "03.5-AUTO-PRELABEL"
+      ],
+      "summary": "Pilot completed and inference frozen.",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "phase_id": "PHASE_04",
+      "title": "Phase 04 — Pilot Human Review and Reviewed Dataset",
+      "status": "COMPLETED",
+      "progress": 100.0,
+      "weight": 14,
+      "gate_ids": [
+        "04A",
+        "04B",
+        "04C",
+        "04D",
+        "04E"
+      ],
+      "summary": "500-case review, merge, promotion adapter, and reviewed dataset completed.",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "phase_id": "PHASE_04_5",
+      "title": "Phase 04.5 — External Dataset, Baseline and Controlled Correction",
+      "status": "IN_PROGRESS",
+      "progress": 81.25,
+      "weight": 32,
+      "gate_ids": [
+        "04.5A",
+        "04.5B",
+        "04.5C",
+        "04.5D",
+        "04.5E",
+        "04.5F",
+        "04.5G",
+        "04.5J",
+        "04.5K",
+        "04.5L",
+        "04.5L-F2",
+        "04.5M-0",
+        "04.5M-1",
+        "04.5M-2",
+        "04.5N-1",
+        "04.5N-2"
+      ],
+      "summary": "External intake through reviewed correction proposals completed; controlled promotion remains gated.",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "phase_id": "PHASE_05",
+      "title": "Phase 05 — Bounding Box Annotation and QA",
+      "status": "PLANNED",
+      "progress": 0.0,
+      "weight": 5,
+      "gate_ids": [
+        "05-ANNOTATION-QA"
+      ],
+      "summary": "Planned.",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "phase_id": "PHASE_06",
+      "title": "Phase 06 — Versioned YOLO Dataset Build",
+      "status": "PLANNED",
+      "progress": 0.0,
+      "weight": 5,
+      "gate_ids": [
+        "06-YOLO-DATASET"
+      ],
+      "summary": "Planned.",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "phase_id": "PHASE_07",
+      "title": "Phase 07 — Internal-only Baseline Training",
+      "status": "PLANNED",
+      "progress": 0.0,
+      "weight": 5,
+      "gate_ids": [
+        "07-INTERNAL-BASELINE"
+      ],
+      "summary": "Planned route-map phase; an earlier controlled external baseline exists under 04.5J.",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "phase_id": "PHASE_08",
+      "title": "Phase 08 — External Data Experiments",
+      "status": "PLANNED",
+      "progress": 0.0,
+      "weight": 5,
+      "gate_ids": [
+        "08-EXTERNAL-EXPERIMENTS"
+      ],
+      "summary": "Planned.",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "phase_id": "PHASE_09",
+      "title": "Phase 09 — Error Analysis and Data Iteration",
+      "status": "PLANNED",
+      "progress": 0.0,
+      "weight": 5,
+      "gate_ids": [
+        "09-ERROR-ITERATION"
+      ],
+      "summary": "Planned route-map phase; validation analysis exists under 04.5K.",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "phase_id": "PHASE_10",
+      "title": "Phase 10 — Inference, Product Dashboard and Portfolio",
+      "status": "PLANNED",
+      "progress": 0.0,
+      "weight": 5,
+      "gate_ids": [
+        "10-INFERENCE-PORTFOLIO"
+      ],
+      "summary": "This is distinct from the Local Project Governance Dashboard.",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "phase_id": "FUTURE_EXTENSIONS",
+      "title": "Future Extensions",
+      "status": "FUTURE",
+      "progress": 0.0,
+      "weight": 1,
+      "gate_ids": [
+        "FUTURE-ANGLE-QUALITY"
+      ],
+      "summary": "Long-term angle and quality gate extensions.",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "gate_id": "00-GOVERNANCE",
+      "phase_id": "PHASE_00",
+      "title": "Project Governance and Architecture",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "PROJECT_GOVERNANCE_SOURCE_OF_TRUTH_ESTABLISHED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [
+        "E-GIT-374"
+      ],
+      "git_checkpoint": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "01-METADATA",
+      "phase_id": "PHASE_01",
+      "title": "Metadata Catalog",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "METADATA_CATALOG_COMPLETED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "02-REVIEW-QUEUE",
+      "phase_id": "PHASE_02",
+      "title": "Review Queue",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "REVIEW_QUEUE_COMPLETED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "03-SCHEMA-VALIDATOR",
+      "phase_id": "PHASE_03",
+      "title": "Human Review Schema and Validator",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "HUMAN_REVIEW_SCHEMA_VALIDATED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "03.5-AUTO-PRELABEL",
+      "phase_id": "PHASE_03_5",
+      "title": "Auto Prelabel Pilot",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "AUTO_PRELABEL_PILOT_COMPLETED_AND_FROZEN",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [
+        "Do not rerun Phase 03.5 inference"
+      ],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "04A",
+      "phase_id": "PHASE_04",
+      "title": "Worklist, Validator and Excel Interface",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "PHASE_04A_COMPLETED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "04B",
+      "phase_id": "PHASE_04",
+      "title": "Multi-reviewer Collaboration Workflow",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "PHASE_04B_COMPLETED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "04C",
+      "phase_id": "PHASE_04",
+      "title": "Portable Image Link Compatibility",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "PHASE_04C_COMPATIBILITY_VERIFIED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "04D",
+      "phase_id": "PHASE_04",
+      "title": "Human Review Execution",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "PHASE_04D_500_OF_500_REVIEWED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "04E",
+      "phase_id": "PHASE_04",
+      "title": "Merge, Schema Promotion and Reviewed Dataset Build",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "REVIEWED_DATASET_BUILD_VERIFIED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [
+        "E-PHASE04-CHECKPOINT"
+      ],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "04.5A",
+      "phase_id": "PHASE_04_5",
+      "title": "Candidate Search",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "EXTERNAL_CANDIDATE_SEARCH_COMPLETED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "04.5B",
+      "phase_id": "PHASE_04_5",
+      "title": "Registry and License Audit",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "REGISTRY_AND_LICENSE_AUDIT_COMPLETED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "04.5C",
+      "phase_id": "PHASE_04_5",
+      "title": "Download and Version Capture",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "DOWNLOAD_VERSION_CAPTURE_COMPLETED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "04.5D",
+      "phase_id": "PHASE_04_5",
+      "title": "Technical Audit",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "EXTERNAL_DATA_TECHNICAL_AUDIT_COMPLETED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "04.5E",
+      "phase_id": "PHASE_04_5",
+      "title": "Class Normalization",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "EXTERNAL_CLASS_NORMALIZATION_COMPLETED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "04.5F",
+      "phase_id": "PHASE_04_5",
+      "title": "Deduplication, Group-safe Plan and Canonical COCO",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "ANNOTATION_QA_STRUCTURALLY_READY_FOR_TARGETED_VISUAL_REVIEW",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "04.5G",
+      "phase_id": "PHASE_04_5",
+      "title": "Acceptance Report",
+      "status": "PENDING_REVIEW",
+      "outcome": "UNKNOWN",
+      "classification": null,
+      "progress": 0,
+      "weight": 1,
+      "trust_level": "STALE_OR_CONFLICTING",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [
+        "Inspected governance summaries do not expose a controlling 04.5G acceptance event even though downstream training occurred."
+      ],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "04.5J",
+      "phase_id": "PHASE_04_5",
+      "title": "Controlled Colab Baseline Training",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "CONTROLLED_COLAB_BASELINE_TRAINING_COMPLETED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "ARTIFACT_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [
+        "E-04.5J-ZIP"
+      ],
+      "git_checkpoint": "0fa698a21be5fcc737fe4b000364cdccd743ec5f",
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/PROJECT_STATUS.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Controlling addenda"
+        }
+      ]
+    },
+    {
+      "gate_id": "04.5K",
+      "phase_id": "PHASE_04_5",
+      "title": "Baseline Error Analysis",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "VALIDATION_ERROR_ANALYSIS_AND_THRESHOLD_CANDIDATES_COMPLETED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "ARTIFACT_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [
+        "E-04.5K-ZIP"
+      ],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/PROJECT_STATUS.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Controlling addenda"
+        }
+      ]
+    },
+    {
+      "gate_id": "04.5L",
+      "phase_id": "PHASE_04_5",
+      "title": "Validation Error Human Review",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "LOCAL_REVIEW_APP_COMPLETED_WORKBOOK_EXPORTED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "ARTIFACT_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [
+        "E-04.5L-WORKBOOK",
+        "E-04.5L-PACKAGE"
+      ],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/PROJECT_STATUS.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Controlling addenda"
+        }
+      ]
+    },
+    {
+      "gate_id": "04.5L-F2",
+      "phase_id": "PHASE_04_5",
+      "title": "Completed Review Findings Analysis",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "PHASE_04_5L_COMPLETED_REVIEW_VALIDATION_AND_FINDINGS_ANALYSIS_COMPLETED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [
+        "E-04.5L-F2-DOC"
+      ],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/PROJECT_STATUS.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Controlling addenda"
+        }
+      ]
+    },
+    {
+      "gate_id": "04.5M-0",
+      "phase_id": "PHASE_04_5",
+      "title": "Correction Review Design and State Synchronization",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "PHASE_04_5M_DESIGN_APPROVED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [
+        "E-04.5M-DESIGN"
+      ],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/HANDOFF_CURRENT.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Current repository-backed handoff"
+        }
+      ]
+    },
+    {
+      "gate_id": "04.5M-1",
+      "phase_id": "PHASE_04_5",
+      "title": "Correction Review Package Preparation",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "PHASE_04_5M_CORRECTION_REVIEW_PACKAGE_PREPARED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [
+        "E-04.5M-WORKSPACE"
+      ],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/superpowers/specs/2026-07-15-phase04-5n-controlled-annotation-correction-promotion-design.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Authorization stop"
+        }
+      ]
+    },
+    {
+      "gate_id": "04.5M-2",
+      "phase_id": "PHASE_04_5",
+      "title": "Two-case Correction Proposal Review",
+      "status": "COMPLETED",
+      "outcome": "PASS",
+      "classification": "PHASE_04_5M_ANNOTATION_CORRECTION_PROPOSALS_REVIEWED",
+      "progress": 100,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [
+        "E-04.5M-WORKSPACE"
+      ],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/superpowers/specs/2026-07-15-phase04-5n-controlled-annotation-correction-promotion-design.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Authorization stop"
+        }
+      ]
+    },
+    {
+      "gate_id": "04.5N-1",
+      "phase_id": "PHASE_04_5",
+      "title": "Staged Correction Build and Validation",
+      "status": "PENDING_EXECUTION",
+      "outcome": "NOT_RUN",
+      "classification": "PHASE_04_5N_STAGED_ANNOTATION_CORRECTIONS_VALIDATED",
+      "progress": 0,
+      "weight": 1,
+      "trust_level": "OPERATOR_REPORTED",
+      "test_summary": {
+        "focused": {
+          "passed": 66,
+          "total": 66,
+          "trust_level": "OPERATOR_REPORTED"
+        },
+        "regression": {
+          "passed": 98,
+          "total": 98,
+          "trust_level": "OPERATOR_REPORTED"
+        },
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [
+        "E-04.5N-DESIGN",
+        "E-04.5N-PLAN",
+        "E-04.5N-CANDIDATE-TESTS"
+      ],
+      "git_checkpoint": null,
+      "authorized_actions": [
+        "Continue implementation review and controlled branch publication after exact verification"
+      ],
+      "prohibited_actions": [
+        "Do not execute N1 against production canonical data during implementation closure",
+        "Do not read test split",
+        "Do not run inference or training"
+      ],
+      "blocking_conditions": [
+        "Implementation remains uncommitted and unpushed in the operator-reported worktree."
+      ],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/superpowers/specs/2026-07-15-phase04-5n-controlled-annotation-correction-promotion-design.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Authorization stop"
+        },
+        {
+          "type": "operator_report",
+          "path": "operator_report",
+          "ref": null,
+          "section": "Task 1-3 implementation status"
+        }
+      ]
+    },
+    {
+      "gate_id": "04.5N-2",
+      "phase_id": "PHASE_04_5",
+      "title": "Separately Authorized Atomic Promotion",
+      "status": "NOT_APPROVED",
+      "outcome": "NOT_RUN",
+      "classification": "PHASE_04_5N_ANNOTATION_CORRECTIONS_PROMOTED",
+      "progress": 0,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [
+        "E-04.5N-DESIGN"
+      ],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [
+        "Do not promote canonical COCO without a separate explicit authorization"
+      ],
+      "blocking_conditions": [
+        "N1 PASS does not authorize N2.",
+        "Exact authorization phrase and fresh pre-promotion verification are required."
+      ],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/superpowers/specs/2026-07-15-phase04-5n-controlled-annotation-correction-promotion-design.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Authorization stop"
+        }
+      ]
+    },
+    {
+      "gate_id": "05-ANNOTATION-QA",
+      "phase_id": "PHASE_05",
+      "title": "Bounding Box Annotation and QA",
+      "status": "PLANNED",
+      "outcome": "NOT_RUN",
+      "classification": null,
+      "progress": 0,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "06-YOLO-DATASET",
+      "phase_id": "PHASE_06",
+      "title": "Versioned YOLO Dataset Build",
+      "status": "PLANNED",
+      "outcome": "NOT_RUN",
+      "classification": null,
+      "progress": 0,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "07-INTERNAL-BASELINE",
+      "phase_id": "PHASE_07",
+      "title": "Internal-only Baseline Training",
+      "status": "PLANNED",
+      "outcome": "NOT_RUN",
+      "classification": null,
+      "progress": 0,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "08-EXTERNAL-EXPERIMENTS",
+      "phase_id": "PHASE_08",
+      "title": "External Data Experiments",
+      "status": "PLANNED",
+      "outcome": "NOT_RUN",
+      "classification": null,
+      "progress": 0,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "09-ERROR-ITERATION",
+      "phase_id": "PHASE_09",
+      "title": "Error Analysis and Data Iteration",
+      "status": "PLANNED",
+      "outcome": "NOT_RUN",
+      "classification": null,
+      "progress": 0,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "10-INFERENCE-PORTFOLIO",
+      "phase_id": "PHASE_10",
+      "title": "Inference, Product Dashboard and Portfolio",
+      "status": "PLANNED",
+      "outcome": "NOT_RUN",
+      "classification": null,
+      "progress": 0,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "gate_id": "FUTURE-ANGLE-QUALITY",
+      "phase_id": "FUTURE_EXTENSIONS",
+      "title": "Angle and Quality Gate Model",
+      "status": "FUTURE",
+      "outcome": "NOT_RUN",
+      "classification": null,
+      "progress": 0,
+      "weight": 1,
+      "trust_level": "REPOSITORY_VERIFIED",
+      "test_summary": {
+        "focused": null,
+        "regression": null,
+        "full": null,
+        "skipped": 0,
+        "failed": 0
+      },
+      "evidence_ids": [],
+      "git_checkpoint": null,
+      "authorized_actions": [],
+      "prohibited_actions": [],
+      "blocking_conditions": [],
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "E-GIT-374",
+      "type": "GIT_CHECKPOINT",
+      "filename": null,
+      "path": "VincentJ9209/FleetVision@374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+      "sha256": null,
+      "size_bytes": null,
+      "classification": "DOCS_PHASE04_5N_DESIGN_AND_PLAN",
+      "created_at_utc": "2026-07-15T00:00:00Z",
+      "verification_status": "REPOSITORY_VERIFIED",
+      "commit_policy": "TRACKED_GOVERNANCE",
+      "source_refs": [
+        {
+          "type": "git_fact",
+          "path": "git",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "main HEAD"
+        }
+      ]
+    },
+    {
+      "evidence_id": "E-PREFLIGHT-V3",
+      "type": "PREFLIGHT",
+      "filename": "FleetVision_Dashboard_Design_Local_Preflight_v3.ps1",
+      "path": "C:/Users/Vincent/Downloads/FleetVision_Dashboard_Design_Local_Preflight_v3.ps1",
+      "sha256": null,
+      "size_bytes": null,
+      "classification": "FLEETVISION_LOCAL_PROJECT_DASHBOARD_DESIGN_PREFLIGHT_VERIFIED",
+      "created_at_utc": "2026-07-15T09:55:00Z",
+      "verification_status": "WORKTREE_VERIFIED",
+      "commit_policy": "DO_NOT_COMMIT",
+      "source_refs": [
+        {
+          "type": "local_preflight",
+          "path": "FleetVision_Dashboard_Design_Local_Preflight_v3.ps1",
+          "ref": null,
+          "section": "PREFLIGHT_PASS=True"
+        }
+      ]
+    },
+    {
+      "evidence_id": "E-PHASE04-CHECKPOINT",
+      "type": "DOCUMENT",
+      "filename": "PROJECT_STATUS.md",
+      "path": "docs/00_project_management/PROJECT_STATUS.md",
+      "sha256": null,
+      "size_bytes": null,
+      "classification": "REVIEWED_DATASET_BUILD_VERIFIED",
+      "created_at_utc": "2026-07-12T00:00:00Z",
+      "verification_status": "REPOSITORY_VERIFIED",
+      "commit_policy": "TRACKED_GOVERNANCE",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/PROJECT_STATUS.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Controlling addenda"
+        }
+      ]
+    },
+    {
+      "evidence_id": "E-04.5J-ZIP",
+      "type": "RESULT_ZIP",
+      "filename": "04_5J_20260713_082857_6c719a70_ZIP_LOG.zip",
+      "path": null,
+      "sha256": "98F0A04301FD08862941CB9033E23A932929F646494EE5917CD043DE3A815CEB",
+      "size_bytes": null,
+      "classification": "CONTROLLED_COLAB_BASELINE_TRAINING_COMPLETED",
+      "created_at_utc": "2026-07-13T08:28:57Z",
+      "verification_status": "ARTIFACT_VERIFIED",
+      "commit_policy": "DO_NOT_COMMIT",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/PROJECT_STATUS.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Controlling addenda"
+        }
+      ]
+    },
+    {
+      "evidence_id": "E-04.5K-ZIP",
+      "type": "RESULT_ZIP",
+      "filename": "04_5K_20260713_114517_02a146be_ZIP_LOG.zip",
+      "path": null,
+      "sha256": "4D54D2BD1DA9D4B4067B9B91001291E8A1FB3691D1F4CB4D4FFCDEED78872F89",
+      "size_bytes": null,
+      "classification": "VALIDATION_ERROR_ANALYSIS_AND_THRESHOLD_CANDIDATES_COMPLETED",
+      "created_at_utc": "2026-07-13T11:45:17Z",
+      "verification_status": "ARTIFACT_VERIFIED",
+      "commit_policy": "DO_NOT_COMMIT",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/PROJECT_STATUS.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Controlling addenda"
+        }
+      ]
+    },
+    {
+      "evidence_id": "E-04.5L-WORKBOOK",
+      "type": "WORKBOOK",
+      "filename": "validation_error_human_review_completed.xlsx",
+      "path": "G:/Project/FleetVision_Review_Packages/Phase04_5L/phase04_5l_20260714_v1_review_workspace/exports/validation_error_human_review_completed.xlsx",
+      "sha256": "C9DF0A38B115406791DF03BFDC714901A66A47BE95CE0E2047E573FCC8D6FB6C",
+      "size_bytes": 31871231,
+      "classification": "LOCAL_REVIEW_APP_COMPLETED_WORKBOOK_EXPORTED",
+      "created_at_utc": "2026-07-14T04:59:00Z",
+      "verification_status": "ARTIFACT_VERIFIED",
+      "commit_policy": "DO_NOT_COMMIT",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/PROJECT_STATUS.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Controlling addenda"
+        }
+      ]
+    },
+    {
+      "evidence_id": "E-04.5L-PACKAGE",
+      "type": "PACKAGE",
+      "filename": "phase04_5l_20260714_v1_PACKAGE.zip",
+      "path": "G:/Project/FleetVision_Review_Packages/Phase04_5L/phase04_5l_20260714_v1_PACKAGE.zip",
+      "sha256": "6D6243FE8F3E12910C03A5EDCFF178CE20B180473EED43DED2B36301A877B42A",
+      "size_bytes": null,
+      "classification": "PHASE_04_5L_COMPLETED_REVIEW_PACKAGE",
+      "created_at_utc": "2026-07-14T05:00:00Z",
+      "verification_status": "ARTIFACT_VERIFIED",
+      "commit_policy": "DO_NOT_COMMIT",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/PROJECT_STATUS.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Controlling addenda"
+        }
+      ]
+    },
+    {
+      "evidence_id": "E-04.5L-F2-DOC",
+      "type": "DOCUMENT",
+      "filename": "PROJECT_STATUS.md",
+      "path": "docs/00_project_management/PROJECT_STATUS.md",
+      "sha256": null,
+      "size_bytes": null,
+      "classification": "PHASE_04_5L_COMPLETED_REVIEW_VALIDATION_AND_FINDINGS_ANALYSIS_COMPLETED",
+      "created_at_utc": "2026-07-14T00:00:00Z",
+      "verification_status": "REPOSITORY_VERIFIED",
+      "commit_policy": "TRACKED_GOVERNANCE",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/PROJECT_STATUS.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Controlling addenda"
+        }
+      ]
+    },
+    {
+      "evidence_id": "E-04.5M-DESIGN",
+      "type": "DOCUMENT",
+      "filename": "2026-07-14-phase04-5m-data-correction-proposal-review-design.md",
+      "path": "docs/superpowers/specs/2026-07-14-phase04-5m-data-correction-proposal-review-design.md",
+      "sha256": null,
+      "size_bytes": null,
+      "classification": "PHASE_04_5M_DESIGN_APPROVED",
+      "created_at_utc": "2026-07-14T00:00:00Z",
+      "verification_status": "REPOSITORY_VERIFIED",
+      "commit_policy": "TRACKED_GOVERNANCE",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/HANDOFF_CURRENT.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Current repository-backed handoff"
+        }
+      ]
+    },
+    {
+      "evidence_id": "E-04.5M-WORKSPACE",
+      "type": "PACKAGE",
+      "filename": null,
+      "path": "G:/Project/FleetVision_Review_Packages/Phase04_5M/phase04_5m_annotation_correction_review_20260715_014932067",
+      "sha256": null,
+      "size_bytes": null,
+      "classification": "PHASE_04_5M_ANNOTATION_CORRECTION_PROPOSALS_REVIEWED",
+      "created_at_utc": "2026-07-15T01:49:32Z",
+      "verification_status": "REPOSITORY_VERIFIED",
+      "commit_policy": "DO_NOT_COMMIT",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/superpowers/specs/2026-07-15-phase04-5n-controlled-annotation-correction-promotion-design.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Authorization stop"
+        }
+      ]
+    },
+    {
+      "evidence_id": "E-04.5N-DESIGN",
+      "type": "DOCUMENT",
+      "filename": "2026-07-15-phase04-5n-controlled-annotation-correction-promotion-design.md",
+      "path": "docs/superpowers/specs/2026-07-15-phase04-5n-controlled-annotation-correction-promotion-design.md",
+      "sha256": null,
+      "size_bytes": null,
+      "classification": "PHASE_04_5N_DESIGN_APPROVED",
+      "created_at_utc": "2026-07-15T00:00:00Z",
+      "verification_status": "REPOSITORY_VERIFIED",
+      "commit_policy": "TRACKED_GOVERNANCE",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/superpowers/specs/2026-07-15-phase04-5n-controlled-annotation-correction-promotion-design.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Authorization stop"
+        }
+      ]
+    },
+    {
+      "evidence_id": "E-04.5N-PLAN",
+      "type": "DOCUMENT",
+      "filename": "2026-07-15-phase04-5n-controlled-annotation-correction-promotion.md",
+      "path": "docs/superpowers/plans/2026-07-15-phase04-5n-controlled-annotation-correction-promotion.md",
+      "sha256": null,
+      "size_bytes": null,
+      "classification": "PHASE_04_5N_IMPLEMENTATION_PLAN",
+      "created_at_utc": "2026-07-15T00:00:00Z",
+      "verification_status": "REPOSITORY_VERIFIED",
+      "commit_policy": "TRACKED_GOVERNANCE",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/superpowers/plans/2026-07-15-phase04-5n-controlled-annotation-correction-promotion.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Global Constraints"
+        }
+      ]
+    },
+    {
+      "evidence_id": "E-04.5N-CANDIDATE-TESTS",
+      "type": "TEST_SUMMARY",
+      "filename": null,
+      "path": "C:/Users/Vincent/AppData/Local/Temp/FleetVision_phase04_5n_implementation_374b2b9",
+      "sha256": null,
+      "size_bytes": null,
+      "classification": "TASKS_1_3_CANDIDATE_TESTS_REPORTED",
+      "created_at_utc": "2026-07-15T09:55:00Z",
+      "verification_status": "OPERATOR_REPORTED",
+      "commit_policy": "DO_NOT_COMMIT",
+      "source_refs": [
+        {
+          "type": "operator_report",
+          "path": "operator_report",
+          "ref": null,
+          "section": "Task 1-3 implementation status"
+        }
+      ]
+    }
+  ],
+  "warnings": [
+    {
+      "warning_id": "W-STALE-TOP-SUMMARY",
+      "severity": "WARNING",
+      "title": "治理文件含歷史摘要",
+      "message": "PROJECT_STATUS.md、HANDOFF_CURRENT.md 與 MASTER_PHASE_MAP.md 保留較舊段落；Dashboard 使用 controlling addenda 與 source precedence，不以第一個狀態字串判定。",
+      "trust_level": "REPOSITORY_VERIFIED",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/PROJECT_STATUS.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Controlling addenda"
+        },
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/HANDOFF_CURRENT.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Current repository-backed handoff"
+        },
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        }
+      ]
+    },
+    {
+      "warning_id": "W-PHASE-LOG-STALE",
+      "severity": "WARNING",
+      "title": "Phase 04.5 log coverage 落後",
+      "message": "PHASE_04_5_LOG.md 的可見內容落後於較新的 04.5L/M/N repository records。缺口顯示為警告，不會自動補寫歷史。",
+      "trust_level": "STALE_OR_CONFLICTING",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/phase_logs/PHASE_04_5_LOG.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Recorded events"
+        }
+      ]
+    },
+    {
+      "warning_id": "W-04.5G-GAP",
+      "severity": "WARNING",
+      "title": "04.5G acceptance evidence gap",
+      "message": "已檢查的治理摘要未提供控制性的 04.5G acceptance event，但下游 04.5J training 已完成。此狀態不由 Dashboard 猜測。",
+      "trust_level": "STALE_OR_CONFLICTING",
+      "source_refs": [
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/MASTER_PHASE_MAP.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Phase map"
+        },
+        {
+          "type": "repository_file",
+          "path": "docs/00_project_management/PROJECT_STATUS.md",
+          "ref": "374b2b99b997810da3e3c2beac0d7174df7c0e5f",
+          "section": "Controlling addenda"
+        }
+      ]
+    },
+    {
+      "warning_id": "W-CANDIDATE-TESTS",
+      "severity": "INFO",
+      "title": "04.5N 測試數量為操作者回報",
+      "message": "66/66 focused 與 98/98 regression 尚未由 Dashboard 讀取 structured JUnit/JSON evidence，因此保留 OPERATOR_REPORTED trust level。",
+      "trust_level": "OPERATOR_REPORTED",
+      "source_refs": [
+        {
+          "type": "operator_report",
+          "path": "operator_report",
+          "ref": null,
+          "section": "Task 1-3 implementation status"
+        }
+      ]
+    }
+  ]
+}

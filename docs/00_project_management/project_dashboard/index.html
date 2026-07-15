@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>FleetVision Local Project Dashboard</title>
+  <link rel="stylesheet" href="assets/dashboard.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要內容</a>
+  <header class="site-header">
+    <div class="brand-block">
+      <p class="eyebrow">PROJECT GOVERNANCE · LOCAL OFFLINE VIEW</p>
+      <h1>FleetVision Local Project Dashboard</h1>
+      <p id="project-subtitle" class="subtitle">正在載入 repository-backed 專案狀態…</p>
+    </div>
+    <div class="header-controls">
+      <label class="search-control" for="search-input">
+        <span>搜尋</span>
+        <input id="search-input" type="search" autocomplete="off" placeholder="Phase、Gate、classification、SHA256" aria-label="搜尋 Phase、Gate、classification 或證據">
+      </label>
+      <button id="manual-refresh" class="button" type="button" aria-label="立即重新整理 Dashboard">重新整理</button>
+    </div>
+    <div id="status-message" class="status-message" role="status" aria-live="polite">初始化中</div>
+  </header>
+
+  <main id="main-content" tabindex="-1">
+    <section aria-labelledby="overview-title" class="section-block">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">CURRENT SNAPSHOT</p>
+          <h2 id="overview-title">專案總覽</h2>
+        </div>
+        <p id="snapshot-meta" class="section-meta">尚未載入</p>
+      </div>
+      <div id="overview-grid" class="overview-grid" aria-label="專案總覽卡片"></div>
+    </section>
+
+    <section class="workspace-grid" aria-label="Phase、Gate 與目前工作焦點">
+      <nav class="panel phase-panel" aria-labelledby="phase-nav-title">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">PHASE MAP</p>
+            <h2 id="phase-nav-title">Phase 導覽</h2>
+          </div>
+        </div>
+        <div id="filter-controls" class="filter-controls" role="group" aria-label="依狀態篩選 Gate">
+          <button type="button" data-status="ALL" aria-pressed="true">全部</button>
+          <button type="button" data-status="COMPLETED" aria-pressed="false">已完成</button>
+          <button type="button" data-status="IN_PROGRESS" aria-pressed="false">執行中</button>
+          <button type="button" data-status="PENDING_REVIEW" aria-pressed="false">待審核</button>
+          <button type="button" data-status="READY" aria-pressed="false">可開始</button>
+          <button type="button" data-status="PENDING_EXECUTION" aria-pressed="false">待執行</button>
+          <button type="button" data-status="BLOCKED" aria-pressed="false">BLOCKED</button>
+          <button type="button" data-status="NOT_APPROVED" aria-pressed="false">尚未核准</button>
+          <button type="button" data-status="PLANNED" aria-pressed="false">已規劃</button>
+          <button type="button" data-status="FUTURE" aria-pressed="false">未來</button>
+        </div>
+        <div id="phase-navigation" class="phase-navigation"></div>
+      </nav>
+
+      <section class="panel gate-panel" aria-labelledby="gate-list-title">
+        <div class="panel-heading sticky-heading">
+          <div>
+            <p class="eyebrow">GATE DETAILS</p>
+            <h2 id="gate-list-title">Phase 與 Gate</h2>
+          </div>
+          <p id="gate-count" class="panel-count">0 筆</p>
+        </div>
+        <div id="gate-list" class="gate-list"></div>
+      </section>
+
+      <aside class="context-column" aria-label="目前焦點與安全狀態">
+        <section id="current-focus" class="panel context-panel" aria-labelledby="current-focus-title">
+          <div class="panel-heading"><h2 id="current-focus-title">目前工作焦點</h2></div>
+        </section>
+        <section id="safety-panel" class="panel context-panel" aria-labelledby="safety-title">
+          <div class="panel-heading"><h2 id="safety-title">安全硬閘</h2></div>
+        </section>
+        <section id="git-panel" class="panel context-panel" aria-labelledby="git-title">
+          <div class="panel-heading"><h2 id="git-title">Git 與 Worktree</h2></div>
+        </section>
+      </aside>
+    </section>
+
+    <section class="section-block" aria-labelledby="evidence-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">AUDIT EVIDENCE</p><h2 id="evidence-title">Gate 證據</h2></div>
+      </div>
+      <div class="table-scroll">
+        <table class="evidence-table">
+          <thead>
+            <tr>
+              <th scope="col">Evidence</th>
+              <th scope="col">Classification</th>
+              <th scope="col">Verification</th>
+              <th scope="col">Path / Filename</th>
+              <th scope="col">SHA256</th>
+              <th scope="col">Commit policy</th>
+            </tr>
+          </thead>
+          <tbody id="evidence-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section-block history-section" aria-labelledby="history-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">APPEND-ONLY HISTORY</p><h2 id="history-title">歷史時間軸</h2></div>
+      </div>
+      <div id="history-timeline" class="timeline"></div>
+    </section>
+
+    <section class="section-block warning-section" aria-labelledby="warning-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">SOURCE CONFLICTS</p><h2 id="warning-title">來源警告與衝突</h2></div>
+      </div>
+      <div id="warning-list" class="warning-list"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>此 Dashboard 為衍生的唯讀治理檢視；正式真相來源仍為 Git、治理文件與 artifact SHA256。</p>
+    <p>不執行 N1／N2、不讀 test split、不修改 canonical data、不啟動 training。</p>
+  </footer>
+
+  <script type="module" src="assets/dashboard.js"></script>
+</body>
+</html>
