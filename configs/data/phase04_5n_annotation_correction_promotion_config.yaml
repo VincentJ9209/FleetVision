@@ -1,0 +1,62 @@
+schema_version: "1"
+
+predecessor:
+  expected_classification: PHASE_04_5M_ANNOTATION_CORRECTION_PROPOSALS_REVIEWED
+  expected_review_cases: 2
+  expected_reviewed: 2
+  expected_pending: 0
+  expected_needs_adjudication: 0
+  required_export_files:
+    - exports/annotation_correction_proposals_reviewed.csv
+    - exports/annotation_correction_proposals_reviewed.json
+    - exports/correction_review_export_result.json
+    - exports/SHA256SUMS.csv
+    - source/source_contract.json
+    - source/source_manifest.csv
+    - source/correction_review_source.csv
+  expected_proposals:
+    - review_case_id: l_687b939a3a89bb8e
+      correction_case_id: m_57c102ad6b7c8376
+      image_id: 147_jpg.rf.83b3e9e399d2f3546d5676a902148f0c.jpg
+      source_split: valid
+      operation: RESIZE_OR_REDRAW_BBOX
+      target_gt_bbox_ids: [gt_001]
+      proposal_fingerprint: C28DE952BFEB7B1C2C0F25BA348B8AF69E87032774714AC95D36B29A944A5FC4
+    - review_case_id: l_e5875a8f94620ff1
+      correction_case_id: m_ccb31aa1a564a66a
+      image_id: test_set_188_jpg.rf.ed3c01d255f1c18dd0c5dd2667c7a096.jpg
+      source_split: valid
+      operation: RESIZE_OR_REDRAW_BBOX
+      target_gt_bbox_ids: [gt_002]
+      proposal_fingerprint: EC8ABCDC49879C817480F1A09FD71E376C5CA47EDB730D5DA699B5298BA13095
+
+canonical_source:
+  dataset_id: rf_car_damage_seg_v1
+  required_split: valid
+  required_category_name: damage
+  approved_candidates:
+    - dataset/02_interim/99_external/roboflow/rf_car_damage_seg_v1/canonical_coco/valid/_annotations.coco.json
+  coordinate_tolerance_pixels: 0.001
+  allowed_changed_fields: [bbox, area]
+
+n1:
+  workspace_base_root: G:\Project\FleetVision_Review_Packages\Phase04_5N
+  workspace_prefix: phase04_5n_staged_annotation_corrections
+  gate_classification: PHASE_04_5N_STAGED_ANNOTATION_CORRECTIONS_VALIDATED
+  staged_coco_name: staged_corrected_validation_coco.json
+
+n2:
+  evidence_base_root: G:\Project\FleetVision_Review_Packages\Phase04_5N_Promotion
+  evidence_prefix: phase04_5n_annotation_correction_promotion
+  authorization_phrase: PHASE_04_5N_2_CANONICAL_PROMOTION_AUTHORIZED
+  gate_classification: PHASE_04_5N_ANNOTATION_CORRECTIONS_PROMOTED
+
+safety:
+  test_split_read: false
+  model_inference_executed: false
+  dataset_materialization_executed: false
+  registry_modified: false
+  fixed_splits_modified: false
+  training_started: false
+  retraining_status: NOT_YET_APPROVED
+  deployment_acceptance: NOT_YET_APPROVED

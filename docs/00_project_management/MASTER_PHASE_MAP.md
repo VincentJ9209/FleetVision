@@ -337,3 +337,17 @@ Next Gate:
 
 Phase 04.5N annotation promotion remains unstarted and separately governed.
 <!-- FLEETVISION-MANAGED:PHASE_04_5M_IMPLEMENTED:END -->
+
+<!-- PHASE_04_5N_IMPLEMENTATION_MAP_CANDIDATE_20260715 -->
+
+## Phase 04.5N — Controlled Annotation Correction Promotion
+
+| Gate | 狀態 | Classification／Next action |
+|---|---|---|
+| 04.5N implementation Tasks 1–8 | PASS | N1/N2 implementation and fixture tests complete |
+| 04.5N Task 9 pre-commit closure | PASS candidate | Full regression, documentation, fingerprints, and exact allowlist verification |
+| Repository integration | PENDING | `PHASE_04_5N_EXACT_STAGE_COMMIT_AND_NON_FORCE_PUSH` |
+| 04.5N-1 production staging | NOT EXECUTED | Only after commit/push and remote reconciliation |
+| 04.5N-2 canonical promotion | NOT AUTHORIZED／NOT EXECUTED | Requires separate explicit authorization phrase |
+
+Implementation closure does not authorize dataset materialization, retraining, evaluation, or deployment acceptance.

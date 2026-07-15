@@ -205,3 +205,21 @@ PHASE_04_5M_1_CORRECTION_REVIEW_PACKAGE_PREPARATION
 
 Do not modify canonical annotation or begin training. Phase 04.5M package preparation and human review remain separate operational Gates.
 <!-- FLEETVISION-MANAGED:PHASE_04_5M_IMPLEMENTATION_HANDOFF:END -->
+
+<!-- PHASE_04_5N_IMPLEMENTATION_HANDOFF_CANDIDATE_20260715 -->
+
+## Phase 04.5N Implementation Handoff Candidate（2026-07-15）
+
+- Implementation worktree：`C:\Users\Vincent\AppData\Local\Temp\FleetVision_phase04_5n_implementation_374b2b9`
+- Branch：`phase04-5n-implementation`
+- Implementation base HEAD：`3aa76a1c499144311f387faf97aa29c45778f68e`
+- Expected implementation paths：14 個 Phase 04.5N code/config/test/guide paths，加上 4 個 governance documents
+- Commit／push：尚未執行；只能在 pre-commit closure evidence PASS 後使用 exact allowlist
+- Production N1：未執行
+- Production N2 preflight／execute：未執行
+- Canonical COCO：未修改
+- Test split：僅做 byte-level fingerprint；未解析 annotation JSON
+- Next Gate：`PHASE_04_5N_EXACT_STAGE_COMMIT_AND_NON_FORCE_PUSH`
+- Remote reconciliation PASS 後才可請求：`PHASE_04_5N_1_STAGED_CORRECTION_BUILD_AND_VALIDATION`
+
+禁止 `git add .`、`git add -A`、force push、hard reset、clean，以及任何 protected external asset staging。
