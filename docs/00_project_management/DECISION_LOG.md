@@ -253,3 +253,75 @@
   is prohibited.
 - Codex：`CONDITIONALLY_PAUSED`; each task requires task-specific authorization.
 <!-- FLEETVISION-MANAGED:DEC-05R-001-006:END -->
+
+<!-- FLEETVISION-MANAGED:DEC-05S-001-006:BEGIN -->
+## DEC-05S-001 — Limit the demo sprint to FleetVision second-stage responsibility
+
+- 日期：2026-07-19
+- 狀態：Active
+- 決策：Phase 05S is limited to the second-stage before／after damage-review
+  workflow. FleetVision does not implement the first-stage capture App or a
+  large Dashboard in this sprint.
+- Inputs：640x640 before／after photos plus metadata.
+- Outputs：`NO_NEW_DAMAGE`、`NEW_DAMAGE_CANDIDATE`、`MANUAL_REVIEW_REQUIRED`.
+- Prohibited：responsibility assignment, insurance settlement, Segmentation,
+  uncontrolled data collection and public dataset expansion.
+
+## DEC-05S-002 — Use a multi-stage human-review architecture
+
+- 日期：2026-07-19
+- 狀態：Active
+- 決策：Phase 05S uses a staged workflow: input contract validation,
+  vehicle-region／background suppression, obvious-damage detection,
+  minor-damage candidate surfacing, closeup-required output, same-view
+  before／after comparison and structured human-review outputs.
+- Human review default：local Traditional Chinese Python／Streamlit interface
+  with SQLite live state, append-only audit events and backups.
+- Excel boundary：completed export／exchange／archive only.
+
+## DEC-05S-003 — Prioritize A-level and B-level demo outcomes; defer C-level scope
+
+- 日期：2026-07-19
+- 狀態：Active
+- 決策：The seven-day demo sprint prioritizes A-level obvious damage detection
+  and B-level visible minor-damage candidates. C-level future expansion is
+  deferred until a later Gate.
+- Consequence：Phase 05S must not expand into broad model research,
+  Segmentation, Dashboard implementation or first-stage capture tooling.
+
+## DEC-05S-004 — Retain full-image classification as baseline evidence only
+
+- 日期：2026-07-19
+- 狀態：Active
+- 決策：Full-image classification and ResNet18 recovery evidence may be used as
+  baseline or diagnostic evidence, but not as final production acceptance for
+  before／after damage decisions.
+- R4-07 and R4-08 trust classification：
+  `CHAT_CONFIRMED_NOT_REPOSITORY_VERIFIED` until the actual artifacts are
+  located and independently verified.
+
+## DEC-05S-005 — Adopt Phase 05S-A1 team pairing audit strategy
+
+- 日期：2026-07-19
+- 狀態：Active
+- 決策：Adopt semi-automated candidate pairing plus human confirmation for the
+  team-captured `dataset/01_raw/04_team` source.
+- Reported source count：319 images.
+- Count trust classification：
+  `CHAT_CONFIRMED_NOT_IMAGE_SCANNED_IN_HANDOFF_GATE`.
+- Confirmation boundary：vehicle identity, capture batch, view angle,
+  before／after stage, rental pairing, existing damage and no-new-damage status
+  remain human-confirmed.
+
+## DEC-05S-006 — Use local Windows Python interface with Colab fallback
+
+- 日期：2026-07-19
+- 狀態：Active
+- 決策：Phase 05S implementation planning must target a local Windows Python
+  workflow first, with Colab as mandatory backup for environment or compute
+  risk.
+- Local interface：Traditional Chinese Streamlit／SQLite unless a later Gate
+  approves a controlled exception.
+- Colab fallback：backup only; it does not authorize Frozen Test access,
+  training, dataset mutation or bypassing local governance.
+<!-- FLEETVISION-MANAGED:DEC-05S-001-006:END -->

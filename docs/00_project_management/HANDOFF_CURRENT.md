@@ -4,10 +4,10 @@
 ## Current handoff pointer
 
 The authoritative current handoff is the final
-`FLEETVISION-MANAGED:PHASE05R-CURRENT-HANDOFF` block in this file.
+`FLEETVISION-MANAGED:PHASE05R-05S-CURRENT-HANDOFF` block in this file.
 
-Historical Phase 04.5 handoff blocks remain preserved for traceability and do
-not override the final Phase 05R block.
+Historical Phase 04.5 and Phase 05R handoff blocks remain preserved for
+traceability and do not override the final current-handoff block.
 <!-- FLEETVISION-MANAGED:CURRENT-HANDOFF:END -->
 
 <!-- FLEETVISION-MANAGED:PHASE_04_5L_F2_04_5M_DESIGN_HANDOFF:BEGIN -->
@@ -158,3 +158,79 @@ train, modify data, inspect labels deeply or access Frozen Test.
 - automatic commit／push;
 - Codex without task-specific authorization.
 <!-- FLEETVISION-MANAGED:PHASE05R-CURRENT-HANDOFF:END -->
+
+<!-- FLEETVISION-MANAGED:PHASE05R-05S-CURRENT-HANDOFF:BEGIN -->
+## Phase 05R/05S current handoff
+
+This is the authoritative current handoff after the commit containing this
+block is pushed and remote verified.
+
+### Repository
+
+- Root：`G:\Project\FleetVision`
+- Branch：`main`
+- Parent before this handoff：`898e7a5d373d8d48887ff7bf73f42a85bc818a9f`
+- Worktree policy：clean or protected-untracked-only
+- Protected path：`outputs/metadata/external_assets/`
+
+### Current state
+
+- Technical Phase：`05S-A1 — Team Pairing Audit Design Review`
+- Completed Gate：`PHASE_05R_05S_HANDOFF_RECONCILIATION`
+- Current Gate：`PHASE_05S_A1_DESIGN_REVIEW_BEFORE_IMPLEMENTATION_PLAN`
+- Phase 05S-A1 design：
+  `docs/01_phase_guides/phase_05s_a1_team_pairing_audit_design.md`
+- Recovery training started：false
+- Frozen Test access authorized：false
+- Image scan in this Gate：false
+- Code implementation in this Gate：false
+- Codex：task-specific authorization for this handoff only
+
+### Phase 05R reconciled facts
+
+R4-07 and R4-08 facts supplied by the handoff package are recorded in
+`PROJECT_STATUS.md` and the Phase 05R log with trust classification
+`CHAT_CONFIRMED_NOT_REPOSITORY_VERIFIED`. They must not be treated as
+`ARTIFACT_VERIFIED` until a later Gate locates and re-hashes the actual
+artifacts.
+
+### Phase 05S-A1 design
+
+- Source：`dataset/01_raw/04_team`
+- Reported image count：319
+- Count trust：`CHAT_CONFIRMED_NOT_IMAGE_SCANNED_IN_HANDOFF_GATE`
+- Workflow：semi-automated candidate pairing plus human confirmation
+- Default interface：local Traditional Chinese Python／Streamlit
+- Live state：SQLite
+- Audit：append-only JSONL
+- Backup：required
+- Excel：completed export／exchange／archive only
+
+### Superseded stale directions
+
+The following older directions are stale for the current next action when they
+conflict with Phase 05S-A1:
+
+- continue unlimited tuning;
+- use Frozen Test for threshold tuning;
+- build a Dashboard;
+- expand to Segmentation;
+- resume OPS or Phase 04.5M package work without a new Gate.
+
+### Next authorized action
+
+Review the repository-tracked Phase 05S-A1 design, then write a separate
+implementation plan. Do not begin implementation in this handoff Gate.
+
+### Prohibited
+
+- raw or protected-asset mutation;
+- image scan during this handoff Gate;
+- Frozen Test search, listing, hashing, reading or tuning;
+- code implementation;
+- training or fine-tuning;
+- public dataset expansion;
+- Dashboard or first-stage capture App work;
+- generated output commit;
+- broad `git add .` or `git add -A`.
+<!-- FLEETVISION-MANAGED:PHASE05R-05S-CURRENT-HANDOFF:END -->

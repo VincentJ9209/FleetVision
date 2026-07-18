@@ -13,7 +13,24 @@
 
 ## 2. 專案目標
 
-建立一套可追蹤、可重現、可展示的車輛外觀車損辨識流程，涵蓋：
+建立一套可追蹤、可重現、可展示的第二階段車輛外觀車損辨識流程。
+FleetVision 目前不負責第一階段拍攝 App 或大型 Dashboard；第二階段接收
+640x640 before／after photos 與 metadata，執行 input contract validation、
+vehicle-region／background suppression、A-level obvious damage detection、
+B-level visible minor-damage candidates、closeup-required output、
+same-view／same-vehicle-region before-after comparison，並輸出可供人工審核的
+結構化結果。
+
+允許輸出決策固定為：
+
+- `NO_NEW_DAMAGE`
+- `NEW_DAMAGE_CANDIDATE`
+- `MANUAL_REVIEW_REQUIRED`
+
+此定位不包含責任歸屬、保險理賠結論、第一階段拍攝 App、未授權 Dashboard、
+Segmentation 或 uncontrolled data collection。
+
+歷史與資料治理路線涵蓋：
 
 1. 圖片資料盤點與品質篩選
 2. 人工審核與資料治理
@@ -243,4 +260,28 @@ FleetVision uses the repository as the cross-conversation source of truth. Start
 
 Chat history is supporting context only. It must not override a newer verified repository state.
 <!-- FLEETVISION-MANAGED:SOURCE-OF-TRUTH:END -->
+
+<!-- FLEETVISION-MANAGED:PHASE05R-05S-CONTEXT:BEGIN -->
+## Current recovery and demo-sprint context
+
+Phase 05R completed its recovery-result handoff reconciliation with several
+R4-07／R4-08 facts still classified as external handoff evidence unless the
+actual artifacts are independently re-hashed in a later Gate.
+
+Phase 05S is the seven-day demo-sprint track. Its current approved next action
+is Phase 05S-A1 design review for the team-captured before／after pairing audit:
+
+- source path：`dataset/01_raw/04_team`
+- reported source size：319 images
+- current source-size trust：`CHAT_CONFIRMED_NOT_IMAGE_SCANNED_IN_HANDOFF_GATE`
+- design path：`docs/01_phase_guides/phase_05s_a1_team_pairing_audit_design.md`
+- strategy：semi-automated candidate pairing plus human confirmation
+- default human interface：local Traditional Chinese Python／Streamlit plus SQLite
+- Excel role：completed export／exchange／archive only
+
+The single next authorized action is to review the repository-tracked Phase
+05S-A1 design and then write a separate implementation plan. No code
+implementation, image scan, training, Frozen Test access, public-data expansion,
+Dashboard or first-stage App work is authorized by this handoff.
+<!-- FLEETVISION-MANAGED:PHASE05R-05S-CONTEXT:END -->
 

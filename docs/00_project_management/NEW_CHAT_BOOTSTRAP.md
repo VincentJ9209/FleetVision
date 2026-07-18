@@ -3,7 +3,7 @@
 <!-- FLEETVISION-MANAGED:BOOTSTRAP-PROMPT:BEGIN -->
 ## Standard new-conversation prompt
 
-``text
+```text
 繼續 FleetVision／Project_FleetVision 車損辨識專案。
 
 請先透過 GitHub main branch 讀取：
@@ -24,8 +24,22 @@
 - next authorized action
 - detected conflicts
 
+目前 repository-backed 狀態應指向：
+- current technical phase: Phase 05S-A1 — Team Pairing Audit Design Review
+- current gate: PHASE_05S_A1_DESIGN_REVIEW_BEFORE_IMPLEMENTATION_PLAN
+- design path: docs/01_phase_guides/phase_05s_a1_team_pairing_audit_design.md
+- only next authorized action: review the tracked Phase 05S-A1 design, then write a separate implementation plan
+
+禁止在完成狀態核對與 design review 前執行：
+- code implementation
+- image scan
+- training or fine-tuning
+- Frozen Test search/listing/reading/hashing
+- Dashboard or first-stage App work
+- generated output commit
+
 未完成狀態核對前，不得提出或執行修改。
 Codex 與 Cursor Agent 維持停用，除非 Vincent 明確重新授權。
-``
+```
 <!-- FLEETVISION-MANAGED:BOOTSTRAP-PROMPT:END -->
 

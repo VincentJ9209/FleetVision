@@ -1,18 +1,18 @@
 ﻿# FleetVision Project Status
 
 > 更新原則：每次正式 checkpoint 後更新。
-> 基準日期：2026-07-14
+> 基準日期：2026-07-19
 
 ## 1. 當前 Phase
 
 - 前一主 Phase：Phase 04 — Pilot Human Review and Reviewed Dataset — **COMPLETED**
-- 主 Phase：Phase 04.5 — External Dataset Intake, Controlled Baseline, and Audit — **IN PROGRESS**
-- Current technical Phase：**Phase 05R — Model Recovery & Dataset Quality Audit**
-- Latest completed operational Gate：**Completed Workbook Export**
+- 主 Phase：Phase 05S — Seven-day Demo Sprint and Second-stage Before/After Workflow — **IN PROGRESS**
+- Current technical Phase：**Phase 05S-A1 — Team Pairing Audit Design Review**
+- Latest completed operational Gate：**Phase 05R/05S Handoff Reconciliation**
 - Outcome：**PASS**
-- Classification：`LOCAL_REVIEW_APP_COMPLETED_WORKBOOK_EXPORTED`
-- Latest verified code checkpoint before this governance handoff：`53e742d40430e4419c1da63bca384e237578486a`
-- Code checkpoint subject：`fix: repair local review case navigation`
+- Classification：`PHASE_05R_05S_HANDOFF_RECONCILIATION_COMPLETED`
+- Latest verified repository checkpoint before this governance handoff：`898e7a5d373d8d48887ff7bf73f42a85bc818a9f`
+- Repository checkpoint subject：`docs: activate phase 05R governance`
 - Formal human review：**130／130 reviewed**
 - Pending：**0**
 - Needs adjudication：**0**
@@ -25,7 +25,8 @@
 - Training／fine-tuning：**未執行**
 - Retraining status：`NOT_YET_APPROVED`
 - Deployment acceptance：`NOT_YET_APPROVED`
-- Next authorized Gate：**`PHASE_04_5L_COMPLETED_REVIEW_VALIDATION_AND_FINDINGS_ANALYSIS`**
+- Phase 05S-A1 design：**REPOSITORY_TRACKED_AFTER_THIS_GATE**
+- Next authorized Gate：**`PHASE_05S_A1_DESIGN_REVIEW_BEFORE_IMPLEMENTATION_PLAN`**
 
 ## 2. 已完成項目
 
@@ -377,52 +378,60 @@ schema_version: 3
 project: FleetVision
 repository_root: 'G:\Project\FleetVision'
 branch: main
-governance_proposal_parent_checkpoint: "3aa76a1c499144311f387faf97aa29c45778f68e"
-phase05r_effective_condition: "COMMIT_CONTAINING_THIS_BLOCK_PUSHED_AND_REMOTE_VERIFIED"
-technical_phase: "05R"
-technical_phase_name: "Model Recovery & Dataset Quality Audit"
-current_gate: "PHASE_05R_01_DATASET_LABEL_QUALITY_AUDIT"
-latest_completed_governance_gate: "PHASE_05R_00D_GOVERNANCE_COMMIT_PUSH_REMOTE_VERIFICATION"
-previous_gate: "PHASE_04_5M_1_CORRECTION_REVIEW_PACKAGE_PREPARATION"
-previous_gate_disposition: "DEFERRED_BY_APPROVED_RECOVERY_TRACK_NOT_COMPLETED"
+governance_proposal_parent_checkpoint: "898e7a5d373d8d48887ff7bf73f42a85bc818a9f"
+phase05s_effective_condition: "COMMIT_CONTAINING_THIS_BLOCK_PUSHED_AND_REMOTE_VERIFIED"
+technical_phase: "05S-A1"
+technical_phase_name: "Team Pairing Audit Design Review"
+current_gate: "PHASE_05S_A1_DESIGN_REVIEW_BEFORE_IMPLEMENTATION_PLAN"
+latest_completed_governance_gate: "PHASE_05R_05S_HANDOFF_RECONCILIATION"
+previous_gate: "PHASE_05R_08_CPU_REPRODUCTION_AND_DATASET_V2_STATUS_RECONCILIATION"
+previous_gate_disposition: "CHAT_CONFIRMED_PENDING_ARTIFACT_REHASH_WHERE_AVAILABLE"
 phase05r_scope_contract: "docs/00_project_management/PHASE05R_SCOPE_CONTRACT.md"
 phase05r_guide: "docs/01_phase_guides/phase_05r_model_recovery.md"
 phase05r_log: "docs/00_project_management/phase_logs/PHASE_05R_LOG.md"
+phase05s_a1_design: "docs/01_phase_guides/phase_05s_a1_team_pairing_audit_design.md"
 recovery_notebook_drive_path: "/content/drive/MyDrive/AI_Class/00.Project/FleetVision/notebooks/FleetVision_Phase05_Model_Recovery.ipynb"
 recovery_notebook_reconciled_sha256: "2086D3EA155748EF61E0751CAC796739CD9E5F4624744D2C0DCA726D67146CCF"
 dataset_v1_zip_sha256: "B72812D97E08B312EBC239ADB43C7DE7DED29FB1B3098CD3BEA17C880813C58A"
 baseline_candidate_01_sha256: "605FFAC6B1AA39A2E9F13BA09456943529B2788B7FCBEEACE43A3616D1C41C89"
 baseline_classification: "BEST_AVAILABLE_POC_ONLY"
 production_quality_gate: "FAILED"
-dataset_v2_status: "NOT_STARTED"
-candidate_03_to_05_status: "NOT_STARTED"
+phase05r_r4_07_resnet18_status: "CHAT_CONFIRMED_NOT_REPOSITORY_VERIFIED"
+phase05r_r4_08_dataset_v2_status: "CHAT_CONFIRMED_NOT_REPOSITORY_VERIFIED"
+dataset_v2_status: "CHAT_CONFIRMED_CPU_REPRODUCTION_PASSED_PENDING_REPOSITORY_ARTIFACT_VERIFICATION"
+candidate_03_to_05_status: "SUPERSEDED_BY_DEMO_SPRINT_SCOPE"
 recovery_training_started: false
 frozen_test_access_authorized: false
 frozen_test_used_for_tuning: false
 test_split_mutation: false
 raw_dataset_mutation: false
 protected_external_assets_mutation: false
-codex_status: "CONDITIONALLY_PAUSED"
+codex_status: "TASK_SPECIFICALLY_AUTHORIZED_FOR_THIS_HANDOFF_ONLY"
 automatic_commit_push: false
 worktree_policy: "CLEAN_OR_PROTECTED_UNTRACKED_ONLY"
 protected_untracked_path: "outputs/metadata/external_assets/"
-next_authorized_action: "PHASE_05R_01_DATASET_LABEL_QUALITY_AUDIT"
-updated_at_local: "2026-07-18"
+next_authorized_action: "REVIEW_REPOSITORY_TRACKED_PHASE_05S_A1_DESIGN_THEN_WRITE_IMPLEMENTATION_PLAN"
+implementation_authorized: false
+image_scan_authorized: false
+training_authorized: false
+frozen_test_listing_authorized: false
+updated_at_local: "2026-07-19"
 ~~~
 
 ## Current checkpoint
 
-- Technical Phase：**Phase 05R — Model Recovery & Dataset Quality Audit**
+- Technical Phase：**Phase 05S-A1 — Team Pairing Audit Design Review**
 - Latest completed governance Gate：
-  `PHASE_05R_00D_GOVERNANCE_COMMIT_PUSH_REMOTE_VERIFICATION`
-- Current Gate：`PHASE_05R_01_DATASET_LABEL_QUALITY_AUDIT`
+  `PHASE_05R_05S_HANDOFF_RECONCILIATION`
+- Current Gate：`PHASE_05S_A1_DESIGN_REVIEW_BEFORE_IMPLEMENTATION_PLAN`
 - Baseline model：`BEST_AVAILABLE_POC_ONLY`
-- Dataset v2：**NOT STARTED**
+- Dataset v2：**CHAT_CONFIRMED／PENDING_ARTIFACT_REHASH_WHERE_AVAILABLE**
 - Recovery training：**NOT STARTED**
 - Frozen Test access：**NOT AUTHORIZED**
-- Codex：`CONDITIONALLY_PAUSED`
+- Codex：`TASK_SPECIFICALLY_AUTHORIZED_FOR_THIS_HANDOFF_ONLY`
 - Next authorized action：
-  `PHASE_05R_01_DATASET_LABEL_QUALITY_AUDIT`
+  Review repository-tracked Phase 05S-A1 design, then write a separate
+  implementation plan.
 
 This state is effective only after the commit containing this block is pushed
 and local HEAD, `origin/main` and GitHub remote `main` are equal.
@@ -569,3 +578,85 @@ MODEL_REPLACED=NO
 CODEX_STATUS=CONDITIONALLY_PAUSED
 ```
 <!-- FLEETVISION-MANAGED:PHASE05R-ACTIVATION:END -->
+
+<!-- FLEETVISION-MANAGED:PHASE05R-05S-RECONCILIATION:BEGIN -->
+## Phase 05R/05S handoff reconciliation（2026-07-19）
+
+### Completed Gate
+
+- Gate：`PHASE_05R_05S_HANDOFF_RECONCILIATION`
+- Outcome：`PASS`
+- Classification：`PHASE_05R_05S_HANDOFF_RECONCILIATION_COMPLETED`
+- Live repository parent：`898e7a5d373d8d48887ff7bf73f42a85bc818a9f`
+- Phase 05R repository activation：`REPOSITORY_VERIFIED`
+- Phase 05S-A1 design：`REPOSITORY_TRACKED_AFTER_THIS_GATE`
+
+### Phase 05R facts reconciled
+
+R4-07 ResNet18 facts from the external handoff package:
+
+- input：512
+- threshold：0.25
+- Valid：29
+- TP／FP／FN／TN：12／3／3／11
+- F1：0.8
+- AUROC：0.857142857143
+- model SHA256：
+  `A6289B25D8A1B9619DBE2AD4BC1D4D173163E9344CBE51D4E0A612FC8E4E99E1`
+- predictions SHA256：
+  `C9E1BC20FF79402D43B9686D680D2DE920A552FD0EB5EF0BAFA5CB53A19A769B`
+- manifest SHA256：
+  `0961A865BCA4316A73A6F6F1753B7B73234AD71A9A033E345A53622E765239B2`
+- Trust classification：`CHAT_CONFIRMED_NOT_REPOSITORY_VERIFIED`
+
+R4-08 facts from the external handoff package:
+
+- Dataset v2 path：
+  `grouped_dataset/internal_grouped_dataset_v2_dev_orientation_reviewed`
+- 29 valid image／label hashes matched
+- CPU reproduction passed
+- threshold remains 0.25
+- Hard Negative fine-tune not approved
+- E01：`HOLD`
+- E02／E03：`EXCLUDE_FROM_IMAGE_CLASSIFICATION`
+- E04／E05／E06：`HARD_NEGATIVE`
+- background shortcut and label-task mismatch confirmed
+- Frozen Test not accessed
+- Trust classification：`CHAT_CONFIRMED_NOT_REPOSITORY_VERIFIED`
+
+These facts must not be upgraded to `REPOSITORY_VERIFIED` or
+`ARTIFACT_VERIFIED` until a later Gate locates the actual artifacts and
+recomputes or verifies the stated hashes.
+
+### Phase 05S scope reconciled
+
+- Track：seven-day demo sprint for the FleetVision second-stage workflow.
+- Responsibility boundary：second stage only; no first-stage capture App and no
+  large Dashboard.
+- Required runtime strategy：local Windows Python interface with Colab fallback.
+- Phase 05S-A1 source：`dataset/01_raw/04_team`
+- Reported source image count：319
+- Count trust classification：
+  `CHAT_CONFIRMED_NOT_IMAGE_SCANNED_IN_HANDOFF_GATE`
+- Approved A1 approach：semi-automated candidate pairing plus human confirmation.
+- Human review default：Traditional Chinese local interface with SQLite live
+  state, audit events and backups.
+- Excel role：completed export／exchange／archive only.
+
+### Current safety declarations
+
+```text
+NO_CODE_IMPLEMENTATION_IN_THIS_GATE=YES
+NO_IMAGE_SCAN_IN_THIS_GATE=YES
+NO_TRAINING_IN_THIS_GATE=YES
+NO_FROZEN_TEST_ACCESS=YES
+NO_PUBLIC_DATASET_EXPANSION=YES
+NO_DASHBOARD=YES
+NO_FIRST_STAGE_APP=YES
+RAW_DATASET_MODIFIED=NO
+PROTECTED_EXTERNAL_ASSETS_MODIFIED=NO
+GENERATED_OUTPUT_COMMITTED=NO
+IMPLEMENTATION_PLAN_AUTHORIZED=AFTER_REPOSITORY_TRACKED_DESIGN_REVIEW_ONLY
+NEXT_AUTHORIZED_ACTION=REVIEW_REPOSITORY_TRACKED_PHASE_05S_A1_DESIGN_THEN_WRITE_IMPLEMENTATION_PLAN
+```
+<!-- FLEETVISION-MANAGED:PHASE05R-05S-RECONCILIATION:END -->

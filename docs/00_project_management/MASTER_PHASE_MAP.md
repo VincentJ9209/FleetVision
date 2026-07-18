@@ -268,13 +268,13 @@ Gate：
 
 | Item | Current value |
 |---|---|
-| Current technical phase | 05R — Model Recovery & Dataset Quality Audit |
-| Current Gate | `PHASE_05R_01_DATASET_LABEL_QUALITY_AUDIT` |
-| Previous Gate | `PHASE_04_5M_1_CORRECTION_REVIEW_PACKAGE_PREPARATION` |
-| Previous Gate disposition | Deferred, not completed |
+| Current technical phase | 05S-A1 — Team Pairing Audit Design Review |
+| Current Gate | `PHASE_05S_A1_DESIGN_REVIEW_BEFORE_IMPLEMENTATION_PLAN` |
+| Previous Gate | `PHASE_05R_05S_HANDOFF_RECONCILIATION` |
+| Previous Gate disposition | Completed handoff synchronization |
 | Recovery training | Not started |
 | Frozen Test access | Not authorized |
-| Codex | `CONDITIONALLY_PAUSED` |
+| Codex | Task-specific authorization for this handoff only |
 
 This checkpoint is effective only after the commit containing it is pushed and
 remote verified.
@@ -392,3 +392,72 @@ Phase 05R controlled recovery track
 - Phase 04.5M-1 remains incomplete and deferred.
 - Phase 04.5N remains separately governed and is not implied by Phase 05R.
 <!-- FLEETVISION-MANAGED:PHASE05R-MAP:END -->
+
+<!-- FLEETVISION-MANAGED:PHASE05S-MAP:BEGIN -->
+## Phase 05S — Seven-day Demo Sprint and Second-stage Before/After Workflow
+
+**Status：ACTIVE AFTER HANDOFF RECONCILIATION COMMIT REMOTE VERIFICATION**
+
+Phase 05S is a demo-sprint track for the FleetVision second-stage workflow. It
+does not authorize the first-stage capture App, a large Dashboard,
+Segmentation, uncontrolled data collection, public dataset expansion, Frozen
+Test tuning or insurance／responsibility decisions.
+
+### Product boundary
+
+Phase 05S is limited to the second stage:
+
+```text
+640x640 before／after photos + metadata
+input contract validation
+vehicle region／background suppression
+A-level obvious damage detection
+B-level visible minor-damage candidates
+closeup-required output
+same-view／same-vehicle-region before-after comparison
+structured outputs for human review
+```
+
+Allowed decision outputs:
+
+```text
+NO_NEW_DAMAGE
+NEW_DAMAGE_CANDIDATE
+MANUAL_REVIEW_REQUIRED
+```
+
+### Gate sequence
+
+| Gate | Purpose | Mutation／training boundary | Status |
+|---|---|---|---|
+| 05S-00 | Handoff reconciliation and source-of-truth sync | governance Markdown only | Complete after this commit |
+| 05S-A1 | Team-captured before／after pairing audit design review | no image scan; no implementation | Active |
+| 05S-A2 | Implementation plan for A1 | docs plan only | Pending design review |
+| 05S-A3 | Local Windows audit workflow implementation | code/config/tests only; generated outputs untracked | Not authorized |
+| 05S-A4 | Controlled run on `04_team` | read-only source; outputs outside raw | Not authorized |
+| 05S-B | Demo comparison workflow | only after confirmed pairs | Not authorized |
+
+### Phase 05S-A1 design
+
+- Design document：
+  `docs/01_phase_guides/phase_05s_a1_team_pairing_audit_design.md`
+- Source：`dataset/01_raw/04_team`
+- Reported source count：319 images
+- Count trust：`CHAT_CONFIRMED_NOT_IMAGE_SCANNED_IN_HANDOFF_GATE`
+- Approach：semi-automated candidate pairing plus human confirmation
+- Interface：local Traditional Chinese Python／Streamlit
+- Live state：SQLite
+- Excel role：completed export／exchange／archive only
+
+### Hard boundaries
+
+- `dataset/01_raw/` remains immutable.
+- Frozen Test is locked and must not be searched, listed, hashed or read.
+- This handoff Gate performs no image scan, no code implementation and no
+  training.
+- Implementation plan is the next document after Vincent reviews the tracked
+  design.
+- Generated CSV, JSON, XLSX, contact sheets, review packages and model outputs
+  are not committed unless a later Gate explicitly designates them tracked
+  governance artifacts.
+<!-- FLEETVISION-MANAGED:PHASE05S-MAP:END -->
