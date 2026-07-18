@@ -194,3 +194,62 @@
 - 驗證順序：先執行 exact-path allowlist、`git diff --check`、parser／compile 與其他低成本檢查；通過後才執行 focused、regression 與必要的 full suite。
 - 安裝器契約：必須具備 no-overwrite、transaction rollback、idempotency、protected-asset preservation 與 consolidated PASS／BLOCKED result。
 - 交付邊界：內部 debug versions 不對使用者逐版交付；同一 Gate 原則上只交付一個正式 release candidate。
+
+
+<!-- FLEETVISION-MANAGED:DEC-05R-001-006:BEGIN -->
+## DEC-05R-001 — Reclassify the three-day selected model as a recovery baseline
+
+- 日期：2026-07-18
+- 狀態：Active
+- 決策：historical `final_selected` model is named `baseline_candidate_01`
+  for recovery governance.
+- SHA256：`605FFAC6B1AA39A2E9F13BA09456943529B2788B7FCBEEACE43A3616D1C41C89`
+- Classification：`BEST_AVAILABLE_POC_ONLY`
+- Consequence：technical Demo completion does not equal production model acceptance.
+
+## DEC-05R-002 — Add Phase 05R without overwriting Phase 05–10
+
+- 日期：2026-07-18
+- 狀態：Active
+- 決策：adopt `Phase 05R — Model Recovery & Dataset Quality Audit` as an
+  additive controlled recovery track.
+- Consequence：historical Phase 05–10 definitions and completed evidence remain intact.
+- Phase 04.5M-1：deferred, not completed or deleted.
+
+## DEC-05R-003 — Permit one controlled Dataset v2
+
+- 日期：2026-07-18
+- 狀態：Active
+- 決策：permit one versioned `fleetvision_damage_v2` only after audit,
+  reviewed-correction and lineage Gates pass.
+- Restrictions：raw sources and Frozen Test remain immutable; every correction
+  requires evidence and deterministic manifests.
+
+## DEC-05R-004 — Validation Gate precedes Frozen Test and CLI／API replacement
+
+- 日期：2026-07-18
+- 狀態：Active
+- 決策：Candidate selection and threshold determination use validation only.
+- Candidate limit：C03–C05, maximum three in the first round.
+- Consequence：no Frozen Test and no model replacement before validation acceptance.
+
+## DEC-05R-005 — Freeze the recovery Test contract
+
+- 日期：2026-07-18
+- 狀態：Active
+- 決策：evaluate one validation-approved model once on Frozen Test.
+- Prohibited：use Test results for tuning, threshold changes, candidate
+  reselection or data-priority decisions.
+- Test modification：never authorized by Phase 05R.
+
+## DEC-05R-006 — Separate local governance application from canonical publication
+
+- 日期：2026-07-18
+- 狀態：Active
+- 決策：`00C` applies and verifies exact governance files locally without
+  staging, commit or push. `00D` requires separate explicit authorization and
+  completes exact-path commit, push and remote verification.
+- Rationale：GitHub is the long-term source of truth and automatic commit／push
+  is prohibited.
+- Codex：`CONDITIONALLY_PAUSED`; each task requires task-specific authorization.
+<!-- FLEETVISION-MANAGED:DEC-05R-001-006:END -->

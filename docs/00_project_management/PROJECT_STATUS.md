@@ -7,7 +7,7 @@
 
 - 前一主 Phase：Phase 04 — Pilot Human Review and Reviewed Dataset — **COMPLETED**
 - 主 Phase：Phase 04.5 — External Dataset Intake, Controlled Baseline, and Audit — **IN PROGRESS**
-- Current technical Phase：**Phase 04.5L — Validation Error Human Review**
+- Current technical Phase：**Phase 05R — Model Recovery & Dataset Quality Audit**
 - Latest completed operational Gate：**Completed Workbook Export**
 - Outcome：**PASS**
 - Classification：`LOCAL_REVIEW_APP_COMPLETED_WORKBOOK_EXPORTED`
@@ -373,73 +373,59 @@ is the controlling correction for artifact location only.
 ## Machine-readable state
 
 ~~~yaml
-schema_version: 2
+schema_version: 3
 project: FleetVision
 repository_root: 'G:\Project\FleetVision'
 branch: main
-repository_checkpoint_before_handoff: "53e742d40430e4419c1da63bca384e237578486a"
-repository_checkpoint_subject: "fix: repair local review case navigation"
-technical_phase: "04.5L"
-technical_gate: "COMPLETED_REVIEW_EXPORT"
-technical_gate_outcome: "PASS"
-technical_classification: "LOCAL_REVIEW_APP_COMPLETED_WORKBOOK_EXPORTED"
-app_implementation_checkpoint: "45314caf31c4c94784757bd93212c75d2bb44262"
-navigation_hotfix_checkpoint: "53e742d40430e4419c1da63bca384e237578486a"
-review_cases: 130
-reviewed: 130
-pending: 0
-needs_adjudication: 0
-formal_workbook_created: true
-completed_workbook_path: 'G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_review_workspace\exports\validation_error_human_review_completed.xlsx'
-completed_workbook_size: 31871231
-completed_workbook_sha256: "C9DF0A38B115406791DF03BFDC714901A66A47BE95CE0E2047E573FCC8D6FB6C"
-logical_fingerprint: "F87882E8F6DBF20B6603FC5106BE5A78BD61E4A22A6500E9586E51498B4AAC35"
-pre_export_backup_path: 'G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_review_workspace\backups\review_state_20260714T045900084110Z.sqlite3'
-pre_export_backup_sha256: "2BE5EC790D9A712127CAAF61DEFC676D9B334A40C15DB9C9508F81612978DA2C"
-source_workbook_sha256: "5DC9C1FDA69865D36C60EACB90A0AEA0FC9F4B263F30281723BB0E1172549DE5"
-frozen_package_zip_path: 'G:\Project\FleetVision_Review_Packages\Phase04_5L\phase04_5l_20260714_v1_PACKAGE.zip'
-frozen_package_zip_sha256: "6D6243FE8F3E12910C03A5EDCFF178CE20B180473EED43DED2B36301A877B42A"
-handoff_path_erratum_status: "APPLIED"
-handoff_path_erratum_file: "docs/00_project_management/handoffs/2026-07-14_phase04_5l_completed_review_path_erratum.md"
-handoff_path_erratum_parent_checkpoint: "54350ec4865ce643116cb4109b971f55dbbaeea9"
-scope_risk: "SEVERE_OR_CATASTROPHIC_DAMAGE_OVERREPRESENTATION"
-target_scope: "LIGHT_TO_MODERATE_EXTERIOR_DAMAGE"
-required_scope_groups:
-  - "IN_SCOPE_LIGHT_MODERATE"
-  - "BOUNDARY_HEAVY_DAMAGE"
-  - "OUT_OF_SCOPE_CATASTROPHIC"
-test_split_read: false
-model_inference_executed: false
-annotation_modified: false
-training_started: false
-retraining_status: "NOT_YET_APPROVED"
-deployment_acceptance: "NOT_YET_APPROVED"
+governance_proposal_parent_checkpoint: "3aa76a1c499144311f387faf97aa29c45778f68e"
+phase05r_effective_condition: "COMMIT_CONTAINING_THIS_BLOCK_PUSHED_AND_REMOTE_VERIFIED"
+technical_phase: "05R"
+technical_phase_name: "Model Recovery & Dataset Quality Audit"
+current_gate: "PHASE_05R_01_DATASET_LABEL_QUALITY_AUDIT"
+latest_completed_governance_gate: "PHASE_05R_00D_GOVERNANCE_COMMIT_PUSH_REMOTE_VERIFICATION"
+previous_gate: "PHASE_04_5M_1_CORRECTION_REVIEW_PACKAGE_PREPARATION"
+previous_gate_disposition: "DEFERRED_BY_APPROVED_RECOVERY_TRACK_NOT_COMPLETED"
+phase05r_scope_contract: "docs/00_project_management/PHASE05R_SCOPE_CONTRACT.md"
+phase05r_guide: "docs/01_phase_guides/phase_05r_model_recovery.md"
+phase05r_log: "docs/00_project_management/phase_logs/PHASE_05R_LOG.md"
+recovery_notebook_drive_path: "/content/drive/MyDrive/AI_Class/00.Project/FleetVision/notebooks/FleetVision_Phase05_Model_Recovery.ipynb"
+recovery_notebook_reconciled_sha256: "2086D3EA155748EF61E0751CAC796739CD9E5F4624744D2C0DCA726D67146CCF"
+dataset_v1_zip_sha256: "B72812D97E08B312EBC239ADB43C7DE7DED29FB1B3098CD3BEA17C880813C58A"
+baseline_candidate_01_sha256: "605FFAC6B1AA39A2E9F13BA09456943529B2788B7FCBEEACE43A3616D1C41C89"
+baseline_classification: "BEST_AVAILABLE_POC_ONLY"
+production_quality_gate: "FAILED"
+dataset_v2_status: "NOT_STARTED"
+candidate_03_to_05_status: "NOT_STARTED"
+recovery_training_started: false
+frozen_test_access_authorized: false
+frozen_test_used_for_tuning: false
+test_split_mutation: false
+raw_dataset_mutation: false
+protected_external_assets_mutation: false
+codex_status: "CONDITIONALLY_PAUSED"
+automatic_commit_push: false
 worktree_policy: "CLEAN_OR_PROTECTED_UNTRACKED_ONLY"
 protected_untracked_path: "outputs/metadata/external_assets/"
-completed_workbook_reexport_allowed: false
-next_authorized_action: "PHASE_04_5L_COMPLETED_REVIEW_VALIDATION_AND_FINDINGS_ANALYSIS"
-updated_at: "2026-07-14T05:50:55.4623273Z"
+next_authorized_action: "PHASE_05R_01_DATASET_LABEL_QUALITY_AUDIT"
+updated_at_local: "2026-07-18"
 ~~~
 
 ## Current checkpoint
 
-- Technical phase：**Phase 04.5L — Validation Error Human Review**
-- Latest completed Gate：**Completed Workbook Export**
-- Outcome：**PASS**
-- Classification：`LOCAL_REVIEW_APP_COMPLETED_WORKBOOK_EXPORTED`
-- Latest verified code checkpoint before this governance handoff：
-  `53e742d40430e4419c1da63bca384e237578486a`
-- Formal review：**130／130 reviewed；pending 0；needs adjudication 0**
-- Completed Workbook SHA256：
-  `C9DF0A38B115406791DF03BFDC714901A66A47BE95CE0E2047E573FCC8D6FB6C`
-- Test split read：**NO**
-- Model inference executed：**NO**
-- Annotation modified：**NO**
-- Training started：**NO**
-- Retraining status：`NOT_YET_APPROVED`
-- Deployment acceptance：`NOT_YET_APPROVED`
+- Technical Phase：**Phase 05R — Model Recovery & Dataset Quality Audit**
+- Latest completed governance Gate：
+  `PHASE_05R_00D_GOVERNANCE_COMMIT_PUSH_REMOTE_VERIFICATION`
+- Current Gate：`PHASE_05R_01_DATASET_LABEL_QUALITY_AUDIT`
+- Baseline model：`BEST_AVAILABLE_POC_ONLY`
+- Dataset v2：**NOT STARTED**
+- Recovery training：**NOT STARTED**
+- Frozen Test access：**NOT AUTHORIZED**
+- Codex：`CONDITIONALLY_PAUSED`
 - Next authorized action：
-  `PHASE_04_5L_COMPLETED_REVIEW_VALIDATION_AND_FINDINGS_ANALYSIS`
+  `PHASE_05R_01_DATASET_LABEL_QUALITY_AUDIT`
+
+This state is effective only after the commit containing this block is pushed
+and local HEAD, `origin/main` and GitHub remote `main` are equal.
 <!-- FLEETVISION-MANAGED:CURRENT-STATE:END -->
 
 <!-- FLEETVISION-MANAGED:PHASE_04_5L_F2_04_5M_DESIGN:BEGIN -->
@@ -537,3 +523,49 @@ DEPLOYMENT_ACCEPTANCE=NOT_YET_APPROVED
 NEXT_AUTHORIZED_ACTION=PHASE_04_5M_1_CORRECTION_REVIEW_PACKAGE_PREPARATION
 ```
 <!-- FLEETVISION-MANAGED:PHASE_04_5M_IMPLEMENTATION_PASS:END -->
+
+
+<!-- FLEETVISION-MANAGED:PHASE05R-ACTIVATION:BEGIN -->
+## Phase 05R controlled recovery activation（2026-07-18）
+
+Phase 05R is an additive recovery track. It does not overwrite the historical
+Phase 05–10 roadmap.
+
+Completed reconciliation and governance preparation:
+
+- `PHASE_05R_00_STARTUP_RECONCILIATION`
+- `PHASE_05R_00A_GOVERNANCE_ALIGNMENT_DECISION`
+- `PHASE_05R_00B_REPOSITORY_GOVERNANCE_PROPOSAL_PREPARATION`
+- `PHASE_05R_00C_LOCAL_GOVERNANCE_APPLICATION_AND_VERIFICATION`
+- `PHASE_05R_00D_GOVERNANCE_COMMIT_PUSH_REMOTE_VERIFICATION`
+
+The Phase 04.5M-1 correction-review package Gate is retained as incomplete and
+deferred by this recovery decision.
+
+Controlled identities:
+
+```text
+DATASET_V1_SHA256=B72812D97E08B312EBC239ADB43C7DE7DED29FB1B3098CD3BEA17C880813C58A
+BASELINE_CANDIDATE_01_SHA256=605FFAC6B1AA39A2E9F13BA09456943529B2788B7FCBEEACE43A3616D1C41C89
+RECOVERY_NOTEBOOK_SHA256=2086D3EA155748EF61E0751CAC796739CD9E5F4624744D2C0DCA726D67146CCF
+BASELINE_CLASSIFICATION=BEST_AVAILABLE_POC_ONLY
+PRODUCTION_QUALITY_GATE=FAILED
+```
+
+Current action:
+
+`PHASE_05R_01_DATASET_LABEL_QUALITY_AUDIT`
+
+Restrictions:
+
+```text
+TEST_SPLIT_READ=NO
+FROZEN_TEST_ACCESS=NO
+ANNOTATION_MODIFIED=NO
+RAW_DATASET_MODIFIED=NO
+DATASET_V2_CREATED=NO
+RECOVERY_TRAINING_STARTED=NO
+MODEL_REPLACED=NO
+CODEX_STATUS=CONDITIONALLY_PAUSED
+```
+<!-- FLEETVISION-MANAGED:PHASE05R-ACTIVATION:END -->

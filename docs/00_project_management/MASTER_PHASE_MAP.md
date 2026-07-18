@@ -266,16 +266,18 @@ Gate：
 <!-- FLEETVISION-MANAGED:CURRENT-CHECKPOINT:BEGIN -->
 ## Current repository checkpoint
 
-| Area | Status |
+| Item | Current value |
 |---|---|
-| Phase 00–04 | Completed according to prior project governance records |
-| Phase 04.5 | In progress |
-| Current technical phase | 04.5L — Validation Error Human Review |
-| Latest completed Gate | 04.5L-2C Implementation Closure — PASS |
-| Classification | VALIDATION_ERROR_HUMAN_REVIEW_IMPLEMENTATION_VERIFIED |
-| Repository base checkpoint | 25e104bcf997699cd3cf573b813059612616ca2e |
-| Formal review Workbook | Not created |
-| Next authorized action | 04.5L-3 Review Package Preparation Audit |
+| Current technical phase | 05R — Model Recovery & Dataset Quality Audit |
+| Current Gate | `PHASE_05R_01_DATASET_LABEL_QUALITY_AUDIT` |
+| Previous Gate | `PHASE_04_5M_1_CORRECTION_REVIEW_PACKAGE_PREPARATION` |
+| Previous Gate disposition | Deferred, not completed |
+| Recovery training | Not started |
+| Frozen Test access | Not authorized |
+| Codex | `CONDITIONALLY_PAUSED` |
+
+This checkpoint is effective only after the commit containing it is pushed and
+remote verified.
 <!-- FLEETVISION-MANAGED:CURRENT-CHECKPOINT:END -->
 
 <!-- FLEETVISION-MANAGED:PHASE_04_5L_F2_AND_04_5M:BEGIN -->
@@ -337,3 +339,56 @@ Next Gate:
 
 Phase 04.5N annotation promotion remains unstarted and separately governed.
 <!-- FLEETVISION-MANAGED:PHASE_04_5M_IMPLEMENTED:END -->
+
+
+<!-- FLEETVISION-MANAGED:PHASE05R-MAP:BEGIN -->
+## Phase 05R — Model Recovery & Dataset Quality Audit
+
+**Status：ACTIVE AFTER GOVERNANCE COMMIT REMOTE VERIFICATION**
+
+Phase 05R is additive. Existing historical Phase 05–10 definitions remain
+unchanged.
+
+Dependencies：
+
+```text
+Phase 00–04 governance and reviewed data
+              │
+Phase 04.5 validation-error and correction evidence
+              │
+Three-day baseline PoC and honest test failure
+              ▼
+Phase 05R controlled recovery track
+```
+
+### Governance entry
+
+| Gate | Status |
+|---|---|
+| 05R-00 Startup Reconciliation | Complete |
+| 05R-00A Governance Alignment Decision | Complete |
+| 05R-00B Governance Proposal Preparation | Complete |
+| 05R-00C Local Governance Application and Verification | Complete before commit |
+| 05R-00D Commit／Push／Remote Verification | Activation requirement |
+
+### Recovery execution
+
+| Gate | Purpose |
+|---|---|
+| 05R-01 | Dataset and label quality audit |
+| 05R-02 | Baseline validation FP／FN error analysis |
+| 05R-03 | Hard-negative and annotation-correction review |
+| 05R-04 | Versioned Dataset v2 |
+| 05R-05 | Candidate 03–05 training |
+| 05R-06 | Validation quality Gate |
+| 05R-07 | Single-model Frozen Test |
+| 05R-08 | CLI／API model replacement if accepted |
+
+### Hard boundaries
+
+- Raw data and protected external assets remain immutable.
+- Frozen Test is unavailable through 05R-06.
+- First round is limited to one Dataset v2 and three candidates.
+- Phase 04.5M-1 remains incomplete and deferred.
+- Phase 04.5N remains separately governed and is not implied by Phase 05R.
+<!-- FLEETVISION-MANAGED:PHASE05R-MAP:END -->
