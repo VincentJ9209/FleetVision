@@ -1,35 +1,58 @@
 #requires -Version 5.1
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $true)][string]$WorkspaceRoot,
-    [string]$ProjectRoot = "G:\Project\FleetVision_Worktrees\phase05s-a3-team-pairing-audit",
+    [Parameter(Mandatory = $true)]
+    [string]$WorkspaceRoot,
+
+    [string]$ProjectRoot = (Split-Path -Parent $PSScriptRoot),
     [string]$Config = "configs/data/team_pairing_audit_config.yaml",
-    [ValidateRange(1, 65535)][int]$Port = 8501
+    [string]$Python = "G:\Project\FleetVision\.venv\Scripts\python.exe",
+    [ValidateRange(1, 65535)]
+    [int]$Port = 8501
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$Python = "G:\Project\FleetVision\.venv\Scripts\python.exe"
-$AppScript = Join-Path $ProjectRoot "scripts\phase05s_run_team_pairing_review_app.py"
+try {
+    $AppScript = Join-Path $ProjectRoot "scripts\phase05s_run_team_pairing_review_app.py"
+    $ConfigPath = if ([IO.Path]::IsPathRooted($Config)) {
+        $Config
+    }
+    else {
+        Join-Path $ProjectRoot $Config
+    }
 
-if (-not (Test-Path -LiteralPath $Python -PathType Leaf)) {
-    throw "Project Python not found: $Python"
+    foreach ($RequiredPath in @(
+        $ProjectRoot,
+        $Python,
+        $AppScript,
+        $ConfigPath,
+        $WorkspaceRoot
+    )) {
+        if (-not (Test-Path -LiteralPath $RequiredPath)) {
+            throw "Required path missing: $RequiredPath"
+        }
+    }
+
+    Set-Location $ProjectRoot
+    Write-Host "WRAPPER_OUTCOME=PASS"
+    Write-Host "NETWORK_BIND=127.0.0.1"
+
+    & $Python -m streamlit run $AppScript `
+        --server.address=127.0.0.1 `
+        --server.port=$Port `
+        --server.headless=true `
+        --browser.gatherUsageStats=false `
+        -- `
+        --config $Config `
+        --project-root $ProjectRoot `
+        --workspace-root $WorkspaceRoot
+
+    exit $LASTEXITCODE
 }
-if (-not (Test-Path -LiteralPath $AppScript -PathType Leaf)) {
-    throw "Streamlit entrypoint not found: $AppScript"
+catch {
+    Write-Host "WRAPPER_OUTCOME=BLOCKED"
+    Write-Host "BLOCKING_REASON=$($_.Exception.Message)"
+    throw
 }
-
-Set-Location $ProjectRoot
-
-& $Python -m streamlit run $AppScript `
-    --server.address=127.0.0.1 `
-    --server.port=$Port `
-    --server.headless=true `
-    --browser.gatherUsageStats=false `
-    -- `
-    --config $Config `
-    --project-root $ProjectRoot `
-    --workspace-root $WorkspaceRoot
-
-exit $LASTEXITCODE
