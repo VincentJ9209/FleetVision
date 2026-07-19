@@ -41,5 +41,32 @@
 未完成狀態核對前，不得提出或執行修改。
 Codex 與 Cursor Agent 維持停用，除非 Vincent 明確重新授權。
 ```
-<!-- FLEETVISION-MANAGED:BOOTSTRAP-PROMPT:END -->
 
+## 使用者最新核准
+
+Phase 05S-A1 repository-tracked design 已由使用者明確核准。
+
+核准內容包括：
+
+- 採用半自動候選配對＋人工確認
+- 使用繁體中文 Streamlit + SQLite 作為內部 Pair Review Utility
+- Excel 僅作完成後匯出、交換與封存
+- 此工具不是 Dashboard
+- 只負責第二階段
+- dataset/01_raw/04_team 全程只讀
+- Frozen Test 維持鎖定
+
+目前授權的唯一下一步：
+先完成 read-only startup reconciliation，確認 live Git 與治理文件一致後，
+撰寫 Phase 05S-A1 implementation plan。
+
+尚未授權：
+
+- implementation code
+- 掃描 319 張圖片
+- 模型訓練
+- Frozen Test access
+- Dashboard
+- 第一階段 App
+
+<!-- FLEETVISION-MANAGED:BOOTSTRAP-PROMPT:END -->
