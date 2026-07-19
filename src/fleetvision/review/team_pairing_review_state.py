@@ -88,6 +88,11 @@ class PairCandidateSeed:
     pair_sequence: int
     before_batch_id: str
     after_batch_id: str
+    manual_vehicle_id: str = ""
+    elapsed_seconds: int = 0
+    overlap_angles_json: str = "[]"
+    overlap_count: int = 0
+    four_angle_overlap_count: int = 0
 
 
 @dataclass(frozen=True)
@@ -280,7 +285,13 @@ class TeamPairingReviewStateStore:
                 pair_candidate_id TEXT PRIMARY KEY,
                 pair_sequence INTEGER NOT NULL UNIQUE,
                 before_batch_id TEXT NOT NULL REFERENCES candidate_batches(batch_id),
-                after_batch_id TEXT NOT NULL REFERENCES candidate_batches(batch_id)
+                after_batch_id TEXT NOT NULL REFERENCES candidate_batches(batch_id),
+                manual_vehicle_id TEXT NOT NULL DEFAULT '',
+                elapsed_seconds INTEGER NOT NULL DEFAULT 0 CHECK(elapsed_seconds >= 0),
+                overlap_angles_json TEXT NOT NULL DEFAULT '[]',
+                overlap_count INTEGER NOT NULL DEFAULT 0 CHECK(overlap_count >= 0),
+                four_angle_overlap_count INTEGER NOT NULL DEFAULT 0
+                    CHECK(four_angle_overlap_count >= 0)
             );
 
             CREATE TABLE IF NOT EXISTS pair_reviews(
@@ -315,6 +326,10 @@ class TeamPairingReviewStateStore:
                 sha256 TEXT NOT NULL,
                 exported_at_utc TEXT NOT NULL
             );
+
+            CREATE UNIQUE INDEX IF NOT EXISTS one_primary_demo_pair
+            ON pair_reviews(manual_demo_role)
+            WHERE manual_demo_role = 'primary';
             """
         )
 
@@ -358,13 +373,18 @@ class TeamPairingReviewStateStore:
     @staticmethod
     def _expected_pair_rows(
         package: TeamPairingCandidatePackage,
-    ) -> list[tuple[str, int, str, str]]:
+    ) -> list[tuple[Any, ...]]:
         return [
             (
                 item.pair_candidate_id,
                 int(item.pair_sequence),
                 item.before_batch_id,
                 item.after_batch_id,
+                item.manual_vehicle_id,
+                int(item.elapsed_seconds),
+                item.overlap_angles_json,
+                int(item.overlap_count),
+                int(item.four_angle_overlap_count),
             )
             for item in package.pairs
         ]
@@ -433,12 +453,6 @@ class TeamPairingReviewStateStore:
                             sorted(expected_members),
                             "INSERT INTO batch_members(batch_id,image_id,member_sequence) VALUES(?,?,?)",
                         ),
-                        (
-                            "pair_candidates",
-                            "SELECT pair_candidate_id,pair_sequence,before_batch_id,after_batch_id FROM pair_candidates ORDER BY pair_sequence",
-                            expected_pairs,
-                            "INSERT INTO pair_candidates(pair_candidate_id,pair_sequence,before_batch_id,after_batch_id) VALUES(?,?,?,?)",
-                        ),
                     )
 
                     for label, query, expected, insert_sql in checks:
@@ -449,6 +463,36 @@ class TeamPairingReviewStateStore:
                             )
                         if not existing and expected:
                             connection.executemany(insert_sql, expected)
+
+                    existing_pairs = [
+                        tuple(row)
+                        for row in connection.execute(
+                            """
+                            SELECT pair_candidate_id,pair_sequence,before_batch_id,
+                                   after_batch_id,manual_vehicle_id,elapsed_seconds,
+                                   overlap_angles_json,overlap_count,
+                                   four_angle_overlap_count
+                            FROM pair_candidates ORDER BY pair_sequence
+                            """
+                        ).fetchall()
+                    ]
+                    if expected_pairs:
+                        if existing_pairs and existing_pairs != expected_pairs:
+                            raise TeamPairingReviewStateError(
+                                "existing candidate pair_candidates mismatch"
+                            )
+                        if not existing_pairs:
+                            connection.executemany(
+                                """
+                                INSERT INTO pair_candidates(
+                                    pair_candidate_id,pair_sequence,before_batch_id,
+                                    after_batch_id,manual_vehicle_id,elapsed_seconds,
+                                    overlap_angles_json,overlap_count,
+                                    four_angle_overlap_count
+                                ) VALUES(?,?,?,?,?,?,?,?,?)
+                                """,
+                                expected_pairs,
+                            )
 
                     connection.execute(
                         "INSERT OR IGNORE INTO batch_reviews(batch_id) SELECT batch_id FROM candidate_batches"
@@ -725,20 +769,25 @@ class TeamPairingReviewStateStore:
         *,
         simulate_failure_after_audit: bool = False,
     ) -> StoredReview:
-        return self._save_review(
-            entity_type="pair",
-            entity_id=pair_candidate_id,
-            table="pair_reviews",
-            id_column="pair_candidate_id",
-            selection=asdict(selection),
-            canonical=canonical.as_dict(),
-            field_updates={
-                "manual_pair_status": canonical.manual_pair_status,
-                "derived_case_classification": canonical.derived_case_classification,
-                "manual_demo_role": canonical.manual_demo_role,
-            },
-            simulate_failure_after_audit=simulate_failure_after_audit,
-        )
+        try:
+            return self._save_review(
+                entity_type="pair",
+                entity_id=pair_candidate_id,
+                table="pair_reviews",
+                id_column="pair_candidate_id",
+                selection=asdict(selection),
+                canonical=canonical.as_dict(),
+                field_updates={
+                    "manual_pair_status": canonical.manual_pair_status,
+                    "derived_case_classification": canonical.derived_case_classification,
+                    "manual_demo_role": canonical.manual_demo_role,
+                },
+                simulate_failure_after_audit=simulate_failure_after_audit,
+            )
+        except sqlite3.IntegrityError as exc:
+            raise TeamPairingReviewStateError(
+                "primary 主要展示 pair 只能有一個"
+            ) from exc
 
     def _get_review(
         self,
@@ -770,6 +819,22 @@ class TeamPairingReviewStateStore:
             entity_id=batch_id,
             table="batch_reviews",
             id_column="batch_id",
+        )
+
+    def get_image_review(self, image_id: str) -> StoredReview:
+        return self._get_review(
+            entity_type="image",
+            entity_id=image_id,
+            table="image_reviews",
+            id_column="image_id",
+        )
+
+    def get_pair_review(self, pair_candidate_id: str) -> StoredReview:
+        return self._get_review(
+            entity_type="pair",
+            entity_id=pair_candidate_id,
+            table="pair_reviews",
+            id_column="pair_candidate_id",
         )
 
     def successful_save_count(self) -> int:
@@ -907,6 +972,190 @@ class TeamPairingReviewStateStore:
                 params,
             ).fetchall()
         return tuple(str(row["pair_candidate_id"]) for row in rows)
+
+    def pair_generation_fingerprint(self) -> str:
+        with self._connection() as connection:
+            row = connection.execute(
+                "SELECT value FROM app_state WHERE key='pair_generation_fingerprint'"
+            ).fetchone()
+        return "" if row is None else str(row["value"])
+
+    @staticmethod
+    def _pair_seed_row(seed: PairCandidateSeed) -> tuple[Any, ...]:
+        try:
+            overlap = json.loads(seed.overlap_angles_json)
+        except json.JSONDecodeError as exc:
+            raise TeamPairingReviewStateError(
+                "pair overlap_angles_json 不是有效 JSON"
+            ) from exc
+        if not isinstance(overlap, list) or any(not isinstance(item, str) for item in overlap):
+            raise TeamPairingReviewStateError(
+                "pair overlap_angles_json 必須是 string array"
+            )
+        if int(seed.overlap_count) != len(overlap):
+            raise TeamPairingReviewStateError("pair overlap_count 與 angles 不一致")
+        return (
+            seed.pair_candidate_id,
+            int(seed.pair_sequence),
+            seed.before_batch_id,
+            seed.after_batch_id,
+            seed.manual_vehicle_id,
+            int(seed.elapsed_seconds),
+            json.dumps(overlap, ensure_ascii=False, separators=(",", ":")),
+            int(seed.overlap_count),
+            int(seed.four_angle_overlap_count),
+        )
+
+    def synchronize_pair_candidates(
+        self,
+        pairs: Sequence[PairCandidateSeed],
+        *,
+        generation_fingerprint: str,
+    ) -> None:
+        if self.identity.expected_pair_count != 0:
+            raise TeamPairingReviewStateError(
+                "fixed pair package 不允許動態重新產生 pair candidates"
+            )
+        fingerprint = str(generation_fingerprint).strip().upper()
+        if not fingerprint:
+            raise TeamPairingReviewStateError(
+                "pair generation fingerprint 不可空白"
+            )
+        rows = sorted(
+            (self._pair_seed_row(seed) for seed in pairs),
+            key=lambda row: (int(row[1]), str(row[0])),
+        )
+        if [int(row[1]) for row in rows] != list(range(1, len(rows) + 1)):
+            raise TeamPairingReviewStateError(
+                "pair candidate sequence 必須從 1 連續遞增"
+            )
+        if len({row[0] for row in rows}) != len(rows):
+            raise TeamPairingReviewStateError("pair candidate ID 不可重複")
+
+        with self._connection() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            try:
+                batch_ids = {
+                    str(row["batch_id"])
+                    for row in connection.execute(
+                        "SELECT batch_id FROM candidate_batches"
+                    ).fetchall()
+                }
+                for row in rows:
+                    if row[2] not in batch_ids or row[3] not in batch_ids:
+                        raise TeamPairingReviewStateError(
+                            "pair candidate 引用未知 batch"
+                        )
+
+                existing = [
+                    tuple(row)
+                    for row in connection.execute(
+                        """
+                        SELECT pair_candidate_id,pair_sequence,before_batch_id,
+                               after_batch_id,manual_vehicle_id,elapsed_seconds,
+                               overlap_angles_json,overlap_count,
+                               four_angle_overlap_count
+                        FROM pair_candidates ORDER BY pair_sequence
+                        """
+                    ).fetchall()
+                ]
+                current_fingerprint_row = connection.execute(
+                    "SELECT value FROM app_state WHERE key='pair_generation_fingerprint'"
+                ).fetchone()
+                current_fingerprint = (
+                    ""
+                    if current_fingerprint_row is None
+                    else str(current_fingerprint_row["value"])
+                )
+                if existing == rows and current_fingerprint == fingerprint:
+                    connection.execute("COMMIT")
+                    return
+
+                reviewed_count = int(
+                    connection.execute(
+                        "SELECT COUNT(*) value FROM pair_reviews WHERE revision>0"
+                    ).fetchone()["value"]
+                )
+                if reviewed_count:
+                    raise TeamPairingReviewStateError(
+                        "已有已審核 pair review，禁止變更 candidate set"
+                    )
+
+                connection.execute("DELETE FROM pair_reviews")
+                connection.execute("DELETE FROM pair_candidates")
+                if rows:
+                    connection.executemany(
+                        """
+                        INSERT INTO pair_candidates(
+                            pair_candidate_id,pair_sequence,before_batch_id,
+                            after_batch_id,manual_vehicle_id,elapsed_seconds,
+                            overlap_angles_json,overlap_count,
+                            four_angle_overlap_count
+                        ) VALUES(?,?,?,?,?,?,?,?,?)
+                        """,
+                        rows,
+                    )
+                    connection.execute(
+                        "INSERT INTO pair_reviews(pair_candidate_id) SELECT pair_candidate_id FROM pair_candidates"
+                    )
+                connection.execute(
+                    """
+                    INSERT INTO app_state(key,value)
+                    VALUES('pair_generation_fingerprint',?)
+                    ON CONFLICT(key) DO UPDATE SET value=excluded.value
+                    """,
+                    (fingerprint,),
+                )
+                created_at = self._utc_now()
+                connection.execute(
+                    """
+                    INSERT INTO audit_events(
+                        entity_type,entity_id,revision,event_type,event_json,
+                        created_at_utc
+                    ) VALUES('system',?,0,'pair_candidates_refreshed',?,?)
+                    """,
+                    (
+                        fingerprint,
+                        self._canonical_json(
+                            {
+                                "pair_candidate_count": len(rows),
+                                "pair_candidate_ids": [row[0] for row in rows],
+                            }
+                        ),
+                        created_at,
+                    ),
+                )
+                connection.execute("COMMIT")
+            except Exception:
+                connection.execute("ROLLBACK")
+                raise
+        self._synchronize_event_log()
+
+    def pair_candidate_rows(self) -> tuple[dict[str, Any], ...]:
+        with self._connection() as connection:
+            rows = connection.execute(
+                """
+                SELECT pair_candidate_id,pair_sequence,before_batch_id,
+                       after_batch_id,manual_vehicle_id,elapsed_seconds,
+                       overlap_angles_json,overlap_count,
+                       four_angle_overlap_count
+                FROM pair_candidates ORDER BY pair_sequence
+                """
+            ).fetchall()
+        return tuple(
+            {
+                "pair_candidate_id": str(row["pair_candidate_id"]),
+                "pair_sequence": int(row["pair_sequence"]),
+                "before_batch_id": str(row["before_batch_id"]),
+                "after_batch_id": str(row["after_batch_id"]),
+                "manual_vehicle_id": str(row["manual_vehicle_id"]),
+                "elapsed_seconds": int(row["elapsed_seconds"]),
+                "overlap_angles": tuple(json.loads(row["overlap_angles_json"])),
+                "overlap_count": int(row["overlap_count"]),
+                "four_angle_overlap_count": int(row["four_angle_overlap_count"]),
+            }
+            for row in rows
+        )
 
     def create_backup(self, *, timestamp: str | None = None) -> Path:
         if not self.database_path.is_file():

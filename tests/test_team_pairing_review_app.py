@@ -353,6 +353,7 @@ def test_ui_labels_are_traditional_chinese_and_xlsx_is_export_only() -> None:
     assert app.SCREEN_LABELS == {
         "batch": "批次審核",
         "angle": "角度標記",
+        "pair": "前後配對",
     }
     assert app.LIVE_STATE_POLICY == "SQLITE_ONLY"
     assert app.XLSX_POLICY == "COMPLETED_EXPORT_ONLY"
@@ -385,3 +386,144 @@ def test_direct_cli_help_bootstraps_local_src_without_pythonpath() -> None:
     assert "--config" in result.stdout
     assert "--project-root" in result.stdout
     assert "--workspace-root" in result.stdout
+
+
+class TestPairCandidateAndReviewUi:
+    @staticmethod
+    def prepare_pair_runtime(tmp_path: Path):
+        app = app_module()
+        runtime = build_runtime(tmp_path)
+        app.save_batch_review_selection(
+            runtime,
+            "batch_001",
+            BatchReviewSelection("confirmed", "TEAMCAR-001", "before", ""),
+            reviewed_at=reviewed_at(),
+        )
+        app.save_batch_review_selection(
+            runtime,
+            "batch_002",
+            BatchReviewSelection("confirmed", "TEAMCAR-001", "after", ""),
+            reviewed_at=reviewed_at(),
+        )
+        app.save_angle_review_selection(
+            runtime,
+            "batch_001",
+            "team_001",
+            AngleReviewSelection("reviewed", "front_left", ""),
+            reviewed_at=reviewed_at(),
+        )
+        app.save_angle_review_selection(
+            runtime,
+            "batch_002",
+            "team_003",
+            AngleReviewSelection("reviewed", "front_left", ""),
+            reviewed_at=reviewed_at(),
+        )
+        return runtime
+
+    def test_refresh_generates_pair_from_confirmed_human_reviews(self, tmp_path: Path) -> None:
+        app = app_module()
+        runtime = self.prepare_pair_runtime(tmp_path)
+        first = app.refresh_pair_candidates(runtime)
+        second = app.refresh_pair_candidates(runtime)
+
+        assert len(first) == 1
+        assert first == second
+        assert first[0].before_batch_id == "batch_001"
+        assert first[0].after_batch_id == "batch_002"
+        assert first[0].overlap_angles == ("front_left",)
+        assert runtime.store.pair_ids("pending") == (first[0].pair_candidate_id,)
+
+    def test_nonconfirmed_or_missing_angle_batches_are_excluded(self, tmp_path: Path) -> None:
+        app = app_module()
+        runtime = build_runtime(tmp_path)
+        app.save_batch_review_selection(
+            runtime,
+            "batch_001",
+            BatchReviewSelection("confirmed", "TEAMCAR-001", "before", ""),
+            reviewed_at=reviewed_at(),
+        )
+        app.save_batch_review_selection(
+            runtime,
+            "batch_002",
+            BatchReviewSelection("confirmed", "TEAMCAR-001", "after", ""),
+            reviewed_at=reviewed_at(),
+        )
+        app.save_angle_review_selection(
+            runtime,
+            "batch_001",
+            "team_001",
+            AngleReviewSelection("reviewed", "front_left", ""),
+            reviewed_at=reviewed_at(),
+        )
+        assert app.refresh_pair_candidates(runtime) == ()
+
+    def test_pair_view_model_contains_elapsed_overlap_and_batch_evidence(self, tmp_path: Path) -> None:
+        app = app_module()
+        runtime = self.prepare_pair_runtime(tmp_path)
+        app.refresh_pair_candidates(runtime)
+        view = app.pair_candidate_view_models(runtime)[0]
+
+        assert view.manual_vehicle_id == "TEAMCAR-001"
+        assert view.elapsed_seconds == 3300
+        assert view.overlap_angles == ("front_left",)
+        assert view.four_angle_overlap_count == 1
+        assert view.before_batch_id == "batch_001"
+        assert view.after_batch_id == "batch_002"
+
+    def test_pair_contact_sheets_are_resolved_side_by_side_and_missing_is_blocking(self, tmp_path: Path) -> None:
+        app = app_module()
+        runtime = self.prepare_pair_runtime(tmp_path)
+        pair = app.refresh_pair_candidates(runtime)[0]
+        contact_dir = runtime.package.workspace_root / "contact_sheets"
+        contact_dir.mkdir(parents=True)
+        before = contact_dir / "batch_001.jpg"
+        after = contact_dir / "batch_002.jpg"
+        before.write_bytes(b"before")
+        after.write_bytes(b"after")
+
+        assert app.pair_contact_sheet_paths(runtime, pair.pair_candidate_id) == (
+            before.resolve(),
+            after.resolve(),
+        )
+        after.unlink()
+        with pytest.raises(TeamPairingMappingValidationError, match="contact sheet|evidence"):
+            app.pair_contact_sheet_paths(runtime, pair.pair_candidate_id)
+
+    def test_pair_save_derives_classification_updates_progress_and_resume(self, tmp_path: Path) -> None:
+        app = app_module()
+        mapping_module = importlib.import_module(
+            "fleetvision.review.team_pairing_review_mapping"
+        )
+        runtime = self.prepare_pair_runtime(tmp_path)
+        pair = app.refresh_pair_candidates(runtime)[0]
+        result = app.save_pair_review_selection(
+            runtime,
+            pair.pair_candidate_id,
+            mapping_module.PairReviewSelection(
+                manual_pair_status="confirmed",
+                manual_existing_damage_visible="no",
+                manual_new_damage_status="none",
+                manual_demo_role="primary",
+            ),
+            reviewed_at=reviewed_at(),
+        )
+
+        assert result.stored_review.canonical_fields[
+            "derived_case_classification"
+        ] == "NO_NEW_DAMAGE"
+        assert result.progress.pairs_terminal == 1
+        assert runtime.store.last_viewed() == ("pair", pair.pair_candidate_id)
+        summary = app.pair_progress_summary(runtime)
+        assert summary.total == 1
+        assert summary.confirmed == 1
+        assert summary.primary == 1
+
+    def test_pair_screen_contract_is_traditional_chinese_and_side_by_side(self) -> None:
+        app = app_module()
+        source = Path(app.__file__).read_text(encoding="utf-8")
+        assert app.SCREEN_LABELS["pair"] == "前後配對"
+        assert "def _render_pair_screen" in source
+        assert "借車前批次" in source
+        assert "還車後批次" in source
+        assert "st.columns(2)" in source

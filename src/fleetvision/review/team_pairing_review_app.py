@@ -9,18 +9,29 @@ from pathlib import Path, PurePosixPath
 from typing import Any, Mapping, MutableMapping, Sequence
 from zoneinfo import ZoneInfo
 
-from fleetvision.data.team_pairing_audit import sha256_file
+from fleetvision.data.team_pairing_audit import (
+    ReviewedBatchForPairing,
+    build_before_after_pair_candidates,
+    pairing_config_fingerprint,
+    sha256_file,
+)
 from fleetvision.review.team_pairing_review_mapping import (
     ANGLE_LABELS,
     ANGLE_STATUS_LABELS,
     BATCH_STATUS_LABELS,
+    DEMO_ROLE_LABELS,
+    EXISTING_DAMAGE_LABELS,
+    NEW_DAMAGE_LABELS,
+    PAIR_STATUS_LABELS,
     STAGE_LABELS,
     AngleReviewSelection,
     BatchReviewSelection,
+    PairReviewSelection,
     TeamPairingAuditConfig,
     TeamPairingMappingValidationError,
     derive_canonical_angle_fields,
     derive_canonical_batch_fields,
+    derive_canonical_pair_fields,
     load_team_pairing_audit_config,
     normalize_vehicle_id,
 )
@@ -32,6 +43,7 @@ from fleetvision.review.team_pairing_review_state import (
     StoredReview,
     TeamPairingCandidatePackage,
     TeamPairingProgressCounts,
+    TeamPairingReviewStateError,
     TeamPairingReviewStateStore,
     TeamPairingWorkspaceIdentity,
 )
@@ -39,6 +51,7 @@ from fleetvision.review.team_pairing_review_state import (
 SCREEN_LABELS: Mapping[str, str] = {
     "batch": "批次審核",
     "angle": "角度標記",
+    "pair": "前後配對",
 }
 BATCH_FILTER_LABELS: Mapping[str, str] = {
     "all": "全部批次",
@@ -54,6 +67,13 @@ ANGLE_FILTER_LABELS: Mapping[str, str] = {
     "pending": "尚未完成",
     "reviewed": "已完成",
     "needs_adjudication": "待裁決",
+}
+PAIR_FILTER_LABELS: Mapping[str, str] = {
+    "all": "全部配對",
+    "pending": "尚未完成",
+    "confirmed": "已確認",
+    "rejected": "拒絕配對",
+    "uncertain": "無法確定",
 }
 LIVE_STATE_POLICY = "SQLITE_ONLY"
 XLSX_POLICY = "COMPLETED_EXPORT_ONLY"
@@ -78,6 +98,31 @@ class BatchProgressSummary:
     pending: int
     confirmed: int
     unresolved: int
+
+
+@dataclass(frozen=True)
+class PairCandidateViewModel:
+    pair_candidate_id: str
+    pair_sequence: int
+    before_batch_id: str
+    after_batch_id: str
+    manual_vehicle_id: str
+    elapsed_seconds: int
+    overlap_angles: tuple[str, ...]
+    overlap_count: int
+    four_angle_overlap_count: int
+
+
+@dataclass(frozen=True)
+class PairProgressSummary:
+    total: int
+    terminal: int
+    pending: int
+    confirmed: int
+    rejected: int
+    uncertain: int
+    primary: int
+    backup: int
 
 
 @dataclass(frozen=True)
@@ -351,6 +396,194 @@ def save_angle_review_selection(
     )
     stored = runtime.store.save_image_review(image_id, selection, canonical)
     return SaveReviewResult(stored, runtime.store.progress())
+
+
+def _reviewed_angles_for_batch(
+    runtime: TeamPairingReviewRuntime,
+    batch_id: str,
+) -> tuple[str, ...]:
+    angles: set[str] = set()
+    for image_id in required_angle_image_ids(runtime, batch_id):
+        stored = runtime.store.get_image_review(image_id)
+        if stored.revision == 0:
+            continue
+        selection = AngleReviewSelection(**dict(stored.selection))
+        if selection.review_status == "reviewed":
+            angles.add(selection.manual_angle)
+    return tuple(sorted(angles))
+
+
+def _reviewed_batches_for_pairing(
+    runtime: TeamPairingReviewRuntime,
+) -> tuple[ReviewedBatchForPairing, ...]:
+    rows: list[ReviewedBatchForPairing] = []
+    for batch in sorted(
+        runtime.package.batches,
+        key=lambda item: (item.batch_sequence, item.batch_id),
+    ):
+        selection = _stored_batch_selection(runtime, batch.batch_id)
+        rows.append(
+            ReviewedBatchForPairing(
+                batch_id=batch.batch_id,
+                batch_sequence=batch.batch_sequence,
+                start_time=batch.start_time_utc,
+                end_time=batch.end_time_utc,
+                manual_batch_status=selection.manual_batch_status,
+                manual_vehicle_id=selection.manual_vehicle_id,
+                manual_stage=selection.manual_stage,
+                reviewed_angles=_reviewed_angles_for_batch(runtime, batch.batch_id),
+            )
+        )
+    return tuple(rows)
+
+
+def pair_candidate_view_models(
+    runtime: TeamPairingReviewRuntime,
+) -> tuple[PairCandidateViewModel, ...]:
+    return tuple(
+        PairCandidateViewModel(
+            pair_candidate_id=str(row["pair_candidate_id"]),
+            pair_sequence=int(row["pair_sequence"]),
+            before_batch_id=str(row["before_batch_id"]),
+            after_batch_id=str(row["after_batch_id"]),
+            manual_vehicle_id=str(row["manual_vehicle_id"]),
+            elapsed_seconds=int(row["elapsed_seconds"]),
+            overlap_angles=tuple(row["overlap_angles"]),
+            overlap_count=int(row["overlap_count"]),
+            four_angle_overlap_count=int(row["four_angle_overlap_count"]),
+        )
+        for row in runtime.store.pair_candidate_rows()
+    )
+
+
+def refresh_pair_candidates(
+    runtime: TeamPairingReviewRuntime,
+) -> tuple[PairCandidateViewModel, ...]:
+    fingerprint = pairing_config_fingerprint(
+        pair_max_elapsed_hours=runtime.config.pair_max_elapsed_hours,
+        timezone_name=runtime.config.timezone,
+        same_calendar_date=True,
+    )
+    candidates = build_before_after_pair_candidates(
+        _reviewed_batches_for_pairing(runtime),
+        pair_max_elapsed_hours=runtime.config.pair_max_elapsed_hours,
+        timezone_name=runtime.config.timezone,
+        pairing_config_fingerprint=fingerprint,
+        same_calendar_date=True,
+    )
+    seeds = tuple(
+        PairCandidateSeed(
+            pair_candidate_id=item.pair_candidate_id,
+            pair_sequence=item.pair_sequence,
+            before_batch_id=item.before_batch_id,
+            after_batch_id=item.after_batch_id,
+            manual_vehicle_id=item.manual_vehicle_id,
+            elapsed_seconds=item.elapsed_seconds,
+            overlap_angles_json=json.dumps(
+                list(item.overlap_angles),
+                ensure_ascii=False,
+                separators=(",", ":"),
+            ),
+            overlap_count=item.overlap_count,
+            four_angle_overlap_count=item.four_angle_overlap_count,
+        )
+        for item in candidates
+    )
+    runtime.store.synchronize_pair_candidates(
+        seeds,
+        generation_fingerprint=fingerprint,
+    )
+    return pair_candidate_view_models(runtime)
+
+
+def pair_contact_sheet_paths(
+    runtime: TeamPairingReviewRuntime,
+    pair_candidate_id: str,
+) -> tuple[Path, Path]:
+    by_id = {item.pair_candidate_id: item for item in pair_candidate_view_models(runtime)}
+    pair = by_id.get(pair_candidate_id)
+    if pair is None:
+        raise TeamPairingMappingValidationError(
+            f"未知 pair candidate：{pair_candidate_id}"
+        )
+    contact_dir = runtime.package.workspace_root / "contact_sheets"
+    paths = (
+        (contact_dir / f"{pair.before_batch_id}.jpg").resolve(),
+        (contact_dir / f"{pair.after_batch_id}.jpg").resolve(),
+    )
+    for path in paths:
+        if not _is_relative_to(path, contact_dir.resolve()) or not path.is_file():
+            raise TeamPairingMappingValidationError(
+                f"pair contact sheet evidence 不存在：{path}"
+            )
+    return paths
+
+
+def pair_selection_for_candidate(
+    runtime: TeamPairingReviewRuntime,
+    pair_candidate_id: str,
+) -> PairReviewSelection:
+    stored = runtime.store.get_pair_review(pair_candidate_id)
+    if stored.revision == 0:
+        return PairReviewSelection()
+    try:
+        return PairReviewSelection(**dict(stored.selection))
+    except TypeError as exc:
+        raise TeamPairingMappingValidationError(
+            f"既有 pair review 狀態欄位不相容：{pair_candidate_id}"
+        ) from exc
+
+
+def save_pair_review_selection(
+    runtime: TeamPairingReviewRuntime,
+    pair_candidate_id: str,
+    selection: PairReviewSelection,
+    *,
+    reviewed_at: datetime | None = None,
+) -> SaveReviewResult:
+    if pair_candidate_id not in runtime.store.pair_ids("all"):
+        raise TeamPairingMappingValidationError(
+            f"未知 pair candidate：{pair_candidate_id}"
+        )
+    timestamp = reviewed_at or datetime.now(ZoneInfo(runtime.config.timezone))
+    canonical = derive_canonical_pair_fields(
+        selection,
+        reviewer=runtime.config.reviewer,
+        reviewed_at=timestamp,
+    )
+    stored = runtime.store.save_pair_review(
+        pair_candidate_id,
+        selection,
+        canonical,
+    )
+    return SaveReviewResult(stored, runtime.store.progress())
+
+
+def pair_progress_summary(runtime: TeamPairingReviewRuntime) -> PairProgressSummary:
+    pair_ids = runtime.store.pair_ids("all")
+    counts = {
+        status: len(runtime.store.pair_ids(status))
+        for status in ("pending", "confirmed", "rejected", "uncertain")
+    }
+    primary = 0
+    backup = 0
+    for pair_id in pair_ids:
+        stored = runtime.store.get_pair_review(pair_id)
+        if stored.revision == 0:
+            continue
+        role = str(stored.canonical_fields.get("manual_demo_role", "none"))
+        primary += int(role == "primary")
+        backup += int(role == "backup")
+    return PairProgressSummary(
+        total=len(pair_ids),
+        terminal=len(pair_ids) - counts["pending"],
+        pending=counts["pending"],
+        confirmed=counts["confirmed"],
+        rejected=counts["rejected"],
+        uncertain=counts["uncertain"],
+        primary=primary,
+        backup=backup,
+    )
 
 
 def resolve_preview_path(runtime: TeamPairingReviewRuntime, image_id: str) -> Path:
@@ -729,6 +962,145 @@ def _render_angle_screen(st: Any, runtime: TeamPairingReviewRuntime) -> None:
         st.rerun()
 
 
+def _render_pair_screen(st: Any, runtime: TeamPairingReviewRuntime) -> None:
+    try:
+        pairs = refresh_pair_candidates(runtime)
+    except TeamPairingReviewStateError as exc:
+        st.error(str(exc))
+        return
+    summary = pair_progress_summary(runtime)
+    metrics = st.columns(4)
+    metrics[0].metric("配對候選", summary.total)
+    metrics[1].metric("已確認", summary.confirmed)
+    metrics[2].metric("主要／備用", f"{summary.primary}/{summary.backup}")
+    metrics[3].metric("尚未完成", summary.pending)
+    if not pairs:
+        st.info("目前沒有符合相同車輛、before/after、時間與角度重疊規則的配對候選。")
+        return
+
+    filter_name = st.selectbox(
+        "篩選配對",
+        options=tuple(PAIR_FILTER_LABELS),
+        format_func=lambda value: PAIR_FILTER_LABELS[value],
+    )
+    pair_ids = list(runtime.store.pair_ids(filter_name))
+    if not pair_ids:
+        st.success("此篩選條件目前沒有配對。")
+        return
+    _, last_item = runtime.store.last_viewed()
+    selector_key = f"team_pairing_pair_selector:{filter_name}"
+    selected = apply_pending_item_selection(
+        st.session_state,
+        selector_key=selector_key,
+        item_ids=pair_ids,
+        fallback_item_id=last_item,
+        mode="pair",
+    )
+    selected = st.selectbox(
+        "選擇配對",
+        options=pair_ids,
+        index=pair_ids.index(selected),
+        key=selector_key,
+    )
+    runtime.store.set_last_viewed("pair", selected)
+    view = {item.pair_candidate_id: item for item in pairs}[selected]
+    st.subheader(
+        f"配對 {view.pair_sequence}/{len(pairs)}｜{view.manual_vehicle_id}"
+    )
+    st.caption(
+        f"間隔 {view.elapsed_seconds // 60} 分鐘｜共同角度："
+        + "、".join(ANGLE_LABELS.get(value, value) for value in view.overlap_angles)
+    )
+
+    try:
+        before_path, after_path = pair_contact_sheet_paths(runtime, selected)
+    except TeamPairingMappingValidationError as exc:
+        st.error(str(exc))
+        return
+    evidence_columns = st.columns(2)
+    evidence_columns[0].image(
+        str(before_path),
+        caption=f"借車前批次｜{view.before_batch_id}",
+        use_container_width=True,
+    )
+    evidence_columns[1].image(
+        str(after_path),
+        caption=f"還車後批次｜{view.after_batch_id}",
+        use_container_width=True,
+    )
+
+    current = pair_selection_for_candidate(runtime, selected)
+    status_options = tuple(PAIR_STATUS_LABELS)
+    existing_options = tuple(EXISTING_DAMAGE_LABELS)
+    new_damage_options = tuple(NEW_DAMAGE_LABELS)
+    role_options = tuple(DEMO_ROLE_LABELS)
+    status = st.selectbox(
+        "配對狀態",
+        options=status_options,
+        index=status_options.index(current.manual_pair_status),
+        format_func=lambda value: PAIR_STATUS_LABELS[value],
+        key=item_widget_key("status", "pair", selected),
+    )
+    existing = st.selectbox(
+        "既有車損是否可見",
+        options=existing_options,
+        index=existing_options.index(current.manual_existing_damage_visible),
+        format_func=lambda value: EXISTING_DAMAGE_LABELS[value],
+        key=item_widget_key("existing", "pair", selected),
+    )
+    new_damage = st.selectbox(
+        "新增車損判定",
+        options=new_damage_options,
+        index=new_damage_options.index(current.manual_new_damage_status),
+        format_func=lambda value: NEW_DAMAGE_LABELS[value],
+        key=item_widget_key("new_damage", "pair", selected),
+    )
+    role = st.selectbox(
+        "展示角色",
+        options=role_options,
+        index=role_options.index(current.manual_demo_role),
+        format_func=lambda value: DEMO_ROLE_LABELS[value],
+        key=item_widget_key("demo_role", "pair", selected),
+    )
+    notes = st.text_area(
+        "配對備註",
+        value=current.manual_notes,
+        key=item_widget_key("notes", "pair", selected),
+    )
+    if st.button("儲存配對審核", type="primary", key=item_widget_key("save", "pair", selected)):
+        try:
+            result = save_pair_review_selection(
+                runtime,
+                selected,
+                PairReviewSelection(status, existing, new_damage, role, notes),
+            )
+        except (TeamPairingMappingValidationError, TeamPairingReviewStateError) as exc:
+            st.error(str(exc))
+        else:
+            classification = result.stored_review.canonical_fields[
+                "derived_case_classification"
+            ]
+            st.success(
+                f"已儲存 revision {result.stored_review.revision}｜{classification}"
+            )
+
+    previous_column, next_column = st.columns(2)
+    if previous_column.button("上一組", key=item_widget_key("previous", "pair", selected)):
+        queue_item_selection(
+            st.session_state,
+            "pair",
+            next_item_id(pair_ids, selected, direction=-1),
+        )
+        st.rerun()
+    if next_column.button("下一組", key=item_widget_key("next", "pair", selected)):
+        queue_item_selection(
+            st.session_state,
+            "pair",
+            next_item_id(pair_ids, selected, direction=1),
+        )
+        st.rerun()
+
+
 def render_app(config_path: Path, project_root: Path, *, workspace_root: Path) -> None:
     import streamlit as st
 
@@ -783,8 +1155,10 @@ def render_app(config_path: Path, project_root: Path, *, workspace_root: Path) -
 
     if screen == "batch":
         _render_batch_screen(st, runtime)
-    else:
+    elif screen == "angle":
         _render_angle_screen(st, runtime)
+    else:
+        _render_pair_screen(st, runtime)
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:

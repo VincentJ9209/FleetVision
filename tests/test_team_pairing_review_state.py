@@ -333,3 +333,110 @@ def test_backup_integrity_explicitly_closes_connection(monkeypatch, tmp_path: Pa
 
     assert s.TeamPairingReviewStateStore.backup_integrity(tmp_path / "backup.sqlite") == "ok"
     assert fake.closed is True
+
+
+def dynamic_pair_package(tmp_path: Path):
+    pkg = package(tmp_path)
+    identity = replace(pkg.identity, expected_pair_count=0)
+    return replace(pkg, identity=identity, pairs=())
+
+
+def pair_seed(
+    pair_id: str,
+    sequence: int,
+    before: str = "batch_001",
+    after: str = "batch_002",
+):
+    s = state_module()
+    return s.PairCandidateSeed(
+        pair_candidate_id=pair_id,
+        pair_sequence=sequence,
+        before_batch_id=before,
+        after_batch_id=after,
+        manual_vehicle_id="TEAMCAR-001",
+        elapsed_seconds=6900,
+        overlap_angles_json='["front_left"]',
+        overlap_count=1,
+        four_angle_overlap_count=1,
+    )
+
+
+class TestGeneratedPairReviewState:
+    def test_synchronize_creates_pair_rows_filters_and_progress(self, tmp_path: Path) -> None:
+        pkg = dynamic_pair_package(tmp_path)
+        store = store_for(pkg)
+        store.initialize(pkg)
+        store.synchronize_pair_candidates(
+            (pair_seed("pair_001", 1),),
+            generation_fingerprint="GEN-A",
+        )
+
+        assert store.pair_ids("pending") == ("pair_001",)
+        assert store.get_pair_review("pair_001").revision == 0
+        assert store.progress().pairs_total == 1
+        assert store.verify_event_log_continuity() == 1
+
+    def test_synchronize_is_idempotent_and_reopen_preserves_generated_pairs(self, tmp_path: Path) -> None:
+        pkg = dynamic_pair_package(tmp_path)
+        store = store_for(pkg)
+        store.initialize(pkg)
+        pairs = (pair_seed("pair_001", 1),)
+        store.synchronize_pair_candidates(pairs, generation_fingerprint="GEN-A")
+        store.synchronize_pair_candidates(pairs, generation_fingerprint="GEN-A")
+        assert store.verify_event_log_continuity() == 1
+
+        reopened = store_for(pkg)
+        reopened.initialize(pkg)
+        assert reopened.pair_ids("all") == ("pair_001",)
+        assert reopened.pair_generation_fingerprint() == "GEN-A"
+
+    def test_changed_candidate_set_is_blocked_after_review(self, tmp_path: Path) -> None:
+        s = state_module()
+        pkg = dynamic_pair_package(tmp_path)
+        store = store_for(pkg)
+        store.initialize(pkg)
+        store.synchronize_pair_candidates(
+            (pair_seed("pair_001", 1),),
+            generation_fingerprint="GEN-A",
+        )
+        selection, canonical = confirmed_pair()
+        store.save_pair_review("pair_001", selection, canonical)
+
+        with pytest.raises(s.TeamPairingReviewStateError, match="review|已審核"):
+            store.synchronize_pair_candidates(
+                (pair_seed("pair_002", 1),),
+                generation_fingerprint="GEN-B",
+            )
+
+    def test_only_one_primary_demo_pair_is_allowed(self, tmp_path: Path) -> None:
+        s = state_module()
+        pkg = dynamic_pair_package(tmp_path)
+        store = store_for(pkg)
+        store.initialize(pkg)
+        store.synchronize_pair_candidates(
+            (pair_seed("pair_001", 1), pair_seed("pair_002", 2)),
+            generation_fingerprint="GEN-A",
+        )
+        selection, canonical = confirmed_pair()
+        store.save_pair_review("pair_001", selection, canonical)
+
+        with pytest.raises(s.TeamPairingReviewStateError, match="primary|主要"):
+            store.save_pair_review("pair_002", selection, canonical)
+        assert store.get_pair_review("pair_002").revision == 0
+
+    def test_pair_candidate_metadata_is_preserved_in_sequence_order(self, tmp_path: Path) -> None:
+        pkg = dynamic_pair_package(tmp_path)
+        store = store_for(pkg)
+        store.initialize(pkg)
+        store.synchronize_pair_candidates(
+            (pair_seed("pair_002", 2), pair_seed("pair_001", 1)),
+            generation_fingerprint="GEN-A",
+        )
+        rows = store.pair_candidate_rows()
+        assert tuple(row["pair_candidate_id"] for row in rows) == (
+            "pair_001",
+            "pair_002",
+        )
+        assert rows[0]["manual_vehicle_id"] == "TEAMCAR-001"
+        assert rows[0]["overlap_angles"] == ("front_left",)
+        assert rows[0]["elapsed_seconds"] == 6900

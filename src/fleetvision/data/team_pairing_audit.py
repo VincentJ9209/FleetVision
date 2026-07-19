@@ -18,7 +18,10 @@ from zoneinfo import ZoneInfo
 import numpy as np
 from PIL import Image, ImageDraw
 
-from fleetvision.review.team_pairing_review_mapping import TeamPairingAuditConfig
+from fleetvision.review.team_pairing_review_mapping import (
+    TeamPairingAuditConfig,
+    normalize_vehicle_id,
+)
 
 
 class TeamPairingAuditError(RuntimeError):
@@ -960,3 +963,193 @@ def create_batch_contact_sheet(
         temporary.unlink(missing_ok=True)
         raise
     return destination
+
+PAIRING_ANGLE_VALUES = frozenset(
+    {
+        "front_left",
+        "front_right",
+        "rear_left",
+        "rear_right",
+        "front",
+        "rear",
+        "left_side",
+        "right_side",
+    }
+)
+FOUR_ANGLE_VALUES = frozenset(
+    {"front_left", "front_right", "rear_left", "rear_right"}
+)
+
+
+@dataclass(frozen=True)
+class ReviewedBatchForPairing:
+    batch_id: str
+    batch_sequence: int
+    start_time: str
+    end_time: str
+    manual_batch_status: str
+    manual_vehicle_id: str
+    manual_stage: str
+    reviewed_angles: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class BeforeAfterPairCandidate:
+    pair_candidate_id: str
+    pair_sequence: int
+    before_batch_id: str
+    after_batch_id: str
+    manual_vehicle_id: str
+    before_end_time: str
+    after_start_time: str
+    elapsed_seconds: int
+    overlap_angles: tuple[str, ...]
+    overlap_count: int
+    four_angle_overlap_count: int
+
+
+def pairing_config_fingerprint(
+    *,
+    pair_max_elapsed_hours: int,
+    timezone_name: str,
+    same_calendar_date: bool = True,
+) -> str:
+    payload = json.dumps(
+        {
+            "pair_max_elapsed_hours": int(pair_max_elapsed_hours),
+            "same_calendar_date": bool(same_calendar_date),
+            "timezone_name": str(timezone_name),
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest().upper()
+
+
+def deterministic_pair_candidate_id(
+    before_batch_id: str,
+    after_batch_id: str,
+    pairing_config_fingerprint_value: str,
+) -> str:
+    payload = "\x1f".join(
+        (
+            str(before_batch_id).strip(),
+            str(after_batch_id).strip(),
+            str(pairing_config_fingerprint_value).strip().upper(),
+        )
+    )
+    return f"pair_{hashlib.sha256(payload.encode('utf-8')).hexdigest()[:20]}"
+
+
+def _pair_datetime(value: str, *, timezone_name: str) -> datetime:
+    try:
+        parsed = datetime.fromisoformat(str(value).strip())
+    except ValueError as exc:
+        raise TeamPairingAuditError(f"pair candidate timestamp is not ISO 8601: {value}") from exc
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        raise TeamPairingAuditError("pair candidate timestamp must include timezone")
+    return parsed.astimezone(ZoneInfo(timezone_name))
+
+
+def _pairable_angles(values: Sequence[str]) -> tuple[str, ...]:
+    return tuple(
+        sorted(
+            {str(value).strip() for value in values if str(value).strip() in PAIRING_ANGLE_VALUES}
+        )
+    )
+
+
+def build_before_after_pair_candidates(
+    reviewed_batches: Sequence[ReviewedBatchForPairing],
+    *,
+    pair_max_elapsed_hours: int,
+    timezone_name: str,
+    pairing_config_fingerprint: str,
+    same_calendar_date: bool = True,
+) -> tuple[BeforeAfterPairCandidate, ...]:
+    if int(pair_max_elapsed_hours) <= 0:
+        raise TeamPairingAuditError("pair_max_elapsed_hours must be positive")
+    if not str(pairing_config_fingerprint).strip():
+        raise TeamPairingAuditError("pairing_config_fingerprint must not be blank")
+
+    normalized: list[tuple[ReviewedBatchForPairing, str, datetime, datetime, tuple[str, ...]]] = []
+    for batch in reviewed_batches:
+        if str(batch.manual_batch_status).strip() != "confirmed":
+            continue
+        if str(batch.manual_stage).strip() not in {"before", "after"}:
+            continue
+        try:
+            vehicle = normalize_vehicle_id(batch.manual_vehicle_id)
+        except Exception:
+            continue
+        start = _pair_datetime(batch.start_time, timezone_name=timezone_name)
+        end = _pair_datetime(batch.end_time, timezone_name=timezone_name)
+        if end < start:
+            raise TeamPairingAuditError(f"batch end precedes start: {batch.batch_id}")
+        angles = _pairable_angles(batch.reviewed_angles)
+        normalized.append((batch, vehicle, start, end, angles))
+
+    before_rows = [item for item in normalized if item[0].manual_stage == "before"]
+    after_rows = [item for item in normalized if item[0].manual_stage == "after"]
+    maximum_seconds = int(pair_max_elapsed_hours) * 60 * 60
+    raw_candidates: list[dict[str, Any]] = []
+
+    for before, before_vehicle, _before_start, before_end, before_angles in before_rows:
+        for after, after_vehicle, after_start, _after_end, after_angles in after_rows:
+            if before_vehicle != after_vehicle:
+                continue
+            elapsed = int((after_start - before_end).total_seconds())
+            if elapsed <= 0 or elapsed > maximum_seconds:
+                continue
+            if same_calendar_date and before_end.date() != after_start.date():
+                continue
+            overlap = tuple(sorted(set(before_angles).intersection(after_angles)))
+            if not overlap:
+                continue
+            four_count = len(set(overlap).intersection(FOUR_ANGLE_VALUES))
+            raw_candidates.append(
+                {
+                    "before": before,
+                    "after": after,
+                    "vehicle": before_vehicle,
+                    "before_end": before_end,
+                    "after_start": after_start,
+                    "elapsed": elapsed,
+                    "overlap": overlap,
+                    "four_count": four_count,
+                }
+            )
+
+    raw_candidates.sort(
+        key=lambda item: (
+            -int(item["four_count"]),
+            -len(item["overlap"]),
+            int(item["elapsed"]),
+            str(item["vehicle"]),
+            int(item["before"].batch_sequence),
+            int(item["after"].batch_sequence),
+            str(item["before"].batch_id),
+            str(item["after"].batch_id),
+        )
+    )
+
+    return tuple(
+        BeforeAfterPairCandidate(
+            pair_candidate_id=deterministic_pair_candidate_id(
+                item["before"].batch_id,
+                item["after"].batch_id,
+                pairing_config_fingerprint,
+            ),
+            pair_sequence=index,
+            before_batch_id=item["before"].batch_id,
+            after_batch_id=item["after"].batch_id,
+            manual_vehicle_id=item["vehicle"],
+            before_end_time=item["before_end"].isoformat(),
+            after_start_time=item["after_start"].isoformat(),
+            elapsed_seconds=item["elapsed"],
+            overlap_angles=item["overlap"],
+            overlap_count=len(item["overlap"]),
+            four_angle_overlap_count=item["four_count"],
+        )
+        for index, item in enumerate(raw_candidates, start=1)
+    )

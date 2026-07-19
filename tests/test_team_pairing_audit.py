@@ -459,3 +459,215 @@ class TestCaptureBatchCandidates:
             assert tuple(next(csv.reader(handle))) == inventory().BATCH_MEMBER_COLUMNS
         with pytest.raises(FileExistsError):
             inventory().write_capture_batch_artifacts(result, candidates_dir, config)
+
+
+class TestBeforeAfterPairCandidates:
+    @staticmethod
+    def batch(
+        batch_id: str,
+        sequence: int,
+        start: str,
+        end: str,
+        *,
+        status: str = "confirmed",
+        vehicle: str = "TEAMCAR-001",
+        stage: str = "before",
+        angles: tuple[str, ...] = ("front_left",),
+    ):
+        audit = inventory()
+        return audit.ReviewedBatchForPairing(
+            batch_id=batch_id,
+            batch_sequence=sequence,
+            start_time=start,
+            end_time=end,
+            manual_batch_status=status,
+            manual_vehicle_id=vehicle,
+            manual_stage=stage,
+            reviewed_angles=angles,
+        )
+
+    def build(self, batches):
+        audit = inventory()
+        return audit.build_before_after_pair_candidates(
+            batches,
+            pair_max_elapsed_hours=12,
+            timezone_name="Asia/Taipei",
+            pairing_config_fingerprint="PAIR-CONFIG-A",
+        )
+
+    def test_same_vehicle_and_confirmed_status_are_required(self) -> None:
+        batches = (
+            self.batch(
+                "batch_before",
+                1,
+                "2026-07-19T08:00:00+08:00",
+                "2026-07-19T08:05:00+08:00",
+            ),
+            self.batch(
+                "batch_wrong_vehicle",
+                2,
+                "2026-07-19T09:00:00+08:00",
+                "2026-07-19T09:05:00+08:00",
+                vehicle="TEAMCAR-002",
+                stage="after",
+            ),
+            self.batch(
+                "batch_not_confirmed",
+                3,
+                "2026-07-19T10:00:00+08:00",
+                "2026-07-19T10:05:00+08:00",
+                status="uncertain",
+                stage="after",
+            ),
+        )
+        assert self.build(batches) == ()
+
+    def test_before_after_stage_and_time_order_are_required(self) -> None:
+        batches = (
+            self.batch(
+                "batch_after_first",
+                1,
+                "2026-07-19T08:00:00+08:00",
+                "2026-07-19T08:05:00+08:00",
+                stage="after",
+            ),
+            self.batch(
+                "batch_before_late",
+                2,
+                "2026-07-19T09:00:00+08:00",
+                "2026-07-19T09:05:00+08:00",
+                stage="before",
+            ),
+        )
+        assert self.build(batches) == ()
+
+    def test_elapsed_limit_is_inclusive_at_twelve_hours(self) -> None:
+        before = self.batch(
+            "batch_before",
+            1,
+            "2026-07-19T00:00:00+08:00",
+            "2026-07-19T00:10:00+08:00",
+        )
+        at_limit = self.batch(
+            "batch_at_limit",
+            2,
+            "2026-07-19T12:10:00+08:00",
+            "2026-07-19T12:20:00+08:00",
+            stage="after",
+        )
+        over_limit = self.batch(
+            "batch_over_limit",
+            3,
+            "2026-07-19T12:10:01+08:00",
+            "2026-07-19T12:20:01+08:00",
+            stage="after",
+        )
+        candidates = self.build((before, at_limit, over_limit))
+        assert tuple(item.after_batch_id for item in candidates) == ("batch_at_limit",)
+        assert candidates[0].elapsed_seconds == 12 * 60 * 60
+
+    def test_calendar_date_boundary_is_not_crossed(self) -> None:
+        batches = (
+            self.batch(
+                "batch_before",
+                1,
+                "2026-07-19T23:40:00+08:00",
+                "2026-07-19T23:50:00+08:00",
+            ),
+            self.batch(
+                "batch_after",
+                2,
+                "2026-07-20T00:10:00+08:00",
+                "2026-07-20T00:20:00+08:00",
+                stage="after",
+            ),
+        )
+        assert self.build(batches) == ()
+
+    def test_reviewed_angle_overlap_is_required(self) -> None:
+        no_overlap = (
+            self.batch(
+                "batch_before",
+                1,
+                "2026-07-19T08:00:00+08:00",
+                "2026-07-19T08:05:00+08:00",
+                angles=("front_left",),
+            ),
+            self.batch(
+                "batch_after",
+                2,
+                "2026-07-19T09:00:00+08:00",
+                "2026-07-19T09:05:00+08:00",
+                stage="after",
+                angles=("rear_right", "unknown", "interior"),
+            ),
+        )
+        assert self.build(no_overlap) == ()
+
+        with_overlap = (
+            no_overlap[0],
+            self.batch(
+                "batch_after",
+                2,
+                "2026-07-19T09:00:00+08:00",
+                "2026-07-19T09:05:00+08:00",
+                stage="after",
+                angles=("front_left", "unknown"),
+            ),
+        )
+        result = self.build(with_overlap)
+        assert result[0].overlap_angles == ("front_left",)
+        assert result[0].overlap_count == 1
+
+    def test_four_angle_overlap_has_deterministic_ranking_priority(self) -> None:
+        before = self.batch(
+            "batch_before",
+            1,
+            "2026-07-19T08:00:00+08:00",
+            "2026-07-19T08:05:00+08:00",
+            angles=("front_left", "rear_left", "front"),
+        )
+        lower = self.batch(
+            "batch_after_lower",
+            2,
+            "2026-07-19T08:30:00+08:00",
+            "2026-07-19T08:35:00+08:00",
+            stage="after",
+            angles=("front",),
+        )
+        higher = self.batch(
+            "batch_after_higher",
+            3,
+            "2026-07-19T09:00:00+08:00",
+            "2026-07-19T09:05:00+08:00",
+            stage="after",
+            angles=("front_left", "rear_left"),
+        )
+        result = self.build((before, lower, higher))
+        assert tuple(item.after_batch_id for item in result) == (
+            "batch_after_higher",
+            "batch_after_lower",
+        )
+        assert result[0].four_angle_overlap_count == 2
+        assert result[1].four_angle_overlap_count == 0
+        assert tuple(item.pair_sequence for item in result) == (1, 2)
+
+    def test_pair_ids_are_stable_when_input_order_changes(self) -> None:
+        before = self.batch(
+            "batch_before",
+            1,
+            "2026-07-19T08:00:00+08:00",
+            "2026-07-19T08:05:00+08:00",
+        )
+        after = self.batch(
+            "batch_after",
+            2,
+            "2026-07-19T09:00:00+08:00",
+            "2026-07-19T09:05:00+08:00",
+            stage="after",
+        )
+        first = self.build((before, after))
+        second = self.build((after, before))
+        assert first == second
+        assert first[0].pair_candidate_id.startswith("pair_")
+        assert len(first[0].pair_candidate_id) == 25
