@@ -8,7 +8,7 @@ import json
 import math
 import os
 import tempfile
-from collections import defaultdict
+from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -16,7 +16,7 @@ from typing import Any, Iterable, Mapping, Sequence
 from zoneinfo import ZoneInfo
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw
 
 from fleetvision.review.team_pairing_review_mapping import TeamPairingAuditConfig
 
@@ -577,6 +577,384 @@ def atomic_write_json(
             handle.write("\n")
             handle.flush()
             os.fsync(handle.fileno())
+        os.replace(temporary, destination)
+    except Exception:
+        temporary.unlink(missing_ok=True)
+        raise
+    return destination
+
+BATCH_CANDIDATE_COLUMNS: tuple[str, ...] = (
+    "batch_id",
+    "batch_sequence",
+    "start_time",
+    "end_time",
+    "duration_seconds",
+    "image_count",
+    "timestamp_source_summary",
+    "time_confidence_min",
+    "suspected_four_angle_complete",
+    "batch_confidence",
+    "manual_vehicle_id",
+    "manual_stage",
+    "manual_batch_status",
+    "manual_notes",
+)
+
+BATCH_MEMBER_COLUMNS: tuple[str, ...] = (
+    "batch_id",
+    "member_sequence",
+    "image_id",
+    "relative_path",
+    "original_path",
+    "filename",
+    "selected_capture_time",
+    "selected_time_source",
+    "time_confidence",
+    "exact_duplicate_group",
+    "representative_for_exact_group",
+    "eligible_for_batch_candidate",
+    "membership_role",
+)
+
+
+@dataclass(frozen=True)
+class CaptureBatchBuildResult:
+    batches: tuple[dict[str, Any], ...]
+    members: tuple[dict[str, Any], ...]
+
+
+_CONFIDENCE_ORDER = {
+    "high": 0,
+    "medium": 1,
+    "fallback_low": 2,
+    "missing": 3,
+}
+
+
+def _selected_datetime(row: Mapping[str, Any]) -> datetime | None:
+    raw = str(row.get("selected_capture_time", "")).strip()
+    if not raw:
+        return None
+    try:
+        parsed = datetime.fromisoformat(raw)
+    except ValueError as exc:
+        raise TeamPairingAuditError(
+            f"invalid selected_capture_time for {row.get('image_id', '')}: {raw!r}"
+        ) from exc
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        raise TeamPairingAuditError("selected_capture_time must include timezone")
+    return parsed
+
+
+def _batch_sort_key(row: Mapping[str, Any]) -> tuple[Any, ...]:
+    selected = _selected_datetime(row)
+    return (
+        selected is None,
+        selected or datetime.max.replace(tzinfo=ZoneInfo("UTC")),
+        str(row.get("relative_path", "")).casefold(),
+        str(row.get("relative_path", "")),
+        str(row.get("image_id", "")),
+    )
+
+
+def deterministic_batch_id(
+    rows: Sequence[Mapping[str, Any]],
+    *,
+    batch_gap_minutes: int,
+) -> str:
+    ordered = sorted(rows, key=_batch_sort_key)
+    payload = {
+        "batch_gap_minutes": int(batch_gap_minutes),
+        "members": [
+            {
+                "image_id": str(row.get("image_id", "")),
+                "selected_capture_time": str(row.get("selected_capture_time", "")),
+            }
+            for row in ordered
+        ],
+    }
+    canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+    digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    return f"batch_{digest[:20]}"
+
+
+def _minimum_confidence(rows: Sequence[Mapping[str, Any]]) -> str:
+    return max(
+        (str(row.get("time_confidence", "missing")) for row in rows),
+        key=lambda value: _CONFIDENCE_ORDER.get(value, 99),
+    )
+
+
+def _finalize_candidate_group(
+    groups: list[list[dict[str, Any]]],
+    current: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    if current:
+        groups.append(current)
+    return []
+
+
+def build_capture_batch_candidates(
+    rows: Sequence[Mapping[str, Any]],
+    config: TeamPairingAuditConfig,
+) -> CaptureBatchBuildResult:
+    audited_rows = [dict(row) for row in rows]
+    representatives = [
+        row
+        for row in audited_rows
+        if bool(row.get("is_readable"))
+        and bool(row.get("eligible_for_batch_candidate"))
+    ]
+    if not representatives:
+        raise TeamPairingAuditError("no readable representative images eligible for batching")
+
+    ordered = sorted(representatives, key=_batch_sort_key)
+    groups: list[list[dict[str, Any]]] = []
+    current: list[dict[str, Any]] = []
+    gap_seconds = config.batch_gap_minutes * 60
+
+    for row in ordered:
+        selected = _selected_datetime(row)
+        confidence = str(row.get("time_confidence", "missing"))
+        isolated = selected is None or confidence in {"fallback_low", "missing"}
+        if isolated:
+            current = _finalize_candidate_group(groups, current)
+            groups.append([row])
+            continue
+        if not current:
+            current = [row]
+            continue
+        previous = _selected_datetime(current[-1])
+        if previous is None:
+            raise TeamPairingAuditError("internal batching invariant violated")
+        crosses_date = previous.date() != selected.date()
+        exceeds_gap = (selected - previous).total_seconds() > gap_seconds
+        if crosses_date or exceeds_gap:
+            current = _finalize_candidate_group(groups, current)
+        current.append(row)
+    _finalize_candidate_group(groups, current)
+
+    duplicate_members: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in audited_rows:
+        group_id = str(row.get("exact_duplicate_group", ""))
+        if group_id:
+            duplicate_members[group_id].append(row)
+
+    batches: list[dict[str, Any]] = []
+    members: list[dict[str, Any]] = []
+    for batch_sequence, group in enumerate(groups, start=1):
+        group = sorted(group, key=_batch_sort_key)
+        batch_id = deterministic_batch_id(
+            group,
+            batch_gap_minutes=config.batch_gap_minutes,
+        )
+        parsed_times = [value for value in (_selected_datetime(row) for row in group) if value]
+        start_time = parsed_times[0].isoformat() if parsed_times else ""
+        end_time = parsed_times[-1].isoformat() if parsed_times else ""
+        duration_seconds = (
+            int((parsed_times[-1] - parsed_times[0]).total_seconds())
+            if len(parsed_times) >= 2
+            else 0
+        )
+        confidence_min = _minimum_confidence(group)
+        source_counts = Counter(str(row.get("selected_time_source", "missing")) for row in group)
+        batches.append(
+            {
+                "batch_id": batch_id,
+                "batch_sequence": batch_sequence,
+                "start_time": start_time,
+                "end_time": end_time,
+                "duration_seconds": duration_seconds,
+                "image_count": len(group),
+                "timestamp_source_summary": json.dumps(
+                    dict(sorted(source_counts.items())),
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ),
+                "time_confidence_min": confidence_min,
+                "suspected_four_angle_complete": len(group) >= 4,
+                "batch_confidence": (
+                    "manual_review_required"
+                    if confidence_min in {"fallback_low", "missing"}
+                    else "candidate_high"
+                ),
+                "manual_vehicle_id": "",
+                "manual_stage": "unknown",
+                "manual_batch_status": "pending",
+                "manual_notes": "",
+            }
+        )
+
+        batch_member_rows: list[tuple[dict[str, Any], str]] = []
+        seen_ids: set[str] = set()
+        for representative in group:
+            representative_id = str(representative.get("image_id", ""))
+            batch_member_rows.append((representative, "candidate_representative"))
+            seen_ids.add(representative_id)
+            exact_group = str(representative.get("exact_duplicate_group", ""))
+            if exact_group:
+                for duplicate in sorted(
+                    duplicate_members[exact_group],
+                    key=lambda item: (
+                        str(item.get("relative_path", "")).casefold(),
+                        str(item.get("relative_path", "")),
+                    ),
+                ):
+                    duplicate_id = str(duplicate.get("image_id", ""))
+                    if duplicate_id in seen_ids:
+                        continue
+                    batch_member_rows.append((duplicate, "exact_duplicate_trace"))
+                    seen_ids.add(duplicate_id)
+
+        for member_sequence, (row, role) in enumerate(batch_member_rows, start=1):
+            members.append(
+                {
+                    "batch_id": batch_id,
+                    "member_sequence": member_sequence,
+                    "image_id": str(row.get("image_id", "")),
+                    "relative_path": str(row.get("relative_path", "")),
+                    "original_path": str(row.get("original_path", "")),
+                    "filename": str(row.get("filename", "")),
+                    "selected_capture_time": str(row.get("selected_capture_time", "")),
+                    "selected_time_source": str(row.get("selected_time_source", "")),
+                    "time_confidence": str(row.get("time_confidence", "")),
+                    "exact_duplicate_group": str(row.get("exact_duplicate_group", "")),
+                    "representative_for_exact_group": bool(
+                        row.get("representative_for_exact_group")
+                    ),
+                    "eligible_for_batch_candidate": bool(
+                        row.get("eligible_for_batch_candidate")
+                    ),
+                    "membership_role": role,
+                }
+            )
+
+    return CaptureBatchBuildResult(batches=tuple(batches), members=tuple(members))
+
+
+def write_capture_batch_artifacts(
+    result: CaptureBatchBuildResult,
+    candidates_dir: Path,
+    config: TeamPairingAuditConfig,
+) -> dict[str, Path]:
+    candidates_dir = candidates_dir.resolve()
+    batch_path = candidates_dir / "team_capture_batch_candidates.csv"
+    member_path = candidates_dir / "team_capture_batch_members.csv"
+    if batch_path.exists() or member_path.exists():
+        raise FileExistsError("refusing to overwrite existing capture-batch artifacts")
+    written: list[Path] = []
+    try:
+        written.append(
+            atomic_write_csv(
+                result.batches,
+                batch_path,
+                fieldnames=BATCH_CANDIDATE_COLUMNS,
+                config=config,
+            )
+        )
+        written.append(
+            atomic_write_csv(
+                result.members,
+                member_path,
+                fieldnames=BATCH_MEMBER_COLUMNS,
+                config=config,
+            )
+        )
+    except Exception:
+        for path in written:
+            path.unlink(missing_ok=True)
+        raise
+    return {"batches": batch_path, "members": member_path}
+
+
+def _ordered_contact_sheet_members(
+    batch_id: str,
+    members: Sequence[Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    selected = [
+        dict(member)
+        for member in members
+        if str(member.get("batch_id", "")) == batch_id
+        and str(member.get("membership_role", "")) == "candidate_representative"
+    ]
+    return sorted(
+        selected,
+        key=lambda row: (
+            _selected_datetime(row) is None,
+            _selected_datetime(row) or datetime.max.replace(tzinfo=ZoneInfo("UTC")),
+            str(row.get("filename", "")).casefold(),
+            str(row.get("relative_path", "")),
+        ),
+    )
+
+
+def create_batch_contact_sheet(
+    batch: Mapping[str, Any],
+    members: Sequence[Mapping[str, Any]],
+    inventory_rows: Sequence[Mapping[str, Any]],
+    output_path: Path,
+    config: TeamPairingAuditConfig,
+) -> Path:
+    destination, temporary = _atomic_destination(output_path, config)
+    ordered_members = _ordered_contact_sheet_members(str(batch.get("batch_id", "")), members)
+    if not ordered_members:
+        temporary.unlink(missing_ok=True)
+        raise TeamPairingAuditError("contact sheet batch contains no representative images")
+    inventory_by_id = {str(row.get("image_id", "")): dict(row) for row in inventory_rows}
+
+    columns = config.contact_sheet_columns
+    thumbnail = config.contact_sheet_thumbnail_size
+    margin = 12
+    tile_width = thumbnail + 24
+    tile_height = thumbnail + 88
+    row_count = math.ceil(len(ordered_members) / columns)
+    canvas = Image.new(
+        "RGB",
+        (margin * 2 + columns * tile_width, margin * 2 + row_count * tile_height),
+        "white",
+    )
+    draw = ImageDraw.Draw(canvas)
+
+    try:
+        for index, member in enumerate(ordered_members, start=1):
+            evidence = inventory_by_id.get(str(member.get("image_id", "")))
+            if evidence is None:
+                raise TeamPairingAuditError("contact sheet member is missing inventory evidence")
+            source_path = (config.source_root / str(evidence.get("relative_path", ""))).resolve()
+            if not _is_relative_to(source_path, config.source_root.resolve()):
+                raise TeamPairingAuditError("contact sheet source path escapes approved source root")
+            if not source_path.is_file():
+                raise TeamPairingAuditError(f"contact sheet source image missing: {source_path}")
+
+            column = (index - 1) % columns
+            row_index = (index - 1) // columns
+            left = margin + column * tile_width
+            top = margin + row_index * tile_height
+            with Image.open(source_path) as source_image:
+                preview = source_image.convert("RGB")
+                preview.thumbnail((thumbnail, thumbnail), Image.Resampling.LANCZOS)
+            image_left = left + (thumbnail - preview.width) // 2
+            image_top = top + (thumbnail - preview.height) // 2
+            canvas.paste(preview, (image_left, image_top))
+
+            label_top = top + thumbnail + 4
+            labels = (
+                f"{index:03d} {evidence.get('filename', '')}",
+                str(evidence.get("selected_capture_time", "")),
+                str(evidence.get("selected_time_source", "")),
+                f"{evidence.get('width', '')}x{evidence.get('height', '')}",
+            )
+            for line_index, label in enumerate(labels):
+                draw.text((left, label_top + line_index * 16), label, fill="black")
+
+        canvas.save(
+            temporary,
+            format="JPEG",
+            quality=90,
+            optimize=False,
+            progressive=False,
+            subsampling=0,
+        )
         os.replace(temporary, destination)
     except Exception:
         temporary.unlink(missing_ok=True)

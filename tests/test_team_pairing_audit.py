@@ -250,3 +250,212 @@ def test_full_inventory_build_keeps_all_source_bytes_unchanged(tmp_path: Path) -
         row["source_snapshot_sha256"] == before["snapshot_sha256"]
         for row in result.rows
     )
+
+
+def _batch_row(
+    image_id: str,
+    selected_capture_time: str,
+    *,
+    relative_path: str | None = None,
+    time_confidence: str = "high",
+    exact_duplicate_group: str = "",
+    representative: bool = True,
+    eligible: bool = True,
+) -> dict[str, object]:
+    relative = relative_path or f"{image_id}.jpg"
+    return {
+        "image_id": image_id,
+        "filename": Path(relative).name,
+        "relative_path": relative,
+        "original_path": f"dataset/01_raw/04_team/{relative}",
+        "is_readable": True,
+        "selected_capture_time": selected_capture_time,
+        "selected_time_source": "exif_datetime_original" if selected_capture_time else "missing",
+        "time_confidence": time_confidence,
+        "exact_duplicate_group": exact_duplicate_group,
+        "representative_for_exact_group": representative,
+        "eligible_for_batch_candidate": eligible,
+        "width": 64,
+        "height": 48,
+        "sha256": image_id.upper().ljust(64, "0")[:64],
+    }
+
+
+class TestCaptureBatchCandidates:
+    def test_exactly_ten_minutes_remains_one_batch(self, tmp_path: Path) -> None:
+        project_root, _, config_path = create_test_project(tmp_path)
+        config = load_config(project_root, config_path)
+        rows = [
+            _batch_row("team_a", "2026-07-19T09:00:00+08:00"),
+            _batch_row("team_b", "2026-07-19T09:10:00+08:00"),
+        ]
+
+        result = inventory().build_capture_batch_candidates(rows, config)
+
+        assert len(result.batches) == 1
+        assert result.batches[0]["duration_seconds"] == 600
+        assert result.batches[0]["image_count"] == 2
+
+    def test_more_than_ten_minutes_starts_new_batch(self, tmp_path: Path) -> None:
+        project_root, _, config_path = create_test_project(tmp_path)
+        config = load_config(project_root, config_path)
+        rows = [
+            _batch_row("team_a", "2026-07-19T09:00:00+08:00"),
+            _batch_row("team_b", "2026-07-19T09:10:01+08:00"),
+        ]
+
+        result = inventory().build_capture_batch_candidates(rows, config)
+
+        assert len(result.batches) == 2
+        assert [batch["image_count"] for batch in result.batches] == [1, 1]
+
+    def test_calendar_date_boundary_always_splits(self, tmp_path: Path) -> None:
+        project_root, _, config_path = create_test_project(tmp_path)
+        config = load_config(project_root, config_path)
+        rows = [
+            _batch_row("team_a", "2026-07-19T23:59:00+08:00"),
+            _batch_row("team_b", "2026-07-20T00:01:00+08:00"),
+        ]
+
+        result = inventory().build_capture_batch_candidates(rows, config)
+
+        assert len(result.batches) == 2
+
+    def test_low_confidence_and_missing_times_are_isolated(self, tmp_path: Path) -> None:
+        project_root, _, config_path = create_test_project(tmp_path)
+        config = load_config(project_root, config_path)
+        rows = [
+            _batch_row("team_high", "2026-07-19T09:00:00+08:00"),
+            _batch_row(
+                "team_low",
+                "2026-07-19T09:01:00+08:00",
+                time_confidence="fallback_low",
+            ),
+            _batch_row("team_missing", "", time_confidence="missing"),
+        ]
+
+        result = inventory().build_capture_batch_candidates(rows, config)
+
+        assert len(result.batches) == 3
+        assert sum(
+            batch["batch_confidence"] == "manual_review_required"
+            for batch in result.batches
+        ) == 2
+
+    def test_exact_duplicate_members_remain_traceable_but_not_double_counted(
+        self,
+        tmp_path: Path,
+    ) -> None:
+        project_root, _, config_path = create_test_project(tmp_path)
+        config = load_config(project_root, config_path)
+        rows = [
+            _batch_row(
+                "team_rep",
+                "2026-07-19T09:00:00+08:00",
+                exact_duplicate_group="exact_same",
+            ),
+            _batch_row(
+                "team_duplicate",
+                "2026-07-19T09:00:00+08:00",
+                exact_duplicate_group="exact_same",
+                representative=False,
+                eligible=False,
+            ),
+            _batch_row("team_other", "2026-07-19T09:05:00+08:00"),
+        ]
+
+        result = inventory().build_capture_batch_candidates(rows, config)
+
+        assert len(result.batches) == 1
+        assert result.batches[0]["image_count"] == 2
+        assert len(result.members) == 3
+        duplicate = next(
+            member for member in result.members if member["image_id"] == "team_duplicate"
+        )
+        assert duplicate["membership_role"] == "exact_duplicate_trace"
+        assert duplicate["batch_id"] == result.batches[0]["batch_id"]
+
+    def test_batch_ids_and_member_order_are_deterministic(self, tmp_path: Path) -> None:
+        project_root, _, config_path = create_test_project(tmp_path)
+        config = load_config(project_root, config_path)
+        rows = [
+            _batch_row("team_b", "2026-07-19T09:05:00+08:00", relative_path="b.jpg"),
+            _batch_row("team_a", "2026-07-19T09:00:00+08:00", relative_path="a.jpg"),
+        ]
+
+        first = inventory().build_capture_batch_candidates(rows, config)
+        second = inventory().build_capture_batch_candidates(list(reversed(rows)), config)
+
+        assert first.batches == second.batches
+        assert first.members == second.members
+        assert first.batches[0]["batch_id"].startswith("batch_")
+        assert len(first.batches[0]["batch_id"]) == 26
+
+    def test_contact_sheet_is_deterministic_and_source_remains_unchanged(
+        self,
+        tmp_path: Path,
+    ) -> None:
+        project_root, source_root, config_path = create_test_project(
+            tmp_path,
+            contact_sheet_columns=4,
+            contact_sheet_thumbnail_size=80,
+        )
+        for index in range(5):
+            create_rgb_image(
+                source_root / f"image_{index}.jpg",
+                color=(20 + index, 60 + index, 100 + index),
+            )
+        config = load_config(project_root, config_path)
+        inventory_result = inventory().build_team_image_inventory(config)
+        rows = []
+        for index, raw in enumerate(inventory_result.rows):
+            row = dict(raw)
+            row["selected_capture_time"] = f"2026-07-19T09:0{index}:00+08:00"
+            row["selected_time_source"] = "exif_datetime_original"
+            row["time_confidence"] = "high"
+            rows.append(row)
+        batch_result = inventory().build_capture_batch_candidates(rows, config)
+        before = inventory().build_source_snapshot(source_root)
+
+        first = inventory().create_batch_contact_sheet(
+            batch_result.batches[0],
+            list(reversed(batch_result.members)),
+            rows,
+            config.output_root / "sheets" / "first.jpg",
+            config,
+        )
+        second = inventory().create_batch_contact_sheet(
+            batch_result.batches[0],
+            batch_result.members,
+            rows,
+            config.output_root / "sheets" / "second.jpg",
+            config,
+        )
+        after = inventory().build_source_snapshot(source_root)
+
+        with inventory().Image.open(first) as sheet:
+            assert sheet.size == (440, 360)
+        assert inventory().sha256_file(first) == inventory().sha256_file(second)
+        assert inventory().verify_source_snapshots(before, after)["byte_identical"] is True
+
+    def test_batch_candidate_csv_artifacts_are_atomic_and_no_overwrite(
+        self,
+        tmp_path: Path,
+    ) -> None:
+        project_root, _, config_path = create_test_project(tmp_path)
+        config = load_config(project_root, config_path)
+        rows = [
+            _batch_row("team_a", "2026-07-19T09:00:00+08:00"),
+            _batch_row("team_b", "2026-07-19T09:05:00+08:00"),
+        ]
+        result = inventory().build_capture_batch_candidates(rows, config)
+        candidates_dir = config.output_root / "workspace" / "candidates"
+
+        paths = inventory().write_capture_batch_artifacts(result, candidates_dir, config)
+
+        with paths["batches"].open(newline="", encoding="utf-8") as handle:
+            assert tuple(next(csv.reader(handle))) == inventory().BATCH_CANDIDATE_COLUMNS
+        with paths["members"].open(newline="", encoding="utf-8") as handle:
+            assert tuple(next(csv.reader(handle))) == inventory().BATCH_MEMBER_COLUMNS
+        with pytest.raises(FileExistsError):
+            inventory().write_capture_batch_artifacts(result, candidates_dir, config)
