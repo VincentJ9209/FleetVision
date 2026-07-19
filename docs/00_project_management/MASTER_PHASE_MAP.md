@@ -1,4 +1,4 @@
-﻿# FleetVision Master Phase Map
+# FleetVision Master Phase Map
 
 > 本文件是 FleetVision 的正式執行路線。任何後續工作都必須對應到明確 Phase、前置條件與驗收 Gate。
 
@@ -461,3 +461,11 @@ MANUAL_REVIEW_REQUIRED
   are not committed unless a later Gate explicitly designates them tracked
   governance artifacts.
 <!-- FLEETVISION-MANAGED:PHASE05S-MAP:END -->
+
+<!-- PHASE_05S_A3_PHASE_MAP_CLOSURE_20260719 -->
+### Phase 05S-A3 — Implementation
+
+- State: `COMPLETE_LOCALLY`
+- Scope completed: contracts, inventory, capture batches, contact sheets, SQLite state, batch/angle review, pair engine/UI, completed exporter, operational wrappers.
+- Formal source run: deferred to Phase 05S-A4.
+- Publication: pending branch push after Task 10 closure.

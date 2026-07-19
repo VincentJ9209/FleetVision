@@ -290,3 +290,28 @@ or operational scripts.
 - generated output commit;
 - broad `git add .` or `git add -A`.
 <!-- FLEETVISION-MANAGED:PHASE05S-A2-CURRENT-HANDOFF:END -->
+
+<!-- PHASE_05S_A3_TO_A4_HANDOFF_20260719 -->
+## Current Handoff — Phase 05S-A3 → Phase 05S-A4
+
+### Verified implementation baseline
+
+- Worktree: `G:\Project\FleetVision_Worktrees\phase05s-a3-team-pairing-audit`
+- Branch: `feature/phase05s-a3-team-pairing-audit`
+- Implementation head before closure docs: `d0674cfcd607af62d80965f146983faf643bab36`
+- Source root remains read-only: `dataset/01_raw/04_team`
+- Approved output root: `outputs/phase05s/team_pairing_audit`
+- Operational sequence:
+  1. `scripts/phase05s_prepare_team_pairing_audit.ps1`
+  2. `scripts/phase05s_launch_team_pairing_review_app.ps1`
+  3. `scripts/phase05s_export_team_pairing_review.ps1`
+
+### Efficiency rule
+
+- During normal tasks: focused RED/GREEN, one directly related regression, one compile, one exact-path commit.
+- Full pytest and full compileall: only at phase closure or before publication.
+- Do not repeat a passing verification without new code, environment change, or failure evidence.
+
+### Immediate next objective
+
+Run the formal read-only `04_team` preparation, complete human batch/angle/pair review, lock at least three confirmed pairs with exactly one reliable primary demo pair, and produce the completed evidence export. Then begin the before/after registration and difference-analysis MVP.

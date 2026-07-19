@@ -1,4 +1,4 @@
-﻿# FleetVision Decision Log
+# FleetVision Decision Log
 
 > ADR = Architecture／Data／Workflow Decision Record。新決策不得刪除舊決策；若取代，使用 `Superseded by ADR-XXX`。
 
@@ -325,3 +325,14 @@
 - Colab fallback：backup only; it does not authorize Frozen Test access,
   training, dataset mutation or bypassing local governance.
 <!-- FLEETVISION-MANAGED:DEC-05S-001-006:END -->
+
+<!-- DECISION_PHASE_05S_A3_EFFICIENCY_AND_DEMO_ROUTE_20260719 -->
+## Decision — Freeze A3 Infrastructure and Move to Formal Pairing + Demo
+
+- Reuse all Phase 05R and Phase 05S-A3 outputs; do not restart the project or relabel 1,500–2,000 images in the two-day critical path.
+- Freeze new governance/infrastructure expansion after A3 closure.
+- Preserve the existing ResNet18 benchmark as the minimum viable model evidence.
+- Use Phase 05S-A4 to create trusted before/after pairs.
+- Before/after comparison must perform image registration before spatial/difference matching.
+- YOLO11 detection remains an optional benchmark and is not a blocker for the two-day MVP.
+- Adopt lean verification for normal tasks; reserve full-suite verification for phase closure/publication.
