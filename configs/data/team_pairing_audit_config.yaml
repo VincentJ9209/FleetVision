@@ -1,0 +1,20 @@
+schema_version: "1"
+source_relative_path: dataset/01_raw/04_team
+output_relative_path: outputs/phase05s/team_pairing_audit
+supported_extensions:
+  - .jpg
+  - .jpeg
+  - .png
+  - .webp
+  - .jfif
+batch_gap_minutes: 10
+pair_max_elapsed_hours: 12
+phash_distance_threshold: 6
+contact_sheet_columns: 4
+contact_sheet_thumbnail_size: 320
+timezone: Asia/Taipei
+reviewer: Vincent
+backup_every_successful_saves: 10
+backup_retention: 20
+max_unreadable_rate: 0.25
+frozen_test_access: false
