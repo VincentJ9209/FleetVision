@@ -1,4 +1,4 @@
-﻿# FleetVision Project Status
+# FleetVision Project Status
 
 > 更新原則：每次正式 checkpoint 後更新。
 > 基準日期：2026-07-19
@@ -7,12 +7,12 @@
 
 - 前一主 Phase：Phase 04 — Pilot Human Review and Reviewed Dataset — **COMPLETED**
 - 主 Phase：Phase 05S — Seven-day Demo Sprint and Second-stage Before/After Workflow — **IN PROGRESS**
-- Current technical Phase：**Phase 05S-A1 — Team Pairing Audit Design Review**
-- Latest completed operational Gate：**Phase 05R/05S Handoff Reconciliation**
+- Current technical Phase：**Phase 05S-A2 — Implementation Plan Approved and Documented**
+- Latest completed operational Gate：**Phase 05S-A2 Plan Approval and Documentation Reconciliation**
 - Outcome：**PASS**
-- Classification：`PHASE_05R_05S_HANDOFF_RECONCILIATION_COMPLETED`
-- Latest verified repository checkpoint before this governance handoff：`898e7a5d373d8d48887ff7bf73f42a85bc818a9f`
-- Repository checkpoint subject：`docs: activate phase 05R governance`
+- Classification：`PHASE_05S_A2_IMPLEMENTATION_PLAN_APPROVED_AND_DOCUMENTED`
+- Latest verified repository checkpoint before this A2 docs checkpoint：`6693f0d978b839713636288175cd8dca74172416`
+- Repository checkpoint subject：`docs(phase05s): record approved A1 startup scope`
 - Formal human review：**130／130 reviewed**
 - Pending：**0**
 - Needs adjudication：**0**
@@ -25,8 +25,11 @@
 - Training／fine-tuning：**未執行**
 - Retraining status：`NOT_YET_APPROVED`
 - Deployment acceptance：`NOT_YET_APPROVED`
-- Phase 05S-A1 design：**REPOSITORY_TRACKED_AFTER_THIS_GATE**
-- Next authorized Gate：**`PHASE_05S_A1_DESIGN_REVIEW_BEFORE_IMPLEMENTATION_PLAN`**
+- Phase 05S-A1 design：**APPROVED／RECONCILED**
+- Phase 05S-A1 implementation plan：**APPROVED／REPOSITORY_TRACKED_AFTER_THIS_GATE**
+- A3 implementation authorization：**NOT_GRANTED**
+- `04_team` image scan：**NOT_EXECUTED**
+- Next authorized Gate：**`PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE`**
 
 ## 2. 已完成項目
 
@@ -660,3 +663,31 @@ IMPLEMENTATION_PLAN_AUTHORIZED=AFTER_REPOSITORY_TRACKED_DESIGN_REVIEW_ONLY
 NEXT_AUTHORIZED_ACTION=REVIEW_REPOSITORY_TRACKED_PHASE_05S_A1_DESIGN_THEN_WRITE_IMPLEMENTATION_PLAN
 ```
 <!-- FLEETVISION-MANAGED:PHASE05R-05S-RECONCILIATION:END -->
+
+<!-- FLEETVISION-MANAGED:PHASE05S-A2-PLAN:BEGIN -->
+## Phase 05S-A2 — Implementation Plan Approval and Documentation Checkpoint
+
+- Date：2026-07-19
+- Parent repository checkpoint：`6693f0d978b839713636288175cd8dca74172416`
+- Outcome：**PASS**
+- Classification：`PHASE_05S_A2_IMPLEMENTATION_PLAN_APPROVED_AND_DOCUMENTED`
+- Design：approved and reconciled
+- Implementation plan：approved
+- Plan path：`docs/superpowers/plans/2026-07-19-phase05s-a1-team-pairing-audit-implementation-plan.md`
+- Design conflicts resolved：3
+- Implementation code written：false
+- `dataset/01_raw/04_team` scanned：false
+- Streamlit launched：false
+- SQLite workspace created：false
+- Training／inference：false
+- Frozen Test access：false
+- Dashboard／first-stage App work：false
+
+The next action requires a separate explicit authorization:
+
+`PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE`
+
+A3 must begin with fresh read-only Git／governance reconciliation. Formal
+`04_team` scanning remains deferred to the separately authorized A4
+controlled-run Gate after A3 implementation and tests are complete.
+<!-- FLEETVISION-MANAGED:PHASE05S-A2-PLAN:END -->

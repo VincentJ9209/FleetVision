@@ -42,7 +42,7 @@ This phase does not train a model and does not implement the first-stage capture
 
 - First-stage mobile capture application.
 - Real-time angle or photo-quality gate.
-- Dashboard and review UI.
+- Dashboard and final-product operational UI.
 - Damage-model training.
 - Automatic license-plate OCR as a hard dependency.
 - Automatic final before/after confirmation.
@@ -233,7 +233,7 @@ Contact sheets are intended to support manual confirmation of:
 
 The system does not need to automate angle classification in Phase 05S-A1.
 
-The Excel review workbook must permit:
+The Streamlit review interface must permit the following controlled angle values; SQLite stores live review state and the completed XLSX only exports saved results:
 
 - `front_left`
 - `front_right`
@@ -493,7 +493,11 @@ python -m pytest tests/test_team_pairing_audit.py -q
 
 python -m pytest tests/test_team_pairing_review_app.py -q
 
-python scripts/phase00_init_project.py --validate
+python -m pytest tests/test_annotation_correction_review_state.py tests/test_severity_scope_review_state.py -q
+
+python -m pytest -q
+
+git diff --check
 
 python scripts/phase05s_build_team_pairing_audit.py `
   --project-root "G:\Project\FleetVision" `
@@ -513,7 +517,7 @@ Phase 05S-A1 is accepted when:
 - completed exports include CSV/JSON/XLSX and SHA256 evidence;
 - the summary reports all warnings and counts;
 - tests pass;
-- project validation passes;
+- targeted A1 tests, existing review regression tests, the full pytest suite, git diff --check, exact changed-path allowlist, and protected-asset checks pass;
 - working tree includes only approved code/config/test/docs changes;
 - generated CSV/XLSX/JSON/contact sheets are not committed by default;
 - at least 3–5 reliable before/after pairs can be confirmed manually;
@@ -541,3 +545,34 @@ Phase 05S-A1 uses:
 The automated workflow reduces the 319-image review burden by organizing metadata, batches, duplicates, contact sheets, and pair candidates. Human review remains authoritative for vehicle identity, stage, angle, and final pairing.
 
 This design is intentionally narrow so the project can quickly obtain dependable no-new-damage demonstration cases without delaying the core damage-detector and before/after comparison work.
+
+<!-- FLEETVISION-MANAGED:PHASE05S-A2-PLAN:BEGIN -->
+## 22. Phase 05S-A2 Implementation Plan Reconciliation
+
+The Phase 05S-A1 implementation plan was explicitly approved by Vincent on
+2026-07-19 and documented at:
+
+`docs/superpowers/plans/2026-07-19-phase05s-a1-team-pairing-audit-implementation-plan.md`
+
+Resolved design interpretation:
+
+- the excluded UI is Dashboard or final-product operational UI; the internal
+  Traditional Chinese Streamlit Pair Review Utility remains in scope;
+- Streamlit controls angle values, SQLite stores active state, and XLSX is a
+  completed export／exchange／archive artifact only;
+- the known Phase 00 legacy YOLO validator drift is not an A1 acceptance
+  blocker and must not be repaired by creating placeholder dataset paths.
+
+Current classification:
+
+`PHASE_05S_A2_IMPLEMENTATION_PLAN_APPROVED_AND_DOCUMENTED`
+
+This checkpoint authorizes documentation reconciliation only. It does not
+authorize A3 implementation code, a scan of `dataset/01_raw/04_team`,
+Streamlit／SQLite execution, training, inference, Frozen Test access,
+Dashboard work, or first-stage App work.
+
+Next Gate:
+
+`PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE`
+<!-- FLEETVISION-MANAGED:PHASE05S-A2-PLAN:END -->
