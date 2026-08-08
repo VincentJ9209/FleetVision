@@ -1,150 +1,171 @@
 # FleetVision
 
-FleetVision 是一個針對共享車輛借還車情境設計的車輛外觀車損辨識專案。第一版目標是建立可見車損偵測流程：從圖片資料盤點、外觀照片篩選、YOLOv8 Detect 訓練、模型推論、PostgreSQL 儲存，到 Streamlit Dashboard 展示。
+> A governed computer-vision data pipeline for vehicle-damage analysis, with human-in-the-loop review, external-dataset controls, deduplication, annotation QA, and reproducible evaluation.
 
-> 本專案以 **Codex 付費版為主要工程助手**，**Cursor 免費版作為主要 IDE / 編輯介面**，**VS Code 作為備援**，**Colab 作為 YOLOv8 GPU 訓練環境**。
+FleetVision focuses on the engineering required to turn imperfect vehicle-image collections into traceable evidence for computer-vision experiments. It is a portfolio project, not a production SaaS product or an automated insurance decision system.
 
----
+**中文摘要：** FleetVision 是一套車損影像資料治理與分析流程，重點包含 metadata、人工審核、外部資料接收、去重、標註 QA 與可重現評估。目前技術開發暫停於 `Phase 05S-A2`，正進行作品集維護；before/after 車損比較與完整產品化仍未完成。
 
-## 專案定位
+**Current status:** `Phase 05S-A2 — Implementation Plan Approved and Documented` · Technical development `PAUSED` · Activity `PORTFOLIO_MAINTENANCE`
 
-FleetVision 的目標不是一開始直接做「索賠判斷模型」，而是先完成較穩定、可解釋的基礎能力：
+## Project Overview
 
-1. 建立圖片 metadata 與資料品質檢查流程。
-2. 從混合車況照片中篩選外觀照片。
-3. 標註可見車損 bounding box。
-4. 使用 YOLOv8 Detect 訓練單類別 `damage` 模型。
-5. 輸出車損位置、信心分數、模型版本。
-6. 將結果寫入 PostgreSQL。
-7. 以 Dashboard 展示模型偵測結果與人工覆核案例。
-8. 預留未來借車 / 還車同角度照片的新增車損比對模組。
+Vehicle-damage modelling is constrained as much by data quality and review discipline as by model architecture. FleetVision therefore treats dataset lineage, schema validation, review state, split safety, and failure-no-overwrite behavior as first-class engineering concerns.
 
----
+The repository demonstrates how to:
 
-## 目前資料來源規劃
+- inventory image metadata and build deterministic review queues;
+- operate auditable human-review workflows with local Streamlit interfaces and transactional SQLite state;
+- intake external COCO datasets under registry, license, hash, and path-safety controls;
+- detect exact duplicates and generate bounded perceptual-duplicate candidates for review;
+- canonicalize annotations and validate bounding boxes, class mapping, group leakage, and split balance;
+- run validation-only threshold analysis and convert model errors into human-review and data-improvement worklists.
 
-原始素材請放在：
+The first detection contract remains YOLOv8 Detect with one class, `damage`. Severity, claimability, liability, and true new-damage decisions are outside the current model contract.
 
-```text
-FleetVision/dataset/01_raw/
-├── 01_general_fleet/images/          # 一般車況照片，可能包含車內、車外、正常、未知
-├── 02_claimable_damage/images/       # 較嚴重、可能列入索賠的車損照片
-└── 03_minor_damage/images/           # 輕微、不列入索賠的車損照片
+## Key Engineering Highlights
+
+- **Fail-closed data intake:** verifies archive copy integrity, records SHA-256 identity, and validates safe extraction, COCO structure, image references, bounding boxes, and registry evidence before promotion.
+- **Deterministic deduplication:** combines SHA-256 with perceptual hashing, bounded candidate generation, explicit cross-source rules, staged outputs, and atomic promotion.
+- **Annotation governance:** normalizes source category aliases into the canonical `damage` class while preserving image and annotation IDs, bounding-box geometry, and provenance evidence.
+- **Human-in-the-loop review:** uses Traditional Chinese Streamlit workflows, SQLite transactions, resumable progress, append-only audit events, scheduled backups, and controlled exports.
+- **Evaluation discipline:** keeps threshold selection and error analysis validation-only and produces traceable error taxonomies and improvement priorities.
+- **Safety-oriented testing:** exercises schemas, path constraints, identity checks, rollback/no-overwrite behavior, deterministic ordering, and review-state integrity with synthetic or temporary fixtures.
+
+## System Architecture
+
+```mermaid
+flowchart LR
+    A[Internal image sources] --> B[Metadata and validation]
+    B --> C[Deterministic review queues]
+    C --> D[Human review and canonical records]
+
+    E[Governed external sources] --> F[Controlled intake]
+    F --> G[Exact deduplication and bounded perceptual candidates]
+    G --> H[COCO category canonicalization]
+    H --> I[Annotation and split QA]
+
+    D --> J[Reviewed internal artifacts]
+    I --> K[QA-controlled external candidates]
+    J --> L[YOLO dataset materialization - partial]
+    K --> L
+    L --> M[Training and inference - partial]
+    M --> N[Validation-only evaluation and error analysis]
+    N --> O[Streamlit and SQLite review]
+    O --> P[Correction proposals and governed exports]
 ```
 
-原本對應的 Excel 檔請放在：
+Large datasets, model weights, generated review packages, and other protected outputs are intentionally excluded from Git.
 
-```text
-FleetVision/dataset/00_catalog/raw_excels/
-```
+## Implementation Status
 
-例如：
+| Capability | Status | Repository-backed boundary |
+|---|---|---|
+| Metadata inventory | `IMPLEMENTED` | Config-driven image scanning, stable IDs, dimensions, quality fields, CSV output, and tests. |
+| Review pipeline | `IMPLEMENTED` | Deterministic queues, worklists, package builders, validators, mergers, and exports. |
+| Human review workflows | `IMPLEMENTED` | Local Streamlit/SQLite workflows with resume, audit events, backups, validation, and no-overwrite exports. |
+| External dataset intake | `IMPLEMENTED` | Registry-aware intake, archive copy-integrity checks, SHA-256 recording, safe extraction, COCO inspection, and staged promotion. |
+| Deduplication | `IMPLEMENTED` | SHA-256 and perceptual-hash auditing with bounded candidates and cross-source controls. |
+| Annotation QA | `IMPLEMENTED` | Category canonicalization plus bounding-box, mapping, leakage, and split-balance validation. |
+| YOLO dataset pipeline | `PARTIAL` | A tested dataset builder and configuration exist; final governed materialization depends on approved labels and data gates. |
+| Training workflow | `PARTIAL` | Model configuration and governed historical workflow evidence exist; this is not a complete current production training system. |
+| Inference | `PARTIAL` | Historical and diagnostic inference evidence exists, but there is no current end-to-end production inference service. |
+| Evaluation and error analysis | `IMPLEMENTED` | Validation-only threshold sweeps, one-to-one IoU matching, error taxonomy, and improvement prioritization are implemented and tested. |
+| Severity analysis | `PARTIAL` | Review tooling can capture severity/scope evidence; automated severity or claimability decisions are not implemented. |
+| Before/after comparison | `PLANNED` | Only supporting IoU logic and an approved team-pairing audit design/plan exist; the damage-comparison workflow itself remains unimplemented. |
+| PostgreSQL | `PARTIAL` | A starter schema and Compose service exist; application-level persistence is not integrated end to end. |
+| MLflow | `PARTIAL` | A dependency and Compose service exist; complete experiment and model-lifecycle integration is not implemented. |
+| Docker | `PARTIAL` | Compose provisions PostgreSQL and MLflow only; it does not define a complete FleetVision application stack. |
+| Streamlit / Dashboard | `PARTIAL` | Purpose-built human-review apps and a project-status demo exist; there is no production product dashboard. |
+| Automated tests | `IMPLEMENTED` | The suite covers data contracts, review state, QA, safety controls, CLI behavior, and static dashboard assets. |
 
-```text
-FleetVision/dataset/00_catalog/raw_excels/01_general_fleet.xlsx
-FleetVision/dataset/00_catalog/raw_excels/02_claimable_damage.xlsx
-FleetVision/dataset/00_catalog/raw_excels/03_minor_damage.xlsx
-```
-
----
-
-## 專案結構
+## Repository Structure
 
 ```text
 FleetVision/
-├── README.md
-├── AGENTS.md
-├── .gitignore
-├── .env.example
-├── requirements.txt
-├── docker-compose.yml
-├── docs/
-├── .agents/
-├── dataset/
-├── notebooks/
-├── src/
-├── configs/
-├── sql/
-├── scripts/
-├── tests/
-├── outputs/
-├── models/
-└── demo/
+├── src/fleetvision/
+│   ├── data/          # Metadata, intake, deduplication, QA, and dataset builders
+│   ├── review/        # Streamlit review workflows, SQLite state, and exports
+│   ├── evaluation/    # Validation-only threshold and error analysis
+│   └── vision/        # Focused vision utilities
+├── scripts/           # Thin CLI and operational entry points
+├── configs/           # Versioned data, model, and review contracts
+├── tests/             # Synthetic, temporary-path, contract, and regression tests
+├── docs/              # Governance, phase evidence, design records, and data guidance
+├── sql/               # Starter PostgreSQL schema
+├── notebooks/         # Governed historical analysis notebooks
+├── demo/              # Project-status presentation assets
+└── docker-compose.yml # PostgreSQL and MLflow development services only
 ```
 
-詳細資料夾用途請見：
+## Technical Evidence
+
+These files provide a focused review path for engineering managers and interviewers:
+
+1. [Controlled external dataset intake](src/fleetvision/data/intake_external_dataset.py) — safe archive handling, COCO validation, provenance, and staged promotion.
+2. [External dataset deduplication](src/fleetvision/data/audit_external_dataset_deduplication.py) — exact/perceptual hashing, bounded candidate search, and atomic output promotion.
+3. [COCO category canonicalization](src/fleetvision/data/normalize_external_coco_categories.py) — schema contracts and geometry-preserving normalization.
+4. [Annotation and split QA](src/fleetvision/data/validate_external_annotation_split_balance.py) — class mapping, lineage, group leakage, and distribution checks.
+5. [Transactional review state](src/fleetvision/review/validation_error_review_state.py) — SQLite transactions, resumable state, audit synchronization, integrity checks, and backups.
+6. [Annotation-correction package](src/fleetvision/review/annotation_correction_review_package.py) — verified predecessor evidence, safe paths, deterministic IDs, and review overlays.
+7. [Validation error analysis](src/fleetvision/evaluation/baseline_error_analysis.py) — IoU matching, threshold sweeps, error taxonomy, and improvement priorities.
+
+Project decisions and current boundaries are tracked in the [Decision Log](docs/00_project_management/DECISION_LOG.md) and [Project Status](docs/00_project_management/PROJECT_STATUS.md).
+
+## Testing and Quality
+
+Latest local verification on `2026-08-09`:
 
 ```text
-docs/03_data_guidelines/dataset_structure.md
+480 tests collected
+479 passed
+1 skipped
+0 failed
 ```
 
----
+The suite includes unit, integration, CLI, package-integrity, rollback/no-overwrite, and static dashboard tests. Most data-path tests use temporary directories and synthetic fixtures to avoid protected datasets.
 
-## 第一版建模策略
+These results verify software behavior and repository contracts. They do **not** represent model accuracy, deployment readiness, or performance on the frozen test set.
 
-第一版不要訓練：
+## Quick Start
 
-```text
-normal / minor_damage / claimable_damage
+FleetVision requires Python `3.10+`. The commands below set up the repository and run its tracked test suite without requiring private datasets or model weights.
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -e ".[dev]"
+python -m pytest -q -p no:cacheprovider
 ```
 
-第一版只訓練：
+Inspect the first data-pipeline entry points without processing data:
 
-```text
-class 0: damage
+```powershell
+python scripts/phase01_build_metadata.py --help
+python scripts/phase02_build_review_queue.py --help
 ```
 
-原因：
+Running data workflows requires separately managed source data, current configuration, and the applicable project gate. Docker is not required for the test suite and does not launch a complete application.
 
-- 目前 claimable damage 數量偏少，不適合直接訓練索賠分類。
-- 「是否索賠」是業務規則，不完全等於視覺損傷類型。
-- 先讓模型穩定偵測可見車損位置，後續再做嚴重度、人工覆核與索賠候選規則。
+## Limitations and Current Scope
 
----
+- The repository is an engineering portfolio and governed research workflow, not a production SaaS platform.
+- Private images, canonical datasets, external source archives, model weights, and generated outputs are not distributed in Git.
+- The frozen test split has already been evaluated once, must not be reused for threshold tuning, and requires an explicit gate for any further access.
+- A full before/after same-vehicle, same-view damage comparison workflow remains planned.
+- YOLO dataset materialization, training, inference, and deployment are not complete production systems.
+- PostgreSQL and MLflow are scaffolding-level services; they are not integrated across the application lifecycle.
+- Streamlit is used for local human-review tools, not a customer-facing product dashboard.
+- Visible damage evidence must not be interpreted as severity, claimability, liability, or insurance adjudication.
 
-## 工具分工
+## Project Status
 
-| 工具 | 角色 |
+| Field | Current value |
 |---|---|
-| Codex 付費版 | 主要工程助手：產生程式、修錯、重構、文件 |
-| Cursor 免費版 | 主要 IDE：開啟 repo、查看 diff、手動編輯 |
-| VS Code | 備援 IDE、標準工程工具 |
-| GitHub | 程式碼與文件版本控管 |
-| Google Drive | 原始圖片、YOLO dataset、模型、Colab 結果同步 |
-| 外接硬碟 | 全量資料備份 |
-| Colab | YOLOv8 GPU 訓練 |
-| Docker Compose | 啟動 PostgreSQL、MLflow、Streamlit |
-| PostgreSQL | 儲存 metadata、prediction、comparison result |
-| Streamlit | Dashboard 與 demo 展示 |
-| MLflow | 實驗追蹤與模型版本紀錄 |
+| Technical phase | `Phase 05S-A2 — Implementation Plan Approved and Documented` |
+| Technical development | `PAUSED` |
+| Current activity | `PORTFOLIO_MAINTENANCE` |
+| Last completed technical gate | `PHASE_05S_A2_PLAN_DOCUMENT_APPLICATION_AND_CHECKPOINT` |
+| Next technical gate when resumed | `PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE` |
 
----
-
-## 建議實作順序
-
-1. 建立專案骨架。
-2. 放置原始資料與 Excel。
-3. 建立 metadata 掃描腳本。
-4. 篩選外觀 / 車內 / 低品質 / 無關照片。
-5. 建立標註規則。
-6. 標註第一版 `damage` bbox。
-7. 建立 YOLOv8 dataset。
-8. 在 Colab 訓練 YOLOv8 Detect baseline。
-9. 做模型評估與錯誤分析。
-10. 用 Docker Compose 啟動 PostgreSQL。
-11. 批次推論並寫入 PostgreSQL。
-12. 建立 Dashboard。
-13. 製作 demo package 與發表備援資料。
-
----
-
-## 重要原則
-
-- 原始圖片只放在 `dataset/01_raw/`，不要直接修改。
-- 中間產物放 `dataset/02_interim/`。
-- 人工分類後資料放 `dataset/03_reviewed/`。
-- 標註資料放 `dataset/04_annotations/`。
-- YOLO 訓練資料放 `dataset/05_yolo/`。
-- 展示用小樣本放 `dataset/06_demo_samples/`。
-- 大型圖片、模型權重、預測圖片不要放 GitHub。
-- 程式碼、設定檔、文件、schema、少量 sample 可以放 GitHub。
+Portfolio maintenance does not complete a technical phase or authorize Phase 05S-A3 implementation. The current source of truth starts at [START_HERE](docs/00_project_management/START_HERE.md).
