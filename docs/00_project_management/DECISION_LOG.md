@@ -5,7 +5,7 @@
 ## ADR-001 — 使用新版 FleetVision 專案根目錄
 
 - 日期：2026-07
-- 狀態：Active
+- 狀態：Superseded in current-root portion by ADR-019；舊專案停用規則仍為 Active
 - 決策：正式根目錄為 `G:\Project\FleetVision`；舊 `irent-damage-detection` 不再使用
 
 ## ADR-002 — 第一版模型為 YOLOv8 Detect 單一類別 damage
@@ -194,6 +194,19 @@
 - 驗證順序：先執行 exact-path allowlist、`git diff --check`、parser／compile 與其他低成本檢查；通過後才執行 focused、regression 與必要的 full suite。
 - 安裝器契約：必須具備 no-overwrite、transaction rollback、idempotency、protected-asset preservation 與 consolidated PASS／BLOCKED result。
 - 交付邊界：內部 debug versions 不對使用者逐版交付；同一 Gate 原則上只交付一個正式 release candidate。
+
+## ADR-019 — Relocate the current repository and pause technical development for portfolio maintenance
+
+- 日期：2026-08-09
+- 狀態：Active
+- Current repository root：`G:\FleetVision\Project\FleetVision`
+- Supersedes：ADR-001 的 current-root 路徑；ADR-001 的舊專案停用決策與所有歷史路徑 provenance 保留。
+- Technical Phase：`Phase 05S-A2 — Implementation Plan Approved and Documented`
+- Technical development：`PAUSED`
+- Current activity：`PORTFOLIO_MAINTENANCE`
+- Last completed technical Gate：`PHASE_05S_A2_PLAN_DOCUMENT_APPLICATION_AND_CHECKPOINT`
+- Next technical Gate when resumed：`PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE`
+- Boundary：Portfolio maintenance does not create or complete a technical Phase or Gate and does not authorize A3 implementation。
 
 
 <!-- FLEETVISION-MANAGED:DEC-05R-001-006:BEGIN -->

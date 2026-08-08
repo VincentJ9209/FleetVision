@@ -5,6 +5,16 @@
 
 This file is the mandatory entry point for every new FleetVision conversation or work session.
 
+## Current operating context
+
+- Repository root：`G:\FleetVision\Project\FleetVision`
+- Technical Phase：`Phase 05S-A2 — Implementation Plan Approved and Documented`
+- Technical development：`PAUSED`
+- Current activity：`PORTFOLIO_MAINTENANCE`
+- Last completed technical Gate：`PHASE_05S_A2_PLAN_DOCUMENT_APPLICATION_AND_CHECKPOINT`
+- Next technical Gate when resumed：`PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE`
+- Portfolio maintenance does not create or complete a technical Phase or Gate.
+
 ## Required reading order
 
 1. `/AGENTS.md`
@@ -13,13 +23,10 @@ This file is the mandatory entry point for every new FleetVision conversation or
 4. `docs/00_project_management/HUMAN_REVIEW_INTERFACE_STANDARD.md`
 5. `docs/00_project_management/PROTECTED_ASSETS.md`
 6. `docs/00_project_management/PROJECT_STATUS.md`
-7. `docs/00_project_management/HANDOFF_CURRENT.md`
-8. `docs/00_project_management/PHASE05R_SCOPE_CONTRACT.md`
-9. `docs/01_phase_guides/phase_05r_model_recovery.md`
-10. `docs/02_prompts/PHASE_05R_NOTEBOOK_RULES.md`
-11. `docs/00_project_management/MASTER_PHASE_MAP.md`
-12. The current phase log referenced by `PROJECT_STATUS.md`
-13. `docs/00_project_management/DECISION_LOG.md` when a prior architectural or governance decision is relevant
+7. `docs/00_project_management/MASTER_PHASE_MAP.md`
+8. `docs/00_project_management/HANDOFF_CURRENT.md`
+9. The current phase log referenced by `PROJECT_STATUS.md`
+10. `docs/00_project_management/DECISION_LOG.md`
 
 ## Conflict precedence
 
@@ -54,7 +61,8 @@ Before any mutation, report:
 - protected assets;
 - active scope contract;
 - Frozen Test access status;
-- next authorized action;
+- current activity and technical-development status;
+- next technical Gate when development resumes;
 - any detected conflict;
 - commit／push authorization.
 

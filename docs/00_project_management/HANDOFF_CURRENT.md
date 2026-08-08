@@ -243,7 +243,7 @@ block is pushed and remote verified.
 
 ### Repository
 
-- Root：`G:\Project\FleetVision`
+- Root：`G:\FleetVision\Project\FleetVision`
 - Branch：`main`
 - Parent before this docs checkpoint：`6693f0d978b839713636288175cd8dca74172416`
 - Worktree policy：clean or protected-untracked-only
@@ -252,6 +252,8 @@ block is pushed and remote verified.
 ### Current state
 
 - Technical Phase：`05S-A2 — Implementation Plan Approved and Documented`
+- Technical development：`PAUSED`
+- Current activity：`PORTFOLIO_MAINTENANCE`
 - Completed Gate：`PHASE_05S_A2_PLAN_DOCUMENT_APPLICATION_AND_CHECKPOINT`
 - Classification：`PHASE_05S_A2_IMPLEMENTATION_PLAN_APPROVED_AND_DOCUMENTED`
 - Design：approved and reconciled
@@ -259,6 +261,7 @@ block is pushed and remote verified.
 - Plan path：
   `docs/superpowers/plans/2026-07-19-phase05s-a1-team-pairing-audit-implementation-plan.md`
 - A3 implementation authorized：false
+- Portfolio maintenance creates a technical Phase／Gate：false
 - Formal `04_team` scan executed：false
 - Frozen Test access authorized：false
 
@@ -271,13 +274,16 @@ block is pushed and remote verified.
 - The tool is second-stage only and is not Dashboard or first-stage App work.
 - Phase 00 legacy YOLO validator drift is recorded but not repaired with fake paths.
 
-### Next authorized Gate
+### Next technical Gate when development resumes
 
 `PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE`
 
 The user must explicitly authorize A3. After authorization, perform a fresh
 read-only startup reconciliation before creating code, configuration, tests,
 or operational scripts.
+
+Current portfolio maintenance does not authorize A3 and does not alter the
+last completed technical Gate.
 
 ### Prohibited until A3 authorization
 

@@ -6,7 +6,7 @@
 
 - 專案名稱：FleetVision
 - 中文名稱：車損辨識
-- 正式本機根目錄：`G:\Project\FleetVision`
+- 正式本機根目錄：`G:\FleetVision\Project\FleetVision`
 - 舊專案架構：`irent-damage-detection` 已停用，不得再引用或混用
 - 主要語言：繁體中文
 - 版本控制：Git，主分支 `main`
@@ -268,9 +268,16 @@ Phase 05R completed its recovery-result handoff reconciliation with several
 R4-07／R4-08 facts still classified as external handoff evidence unless the
 actual artifacts are independently re-hashed in a later Gate.
 
-Phase 05S is the seven-day demo-sprint track. Its current approved next action
-is Phase 05S-A1 design review for the team-captured before／after pairing audit:
+Phase 05S is the seven-day demo-sprint track. Its current technical stop point
+is Phase 05S-A2 after the design and implementation plan were approved and
+recorded. Technical development is paused while the repository undergoes
+portfolio maintenance:
 
+- repository root：`G:\FleetVision\Project\FleetVision`
+- technical development：`PAUSED`
+- current activity：`PORTFOLIO_MAINTENANCE`
+- last completed technical Gate：`PHASE_05S_A2_PLAN_DOCUMENT_APPLICATION_AND_CHECKPOINT`
+- next technical Gate when resumed：`PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE`
 - source path：`dataset/01_raw/04_team`
 - reported source size：319 images
 - current source-size trust：`CHAT_CONFIRMED_NOT_IMAGE_SCANNED_IN_HANDOFF_GATE`
@@ -279,9 +286,9 @@ is Phase 05S-A1 design review for the team-captured before／after pairing audit
 - default human interface：local Traditional Chinese Python／Streamlit plus SQLite
 - Excel role：completed export／exchange／archive only
 
-The single next authorized action is to review the repository-tracked Phase
-05S-A1 design and then write a separate implementation plan. No code
-implementation, image scan, training, Frozen Test access, public-data expansion,
-Dashboard or first-stage App work is authorized by this handoff.
+Portfolio maintenance does not create a technical Phase or Gate and does not
+authorize A3 implementation. When technical development resumes, A3 still
+requires separate explicit authorization. No image scan, training, Frozen Test
+access, public-data expansion, Dashboard or first-stage App work is authorized.
 <!-- FLEETVISION-MANAGED:PHASE05R-05S-CONTEXT:END -->
 

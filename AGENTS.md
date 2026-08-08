@@ -13,7 +13,19 @@ Before planning, inspecting, editing, testing, committing, or pushing, read the 
 - `docs/00_project_management/HUMAN_REVIEW_INTERFACE_STANDARD.md`
 - `docs/00_project_management/DECISION_LOG.md`
 
-Use `PROJECT_STATUS.md` to determine the current Phase and active gate. Do not rely on chat history as the primary project record.
+Current operating context:
+
+- Repository root：`G:\FleetVision\Project\FleetVision`
+- Technical Phase：`Phase 05S-A2 — Implementation Plan Approved and Documented`
+- Technical development：`PAUSED`
+- Current activity：`PORTFOLIO_MAINTENANCE`
+- Last completed technical Gate：`PHASE_05S_A2_PLAN_DOCUMENT_APPLICATION_AND_CHECKPOINT`
+- Next technical Gate when resumed：`PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE`
+- Portfolio maintenance does not create or complete a technical Phase or Gate.
+
+Use `PROJECT_STATUS.md` to determine the current technical Phase, current activity,
+last completed Gate, and next technical Gate when development resumes. Do not
+rely on chat history as the primary project record.
 
 If repository files conflict with a task prompt, stop and report the conflict before editing.
 
@@ -21,7 +33,7 @@ If repository files conflict with a task prompt, stop and report the conflict be
 
 Before taking any repository action, confirm:
 
-1. Current Phase and active gate.
+1. Current technical Phase, current activity, and applicable Gate boundary.
 2. Required prerequisites are complete.
 3. Immutable architecture decisions.
 4. Allowed files and prohibited files.
@@ -83,7 +95,7 @@ Use the smallest amount of context that preserves correctness.
 
 Unless a newer approved Decision Log entry explicitly changes these rules:
 
-- Project root is `G:\Project\FleetVision`.
+- Project root is `G:\FleetVision\Project\FleetVision`.
 - The deprecated `irent-damage-detection` project must not be restored or reused.
 - First damage model is YOLOv8 Detect.
 - The first YOLO class is only `damage`.
@@ -198,7 +210,7 @@ Make the smallest change that fully satisfies the approved goal.
 - Functions, classes, filenames, configuration keys, and data column names use English.
 - Documentation, guides, comments, and user-facing explanations may use Traditional Chinese.
 - Do not hard-code user-specific absolute paths in application code.
-- `G:\Project\FleetVision` is the current operator workspace, not an application-code constant.
+- `G:\FleetVision\Project\FleetVision` is the current operator workspace, not an application-code constant.
 - Manage filesystem paths through configuration, CLI arguments, or repository-relative paths.
 - Primary scripts must be runnable from the repository root.
 - Data-processing scripts must produce a clear execution summary.
@@ -307,7 +319,7 @@ All AI-assisted work must follow this startup order before proposing or executin
 
 ### Mandatory operating rules
 
-- Repository root: `G:\Project\FleetVision`.
+- Repository root: `G:\FleetVision\Project\FleetVision`.
 - Production branch: `main`.
 - Codex is disabled unless Vincent explicitly reauthorizes it.
 - Cursor Agent is disabled unless Vincent explicitly reauthorizes it.

@@ -1,18 +1,22 @@
 # FleetVision Project Status
 
 > 更新原則：每次正式 checkpoint 後更新。
-> 基準日期：2026-07-19
+> 技術狀態基準日期：2026-07-19；現行操作狀態更新：2026-08-09。
+> 歷史段落中的舊路徑、Gate 與 checkpoint 保留其當時真實 provenance。
 
 ## 1. 當前 Phase
 
 - 前一主 Phase：Phase 04 — Pilot Human Review and Reviewed Dataset — **COMPLETED**
-- 主 Phase：Phase 05S — Seven-day Demo Sprint and Second-stage Before/After Workflow — **IN PROGRESS**
+- Repository root：`G:\FleetVision\Project\FleetVision`
+- 主 Phase：Phase 05S — Seven-day Demo Sprint and Second-stage Before/After Workflow — **PAUSED**
 - Current technical Phase：**Phase 05S-A2 — Implementation Plan Approved and Documented**
-- Latest completed operational Gate：**Phase 05S-A2 Plan Approval and Documentation Reconciliation**
+- Technical development：`PAUSED`
+- Current activity：`PORTFOLIO_MAINTENANCE`
+- Last completed technical Gate：**`PHASE_05S_A2_PLAN_DOCUMENT_APPLICATION_AND_CHECKPOINT`**
 - Outcome：**PASS**
 - Classification：`PHASE_05S_A2_IMPLEMENTATION_PLAN_APPROVED_AND_DOCUMENTED`
-- Latest verified repository checkpoint before this A2 docs checkpoint：`6693f0d978b839713636288175cd8dca74172416`
-- Repository checkpoint subject：`docs(phase05s): record approved A1 startup scope`
+- Last completed technical checkpoint：`a2e99367d027bdadcd8c600dff634a02373a76eb`
+- Technical checkpoint subject：`docs(phase05s): approve A1 implementation plan`
 - Formal human review：**130／130 reviewed**
 - Pending：**0**
 - Needs adjudication：**0**
@@ -29,7 +33,8 @@
 - Phase 05S-A1 implementation plan：**APPROVED／REPOSITORY_TRACKED_AFTER_THIS_GATE**
 - A3 implementation authorization：**NOT_GRANTED**
 - `04_team` image scan：**NOT_EXECUTED**
-- Next authorized Gate：**`PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE`**
+- Next technical Gate when resumed：**`PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE`**
+- Portfolio maintenance creates a technical Phase／Gate：**false**
 
 ## 2. 已完成項目
 
@@ -379,19 +384,24 @@ is the controlling correction for artifact location only.
 ~~~yaml
 schema_version: 3
 project: FleetVision
-repository_root: 'G:\Project\FleetVision'
+repository_root: 'G:\FleetVision\Project\FleetVision'
 branch: main
-governance_proposal_parent_checkpoint: "898e7a5d373d8d48887ff7bf73f42a85bc818a9f"
+last_completed_technical_checkpoint: "a2e99367d027bdadcd8c600dff634a02373a76eb"
 phase05s_effective_condition: "COMMIT_CONTAINING_THIS_BLOCK_PUSHED_AND_REMOTE_VERIFIED"
-technical_phase: "05S-A1"
-technical_phase_name: "Team Pairing Audit Design Review"
-current_gate: "PHASE_05S_A1_DESIGN_REVIEW_BEFORE_IMPLEMENTATION_PLAN"
-latest_completed_governance_gate: "PHASE_05R_05S_HANDOFF_RECONCILIATION"
-previous_gate: "PHASE_05R_08_CPU_REPRODUCTION_AND_DATASET_V2_STATUS_RECONCILIATION"
-previous_gate_disposition: "CHAT_CONFIRMED_PENDING_ARTIFACT_REHASH_WHERE_AVAILABLE"
+technical_phase: "05S-A2"
+technical_phase_name: "Implementation Plan Approved and Documented"
+technical_development_status: "PAUSED"
+current_activity: "PORTFOLIO_MAINTENANCE"
+last_completed_technical_gate: "PHASE_05S_A2_PLAN_DOCUMENT_APPLICATION_AND_CHECKPOINT"
+next_technical_gate_when_resumed: "PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE"
+portfolio_maintenance_creates_technical_gate: false
+latest_completed_governance_gate: "PHASE_05S_A2_PLAN_DOCUMENT_APPLICATION_AND_CHECKPOINT"
+previous_gate: "PHASE_05S_A1_DESIGN_REVIEW_BEFORE_IMPLEMENTATION_PLAN"
+previous_gate_disposition: "COMPLETED"
 phase05r_scope_contract: "docs/00_project_management/PHASE05R_SCOPE_CONTRACT.md"
 phase05r_guide: "docs/01_phase_guides/phase_05r_model_recovery.md"
 phase05r_log: "docs/00_project_management/phase_logs/PHASE_05R_LOG.md"
+phase05s_log: "docs/00_project_management/phase_logs/PHASE_05S_LOG.md"
 phase05s_a1_design: "docs/01_phase_guides/phase_05s_a1_team_pairing_audit_design.md"
 recovery_notebook_drive_path: "/content/drive/MyDrive/AI_Class/00.Project/FleetVision/notebooks/FleetVision_Phase05_Model_Recovery.ipynb"
 recovery_notebook_reconciled_sha256: "2086D3EA155748EF61E0751CAC796739CD9E5F4624744D2C0DCA726D67146CCF"
@@ -409,32 +419,35 @@ frozen_test_used_for_tuning: false
 test_split_mutation: false
 raw_dataset_mutation: false
 protected_external_assets_mutation: false
-codex_status: "TASK_SPECIFICALLY_AUTHORIZED_FOR_THIS_HANDOFF_ONLY"
+codex_status: "TASK_SPECIFICALLY_AUTHORIZED_FOR_PORTFOLIO_MAINTENANCE"
 automatic_commit_push: false
 worktree_policy: "CLEAN_OR_PROTECTED_UNTRACKED_ONLY"
 protected_untracked_path: "outputs/metadata/external_assets/"
-next_authorized_action: "REVIEW_REPOSITORY_TRACKED_PHASE_05S_A1_DESIGN_THEN_WRITE_IMPLEMENTATION_PLAN"
+next_authorized_action: "PORTFOLIO_MAINTENANCE_ONLY"
 implementation_authorized: false
 image_scan_authorized: false
 training_authorized: false
 frozen_test_listing_authorized: false
-updated_at_local: "2026-07-19"
+updated_at_local: "2026-08-09"
 ~~~
 
 ## Current checkpoint
 
-- Technical Phase：**Phase 05S-A1 — Team Pairing Audit Design Review**
-- Latest completed governance Gate：
-  `PHASE_05R_05S_HANDOFF_RECONCILIATION`
-- Current Gate：`PHASE_05S_A1_DESIGN_REVIEW_BEFORE_IMPLEMENTATION_PLAN`
+- Repository root：`G:\FleetVision\Project\FleetVision`
+- Technical Phase：**Phase 05S-A2 — Implementation Plan Approved and Documented**
+- Technical development：`PAUSED`
+- Current activity：`PORTFOLIO_MAINTENANCE`
+- Last completed technical Gate：
+  `PHASE_05S_A2_PLAN_DOCUMENT_APPLICATION_AND_CHECKPOINT`
+- Next technical Gate when resumed：
+  `PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE`
+- Portfolio maintenance creates a technical Phase／Gate：**false**
 - Baseline model：`BEST_AVAILABLE_POC_ONLY`
 - Dataset v2：**CHAT_CONFIRMED／PENDING_ARTIFACT_REHASH_WHERE_AVAILABLE**
 - Recovery training：**NOT STARTED**
 - Frozen Test access：**NOT AUTHORIZED**
-- Codex：`TASK_SPECIFICALLY_AUTHORIZED_FOR_THIS_HANDOFF_ONLY`
-- Next authorized action：
-  Review repository-tracked Phase 05S-A1 design, then write a separate
-  implementation plan.
+- Codex：`TASK_SPECIFICALLY_AUTHORIZED_FOR_PORTFOLIO_MAINTENANCE`
+- A3 implementation authorization：**NOT GRANTED**
 
 This state is effective only after the commit containing this block is pushed
 and local HEAD, `origin/main` and GitHub remote `main` are equal.

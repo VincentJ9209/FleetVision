@@ -268,13 +268,16 @@ Gate：
 
 | Item | Current value |
 |---|---|
-| Current technical phase | 05S-A1 — Team Pairing Audit Design Review |
-| Current Gate | `PHASE_05S_A1_DESIGN_REVIEW_BEFORE_IMPLEMENTATION_PLAN` |
-| Previous Gate | `PHASE_05R_05S_HANDOFF_RECONCILIATION` |
-| Previous Gate disposition | Completed handoff synchronization |
+| Repository root | `G:\FleetVision\Project\FleetVision` |
+| Current technical phase | 05S-A2 — Implementation Plan Approved and Documented |
+| Technical development | `PAUSED` |
+| Current activity | `PORTFOLIO_MAINTENANCE` |
+| Last completed technical Gate | `PHASE_05S_A2_PLAN_DOCUMENT_APPLICATION_AND_CHECKPOINT` |
+| Next technical Gate when resumed | `PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE` |
+| Portfolio maintenance creates technical Phase／Gate | false |
 | Recovery training | Not started |
 | Frozen Test access | Not authorized |
-| Codex | Task-specific authorization for this handoff only |
+| Codex | Task-specific authorization for portfolio maintenance only |
 
 This checkpoint is effective only after the commit containing it is pushed and
 remote verified.
@@ -430,10 +433,10 @@ MANUAL_REVIEW_REQUIRED
 
 | Gate | Purpose | Mutation／training boundary | Status |
 |---|---|---|---|
-| 05S-00 | Handoff reconciliation and source-of-truth sync | governance Markdown only | Complete after this commit |
-| 05S-A1 | Team-captured before／after pairing audit design review | no image scan; no implementation | Active |
-| 05S-A2 | Implementation plan for A1 | docs plan only | Pending design review |
-| 05S-A3 | Local Windows audit workflow implementation | code/config/tests only; generated outputs untracked | Not authorized |
+| 05S-00 | Handoff reconciliation and source-of-truth sync | governance Markdown only | Complete |
+| 05S-A1 | Team-captured before／after pairing audit design review | no image scan; no implementation | Complete |
+| 05S-A2 | Implementation plan for A1 | docs plan only | Complete／current technical stop point |
+| 05S-A3 | Local Windows audit workflow implementation | code/config/tests only; generated outputs untracked | Next when resumed／not authorized |
 | 05S-A4 | Controlled run on `04_team` | read-only source; outputs outside raw | Not authorized |
 | 05S-B | Demo comparison workflow | only after confirmed pairs | Not authorized |
 
@@ -453,10 +456,10 @@ MANUAL_REVIEW_REQUIRED
 
 - `dataset/01_raw/` remains immutable.
 - Frozen Test is locked and must not be searched, listed, hashed or read.
-- This handoff Gate performs no image scan, no code implementation and no
-  training.
-- Implementation plan is the next document after Vincent reviews the tracked
-  design.
+- Portfolio maintenance performs no image scan, technical implementation or
+  training and does not create a technical Phase or Gate.
+- A3 remains the next technical Gate when development resumes and requires
+  separate explicit authorization.
 - Generated CSV, JSON, XLSX, contact sheets, review packages and model outputs
   are not committed unless a later Gate explicitly designates them tracked
   governance artifacts.

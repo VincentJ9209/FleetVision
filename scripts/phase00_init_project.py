@@ -22,7 +22,7 @@ from pathlib import Path
 REQUIRED_FILES = [
     "README.md",
     "AGENTS.md",
-    "CODEX_WORKFLOW.md",
+    "docs/00_project_management/WORKFLOW_GOVERNANCE.md",
     "PROJECT_CONTEXT_BRIEF.md",
     ".gitignore",
     ".env.example",
