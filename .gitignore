@@ -51,6 +51,13 @@ mlruns/
 # Outputs
 outputs/predictions/
 outputs/error_analysis/
+
+# Local model training artifacts
+/outputs/models/
+
+# External dataset audit artifacts
+/outputs/metadata/external_assets/
+
 outputs/**/*.mp4
 outputs/**/*.avi
 outputs/**/*.mov
