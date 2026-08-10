@@ -7,7 +7,7 @@
 
 | ID | Current Path | Name | Type | Classification | Protected | Target Path | Evidence / Rationale | Delete Allowed | Verification |
 |---|---|---|---|---|---|---|---|---|---|
-| DRV-001 | Drive root | `00.成果發表/` | Folder | PORTFOLIO | No | split to `00_PORTFOLIO/` and `04_PROJECT_ASSETS/` | Portfolio presentation material; split requires later item-level inventory. | false | NOT_STARTED |
+| DRV-001 | `AI_Class/00.Project/FleetVision/` (parent ID `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl`) | `00.成果發表/` (ID `1JPupMGmZK7tp5wQtc5tBLXcdjesgaQYi`) | Folder | RECONCILE_REQUIRED | No | item-level split to approved Task 6 targets; source root itself remains in place | Live Drive grounding supersedes the generic `Drive root` label. Complete Task 6 inventory, moves, verification, and explicit NOT_MOVED rows are recorded below. | false | VERIFIED_WITH_NOT_MOVED — 31 metadata-only moves verified; 17 inventory rows retained |
 | DRV-002 | Drive root | `internal_grouped_dataset_v1_20260717_212356/` | Folder | PROTECTED | Yes | `01_DATA/01_internal/` after dataset gate | Protected internal dataset; no move without dataset gate. | false | NOT_STARTED |
 | DRV-003 | Drive root | `dataset_v3_relabel_working_20260720_091414/` | Folder | ARCHIVE | No | `99_ARCHIVE/02_old_datasets/` | Historical relabel working dataset retained as archive. | false | NOT_STARTED |
 | DRV-004 | Drive root | relabel working ZIP | ZIP file | DUPLICATE_CANDIDATE | No | `99_ARCHIVE/06_duplicate_candidates/` | Identity must be verified before any duplicate decision. | false | NOT_STARTED |
@@ -91,3 +91,208 @@
 | `FleetVision/03_EXPERIMENTS/` | 4 | 4 | VERIFIED |
 | `FleetVision/04_PROJECT_ASSETS/` | 3 | 3 | VERIFIED |
 | `FleetVision/99_ARCHIVE/` | 7 | 7 | VERIFIED |
+
+## Task 6 — Portfolio and Project Asset Migration Pre-Move Gate
+
+### Grounding and Selection Result
+
+- Grounded source: `AI_Class/00.Project/FleetVision/00.成果發表/` (ID `1JPupMGmZK7tp5wQtc5tBLXcdjesgaQYi`).
+- Source parent: old `FleetVision/` (ID `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl`).
+- Recursive inventory: `87` descendants = `14` folders + `73` files.
+- Inventory completeness: every discovered folder was listed; the deepest branches, `02.PPT/re/` and `Cloud Function - Colab/reference/`, contain no further folders.
+- Active presentation deck: `0` — `NO_EVIDENCE_SAFE_ACTIVE_ASSET`. The latest `v4.1` deck contains unreconciled metrics, a `正式版模型` label, and an `已完成端到端流程` claim that conflict with current repository boundaries.
+- Active overview asset: `0` — `NO_EVIDENCE_SAFE_ACTIVE_ASSET`. The overview document contains unreconciled quantitative and team-system claims.
+- Active demo asset: `0` — `NO_EVIDENCE_SAFE_ACTIVE_ASSET`. Available video content could not be audited sufficiently to exclude unsupported claims; the strongest candidate remains `RECONCILE_REQUIRED/NOT_MOVED`.
+- Interview screenshots: `0` selected. Phase 1 and Phase 3 images remain team/system project context rather than active individual portfolio claims.
+- Stable public link: none. No sharing change is authorized; `INTERVIEW_GUIDE.md` is unchanged.
+- Model weights and non-presentation duplicate candidates: `RECONCILE_REQUIRED/NOT_MOVED`; same name or size is not duplicate identity.
+- All first-pass rows retain `Delete Allowed=false`; permanent deletion remains `0`.
+
+### Complete Recursive Inventory and Classification
+
+All links and identities below were observed from the grounded source tree. `VIA_PARENT` means the item's bytes and own parent metadata are not changed; it remains inside a folder that has one recorded metadata-only move.
+
+| # | Current Path / Name | Observed ID / Link | Type | Direct Parent ID | Visibility | Classification | Planned Execution |
+|---:|---|---|---|---|---|---|---|
+| 1 | `00.彙總發表/` | [`1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j`](https://drive.google.com/open?id=1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j) | Folder | `1JPupMGmZK7tp5wQtc5tBLXcdjesgaQYi` | not shared | RECONCILE_REQUIRED | NOT_MOVED; contains unresolved demo/model/notebook context |
+| 2 | `01.web app/` | [`1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g`](https://drive.google.com/open?id=1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g) | Folder | `1JPupMGmZK7tp5wQtc5tBLXcdjesgaQYi` | not shared | RECONCILE_REQUIRED | NOT_MOVED; retains explicit non-presentation duplicate candidate |
+| 3 | `02.Auto Labeling/` | [`1L8pV9VGLtRs89eknQbo12E8DlNDXOR1e`](https://drive.google.com/open?id=1L8pV9VGLtRs89eknQbo12E8DlNDXOR1e) | Folder | `1JPupMGmZK7tp5wQtc5tBLXcdjesgaQYi` | not shared | RECONCILE_REQUIRED | NOT_MOVED; retains model and duplicate-candidate artifacts |
+| 4 | `03.系統部署&架構規劃/` | [`1HlzCo0bIBI7XakkweV-l2G8g0_a-SG3d`](https://drive.google.com/open?id=1HlzCo0bIBI7XakkweV-l2G8g0_a-SG3d) | Folder | `1JPupMGmZK7tp5wQtc5tBLXcdjesgaQYi` | not shared | PROJECT_ASSET | MOVE-001 VERIFIED |
+| 5 | `00.彙總發表/3282_完整流程APP_DASHBOARDmp4` | [`1llx0Fzn4_bw3Zs6XTfijbOTPhKh3Dj_9`](https://drive.google.com/open?id=1llx0Fzn4_bw3Zs6XTfijbOTPhKh3Dj_9) | MP4 | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | shared; access not verified | ARCHIVE | MOVE-026 VERIFIED |
+| 6 | `00.彙總發表/簡報架構` | [`1YYFLPjc7SM3KLW3SR8zkqa_ox8P4YyHFmFOeeI7eWdU`](https://drive.google.com/open?id=1YYFLPjc7SM3KLW3SR8zkqa_ox8P4YyHFmFOeeI7eWdU) | Google Doc | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | not shared | ARCHIVE | MOVE-027 VERIFIED |
+| 7 | `00.彙總發表/3282_Billy-webapp-20260723-175216.mp4` | [`1ab1tKdN3bB1LmlM8uvmXI38Bvr2AooUO`](https://drive.google.com/open?id=1ab1tKdN3bB1LmlM8uvmXI38Bvr2AooUO) | MP4 | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | not shared | ARCHIVE | MOVE-028 VERIFIED |
+| 8 | `00.彙總發表/05.Assets/` | [`1o9mh9AMZwE6c1cuTnYMRShfzqJi-trB1`](https://drive.google.com/open?id=1o9mh9AMZwE6c1cuTnYMRShfzqJi-trB1) | Folder | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | not shared | ARCHIVE | MOVE-018 VERIFIED after six child moves |
+| 9 | `00.彙總發表/04.Demo/` | [`1QCIP8ye1WpZfIofFMQi5_tRi1rR37PGh`](https://drive.google.com/open?id=1QCIP8ye1WpZfIofFMQi5_tRi1rR37PGh) | Empty folder | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | not shared | ARCHIVE | MOVE-029 VERIFIED |
+| 10 | `00.彙總發表/03.Speaker_Notes_QA/` | [`1gUQppQKYG3xv7w7Sxx5cum5j1B-N-Xkw`](https://drive.google.com/open?id=1gUQppQKYG3xv7w7Sxx5cum5j1B-N-Xkw) | Empty folder | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | not shared | ARCHIVE | MOVE-030 VERIFIED |
+| 11 | `00.彙總發表/02.PPT/` | [`1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t`](https://drive.google.com/open?id=1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t) | Folder | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | not shared | RECONCILE_REQUIRED | NOT_MOVED; retains unaudited primary demo candidate |
+| 12 | `00.彙總發表/01.Presentation_Master/` | [`1Hf9xsQyfs8z6VtwZ6cXftO4s1IgTIeHR`](https://drive.google.com/open?id=1Hf9xsQyfs8z6VtwZ6cXftO4s1IgTIeHR) | Folder | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | not shared | ARCHIVE | MOVE-031 VERIFIED |
+| 13 | `00.彙總發表/Cloud Function - Colab/` | [`1XrK-FGC8hEccUX56ZywNnnCQ1mYe22WP`](https://drive.google.com/open?id=1XrK-FGC8hEccUX56ZywNnnCQ1mYe22WP) | Folder | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | not shared | RECONCILE_REQUIRED | NOT_MOVED; mixed model/notebook/credential scope |
+| 14 | `00.彙總發表/05.Assets/06_最終車損模型訓練曲線.png` | [`1D-8ynDccx_DBDs1rW_nakoItXpWFL6KU`](https://drive.google.com/open?id=1D-8ynDccx_DBDs1rW_nakoItXpWFL6KU) | PNG | `1o9mh9AMZwE6c1cuTnYMRShfzqJi-trB1` | not shared | PROJECT_ASSET | MOVE-012 VERIFIED |
+| 15 | `00.彙總發表/05.Assets/05_DBSCAN_分群結果.png` | [`153No-5Eos3nem7DOMHb7LCbAU2pPdlb3`](https://drive.google.com/open?id=153No-5Eos3nem7DOMHb7LCbAU2pPdlb3) | PNG | `1o9mh9AMZwE6c1cuTnYMRShfzqJi-trB1` | not shared | PROJECT_ASSET | MOVE-013 VERIFIED |
+| 16 | `00.彙總發表/05.Assets/04_Feature_Correlation_Matrix.png` | [`1IEwrRciinWpmqtsv0nC0KFUbqLkthMey`](https://drive.google.com/open?id=1IEwrRciinWpmqtsv0nC0KFUbqLkthMey) | PNG | `1o9mh9AMZwE6c1cuTnYMRShfzqJi-trB1` | not shared | PROJECT_ASSET | MOVE-014 VERIFIED |
+| 17 | `00.彙總發表/05.Assets/03_四角度實拍照片.png` | [`1-pSvHqt1Zxqc4WXx5kO3-zc7GQCtez7M`](https://drive.google.com/open?id=1-pSvHqt1Zxqc4WXx5kO3-zc7GQCtez7M) | PNG | `1o9mh9AMZwE6c1cuTnYMRShfzqJi-trB1` | not shared | PROJECT_ASSET | MOVE-015 VERIFIED |
+| 18 | `00.彙總發表/05.Assets/02_WebApp_Demo流程畫面.png` | [`1l3QnkYqmp-qEYOCoYcoe-NuH5e-HPYNU`](https://drive.google.com/open?id=1l3QnkYqmp-qEYOCoYcoe-NuH5e-HPYNU) | PNG | `1o9mh9AMZwE6c1cuTnYMRShfzqJi-trB1` | not shared | PROJECT_ASSET | MOVE-016 VERIFIED |
+| 19 | `00.彙總發表/05.Assets/01_系統部署架構圖.png` | [`1rABt3prY0n7vw1YwF0nNejtYqBhSpZPv`](https://drive.google.com/open?id=1rABt3prY0n7vw1YwF0nNejtYqBhSpZPv) | PNG | `1o9mh9AMZwE6c1cuTnYMRShfzqJi-trB1` | not shared | PROJECT_ASSET | MOVE-017 VERIFIED |
+| 20 | `00.彙總發表/02.PPT/車況之眼_智慧巡檢系統_成果發表_v4.1` | [`1pjECAs6lH5kD6R5B9Slcgh05uPLzMsy5cO4k54sekQI`](https://drive.google.com/open?id=1pjECAs6lH5kD6R5B9Slcgh05uPLzMsy5cO4k54sekQI) | Google Slides | `1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t` | not shared | ARCHIVE | MOVE-019 VERIFIED; audited unsafe for active claims |
+| 21 | `00.彙總發表/02.PPT/車況之眼_智慧巡檢系統.mp4` | [`150U7TxI00K3qoGO65OX98_T_u4c_5bgN`](https://drive.google.com/open?id=150U7TxI00K3qoGO65OX98_T_u4c_5bgN) | MP4 | `1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t` | not shared | ARCHIVE | MOVE-020 VERIFIED |
+| 22 | `00.彙總發表/02.PPT/車況之眼_智慧巡檢系統_NMI.mp4` | [`1ojUBiwrx4jPD8m8zZbFoCO8jHgCkcDVm`](https://drive.google.com/open?id=1ojUBiwrx4jPD8m8zZbFoCO8jHgCkcDVm) | MP4 | `1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t` | not shared | ARCHIVE | MOVE-021 VERIFIED |
+| 23 | `00.彙總發表/02.PPT/車況之眼_智慧巡檢系統_DemoVideo.mp4` | [`1BwvAcdC1SYo_cX7MDwdI6glUlDsP3ixq`](https://drive.google.com/open?id=1BwvAcdC1SYo_cX7MDwdI6glUlDsP3ixq) | MP4 | `1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t` | not shared | RECONCILE_REQUIRED | NOT_MOVED; content cannot be audited sufficiently |
+| 24 | `00.彙總發表/02.PPT/講稿彙整` | [`1dZQTbe05wSoApvyQi71tRJ1I2In9yaQLxi7FgSUoOw4`](https://drive.google.com/open?id=1dZQTbe05wSoApvyQi71tRJ1I2In9yaQLxi7FgSUoOw4) | Google Doc | `1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t` | not shared | ARCHIVE | MOVE-022 VERIFIED |
+| 25 | `00.彙總發表/02.PPT/簡報時間` | [`12vU3RWolYq4YHHdh3-PIYibSeHcZRTGrNyIGfC-Wy-8`](https://drive.google.com/open?id=12vU3RWolYq4YHHdh3-PIYibSeHcZRTGrNyIGfC-Wy-8) | Google Sheet | `1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t` | not shared | ARCHIVE | MOVE-023 VERIFIED |
+| 26 | `00.彙總發表/02.PPT/FleetVision：從混亂到清晰的數據旅程.docx` | [`1It4GcH7ehbgGRLQR8rPIIgfjq1T8Nl-p`](https://drive.google.com/open?id=1It4GcH7ehbgGRLQR8rPIIgfjq1T8Nl-p) | DOCX | `1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t` | not shared | ARCHIVE | MOVE-024 VERIFIED; audited unsafe for active claims |
+| 27 | `00.彙總發表/02.PPT/re/` | [`12anZhv5rGmp8laizHPyQjhptupVfxPb1`](https://drive.google.com/open?id=12anZhv5rGmp8laizHPyQjhptupVfxPb1) | Folder | `1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t` | not shared | ARCHIVE | MOVE-025 VERIFIED |
+| 28 | `.../re/車況之眼_智慧巡檢系統_成果發表_v4` | [`1aZd-Y-7_SCeZAqHmLze2XlreM_ZJBrKy_TPn6GztMgs`](https://drive.google.com/open?id=1aZd-Y-7_SCeZAqHmLze2XlreM_ZJBrKy_TPn6GztMgs) | Google Slides | `12anZhv5rGmp8laizHPyQjhptupVfxPb1` | not shared | ARCHIVE | VIA_PARENT MOVE-025 |
+| 29 | `.../re/車況之眼_智慧巡檢系統_成果發表_v3.講稿版` | [`1RoDU2DsmXdqbY89t_v2RTYHgPeEgbH2lsLq8AL_SlIs`](https://drive.google.com/open?id=1RoDU2DsmXdqbY89t_v2RTYHgPeEgbH2lsLq8AL_SlIs) | Google Slides | `12anZhv5rGmp8laizHPyQjhptupVfxPb1` | not shared | ARCHIVE | VIA_PARENT MOVE-025 |
+| 30 | `.../re/車況之眼_智慧巡檢系統_成果發表_v2` | [`1v1uaoS8HmFa_kMWvEZW51LP4aFxaVvgZgDzBS3m5EmE`](https://drive.google.com/open?id=1v1uaoS8HmFa_kMWvEZW51LP4aFxaVvgZgDzBS3m5EmE) | Google Slides | `12anZhv5rGmp8laizHPyQjhptupVfxPb1` | not shared | ARCHIVE | VIA_PARENT MOVE-025 |
+| 31 | `.../re/車況之眼_智慧巡檢系統_成果發表_v1.pptx` | [`1ISOfkj4K9lGtZuCxcaTWsOgyrED1OhWQ`](https://drive.google.com/open?id=1ISOfkj4K9lGtZuCxcaTWsOgyrED1OhWQ) | PPTX | `12anZhv5rGmp8laizHPyQjhptupVfxPb1` | not shared | ARCHIVE | VIA_PARENT MOVE-025 |
+| 32 | `.../re/車況之眼_智慧巡檢系統_成果發表.pptx` | [`19rFyBUlC0OfUvZTzd2z9KoksD9SukiBD`](https://drive.google.com/open?id=19rFyBUlC0OfUvZTzd2z9KoksD9SukiBD) | PPTX | `12anZhv5rGmp8laizHPyQjhptupVfxPb1` | not shared | ARCHIVE | VIA_PARENT MOVE-025 |
+| 33 | `.../re/VehicleConditionEye_v1.8_Notebook_TED_Integrated.pptx` | [`1qbDuv8gbjqTLS7WqkhjC409BuSBpxWDH`](https://drive.google.com/open?id=1qbDuv8gbjqTLS7WqkhjC409BuSBpxWDH) | PPTX | `12anZhv5rGmp8laizHPyQjhptupVfxPb1` | not shared | ARCHIVE | VIA_PARENT MOVE-025 |
+| 34 | `.../re/車況之眼_智慧巡檢系統_成果發表_v1.3_穩定版.pptx` | [`1Lp3RgZg9tLQfT38O2q6sVp0agxFH75Mi`](https://drive.google.com/open?id=1Lp3RgZg9tLQfT38O2q6sVp0agxFH75Mi) | PPTX | `12anZhv5rGmp8laizHPyQjhptupVfxPb1` | not shared | ARCHIVE | VIA_PARENT MOVE-025 |
+| 35 | `.../re/車況之眼_智慧巡檢系統_成果發表_v1.2.pptx` | [`1jdlpCQuB0WYcb5Mu4GLRqoRqvGiD4csU`](https://drive.google.com/open?id=1jdlpCQuB0WYcb5Mu4GLRqoRqvGiD4csU) | PPTX | `12anZhv5rGmp8laizHPyQjhptupVfxPb1` | not shared | ARCHIVE | VIA_PARENT MOVE-025 |
+| 36 | `.../re/FleetVision_車況之眼_成果發表_最終定稿_v1.0.pptx` | [`1pwuV4NRxCiuIhyF5ApFwZXsddhuVCAzf`](https://drive.google.com/open?id=1pwuV4NRxCiuIhyF5ApFwZXsddhuVCAzf) | PPTX | `12anZhv5rGmp8laizHPyQjhptupVfxPb1` | not shared | ARCHIVE | VIA_PARENT MOVE-025 |
+| 37 | `.../re/車況之眼_智慧巡檢系統_TED_Edition_v2.1.pptx` | [`1w9uFGk_stJVpzW-fmPIgwnbey_kQ0ixW`](https://drive.google.com/open?id=1w9uFGk_stJVpzW-fmPIgwnbey_kQ0ixW) | PPTX | `12anZhv5rGmp8laizHPyQjhptupVfxPb1` | not shared | ARCHIVE | VIA_PARENT MOVE-025 |
+| 38 | `.../re/車況之眼_智慧巡檢系統_Conference_Edition_v3.1.pptx` | [`1sGeCQcEUkyKtjmNs3GXiWXr8qIo9eYuz`](https://drive.google.com/open?id=1sGeCQcEUkyKtjmNs3GXiWXr8qIo9eYuz) | PPTX | `12anZhv5rGmp8laizHPyQjhptupVfxPb1` | not shared | ARCHIVE | VIA_PARENT MOVE-025 |
+| 39 | `.../re/車況之眼_智慧巡檢系統_成果發表_新版_MASTER流程簡報_v1.pptx` | [`1Wo2SM6r8mbacQgOARRccYzmmfVcOG2_b`](https://drive.google.com/open?id=1Wo2SM6r8mbacQgOARRccYzmmfVcOG2_b) | PPTX | `12anZhv5rGmp8laizHPyQjhptupVfxPb1` | not shared | ARCHIVE | VIA_PARENT MOVE-025 |
+| 40 | `.../re/車況之眼_智慧巡檢系統_成果發表_Final_Candidate_v5_Editable.pptx` | [`1U9wvZWmtcTYOdVuF_ulNG8QgM0urQrmj`](https://drive.google.com/open?id=1U9wvZWmtcTYOdVuF_ulNG8QgM0urQrmj) | PPTX | `12anZhv5rGmp8laizHPyQjhptupVfxPb1` | not shared | ARCHIVE | VIA_PARENT MOVE-025 |
+| 41 | `.../re/車況之眼_智慧巡檢系統_成果發表_Final_Candidate_v4.pptx` | [`1Xi5_mfuitcgaha0oK86sy7if0imZdBXO`](https://drive.google.com/open?id=1Xi5_mfuitcgaha0oK86sy7if0imZdBXO) | PPTX | `12anZhv5rGmp8laizHPyQjhptupVfxPb1` | not shared | ARCHIVE | VIA_PARENT MOVE-025 |
+| 42 | `.../re/車況之眼_智慧巡檢系統_成果發表_Final_Candidate_v1.pptx` | [`1x0_03Ap6Ky4E7cd3xOxzMPxm4x6roewy`](https://drive.google.com/open?id=1x0_03Ap6Ky4E7cd3xOxzMPxm4x6roewy) | PPTX | `12anZhv5rGmp8laizHPyQjhptupVfxPb1` | not shared | ARCHIVE | VIA_PARENT MOVE-025 |
+| 43 | `.../01.Presentation_Master/未命名文件` | [`1tRUt8I4rg7VlWegalCKqUovAGazRZvEE19WYPPCZRog`](https://drive.google.com/open?id=1tRUt8I4rg7VlWegalCKqUovAGazRZvEE19WYPPCZRog) | Google Doc | `1Hf9xsQyfs8z6VtwZ6cXftO4s1IgTIeHR` | not shared | ARCHIVE | VIA_PARENT MOVE-031 |
+| 44 | `.../01.Presentation_Master/車況之眼_智慧巡檢系統_Presentation_Master_v1.0.docx` | [`1FpQhj22eU2LtJXIaZnOtct45g0YiOha9`](https://drive.google.com/open?id=1FpQhj22eU2LtJXIaZnOtct45g0YiOha9) | DOCX | `1Hf9xsQyfs8z6VtwZ6cXftO4s1IgTIeHR` | not shared | ARCHIVE | VIA_PARENT MOVE-031 |
+| 45 | `.../Cloud Function - Colab/reference/` | [`1ledzNwpk3FUBnFeY8myLyZ_279cshCZe`](https://drive.google.com/open?id=1ledzNwpk3FUBnFeY8myLyZ_279cshCZe) | Folder | `1XrK-FGC8hEccUX56ZywNnnCQ1mYe22WP` | not shared | RECONCILE_REQUIRED | NOT_MOVED |
+| 46 | `.../Cloud Function - Colab/YOLO_car_damage_detection_V5.pt` | [`1qrMR1absDvDKWEbhGE6pV5Q3K7_f3HzB`](https://drive.google.com/open?id=1qrMR1absDvDKWEbhGE6pV5Q3K7_f3HzB) | Model artifact | `1XrK-FGC8hEccUX56ZywNnnCQ1mYe22WP` | not shared | RECONCILE_REQUIRED | NOT_MOVED; later model reconciliation |
+| 47 | `.../Cloud Function - Colab/車損辨識引擎 Colab 串接_v1.ipynb` | [`1MGGB2gcSySxSIMDGZC8dsTgSoZC4sJwb`](https://drive.google.com/open?id=1MGGB2gcSySxSIMDGZC8dsTgSoZC4sJwb) | Notebook | `1XrK-FGC8hEccUX56ZywNnnCQ1mYe22WP` | not shared | RECONCILE_REQUIRED | NOT_MOVED; later notebook reconciliation |
+| 48 | `.../Cloud Function - Colab/service-account.json` | [`1aEbqkS1yAI_EeBDovI7p6Y2Qr5KwjqkV`](https://drive.google.com/open?id=1aEbqkS1yAI_EeBDovI7p6Y2Qr5KwjqkV) | Credential JSON | `1XrK-FGC8hEccUX56ZywNnnCQ1mYe22WP` | not shared | RECONCILE_REQUIRED | NOT_MOVED; sensitive credential context |
+| 49 | `.../reference/現況跟實作.md` | [`1v64QpVLp_WJUY0172AWv95obkviaVewX`](https://drive.google.com/open?id=1v64QpVLp_WJUY0172AWv95obkviaVewX) | Markdown | `1ledzNwpk3FUBnFeY8myLyZ_279cshCZe` | not shared | RECONCILE_REQUIRED | NOT_MOVED with mixed reference folder |
+| 50 | `.../reference/CarDentScratch.pt` | [`137GYrPXSf38V1qmkm3BWYwSMvXVYd93V`](https://drive.google.com/open?id=137GYrPXSf38V1qmkm3BWYwSMvXVYd93V) | Model artifact | `1ledzNwpk3FUBnFeY8myLyZ_279cshCZe` | not shared | RECONCILE_REQUIRED | NOT_MOVED; later model reconciliation |
+| 51 | `.../reference/engine_colab_template.md` | [`1d7uDDbBcyCvtFdD30TKfnfLVYGUcr_8d`](https://drive.google.com/open?id=1d7uDDbBcyCvtFdD30TKfnfLVYGUcr_8d) | Markdown | `1ledzNwpk3FUBnFeY8myLyZ_279cshCZe` | not shared | RECONCILE_REQUIRED | NOT_MOVED with mixed reference folder |
+| 52 | `.../reference/output.txt` | [`103fNox1txnHJjA-vyHxl2nhf34YrdKWu`](https://drive.google.com/open?id=103fNox1txnHJjA-vyHxl2nhf34YrdKWu) | Text | `1ledzNwpk3FUBnFeY8myLyZ_279cshCZe` | not shared | RECONCILE_REQUIRED | NOT_MOVED with mixed reference folder |
+| 53 | `01.web app/智能檢車 Web App 前端開發作業程序 的副本` | [`12xQClfvFwjLTwKGnho_K7KQcxIXbfvfgeWGPHqw8ah8`](https://drive.google.com/open?id=12xQClfvFwjLTwKGnho_K7KQcxIXbfvfgeWGPHqw8ah8) | Google Doc | `1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g` | not shared | DUPLICATE_CANDIDATE | NOT_MOVED; explicit copy, identity not verified |
+| 54 | `01.web app/智能檢車 Web App 前端開發作業程序.docx` | [`1gO-9_JSaF8aJgDBWfE4aVaUlzP-g8u8Q`](https://drive.google.com/open?id=1gO-9_JSaF8aJgDBWfE4aVaUlzP-g8u8Q) | DOCX | `1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g` | not shared | PROJECT_ASSET | MOVE-002 VERIFIED |
+| 55 | `01.web app/車牌車輪辨識2` | [`1h4wG62BB9CyZy6Pt13o4KRvHq7rf_O2U`](https://drive.google.com/open?id=1h4wG62BB9CyZy6Pt13o4KRvHq7rf_O2U) | PNG | `1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g` | not shared | PROJECT_ASSET | MOVE-003 VERIFIED |
+| 56 | `01.web app/車牌車輪辨識1` | [`1brnUiaEj6EaZTNEZ3SYgqE00SoLwdXUj`](https://drive.google.com/open?id=1brnUiaEj6EaZTNEZ3SYgqE00SoLwdXUj) | PNG | `1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g` | not shared | PROJECT_ASSET | MOVE-004 VERIFIED |
+| 57 | `01.web app/FullVideo.mp4` | [`1Ia6H0xXjU3RWolUTBleHdYBSpgJ_ZQqP`](https://drive.google.com/open?id=1Ia6H0xXjU3RWolUTBleHdYBSpgJ_ZQqP) | MP4 | `1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g` | not shared | PROJECT_ASSET | MOVE-005 VERIFIED; team Phase 1 context only |
+| 58 | `01.web app/03_故意輸錯車牌測試辨識` | [`1Hd8zPlfoUhYapa5Qt0VFrPiZb_egWeRX`](https://drive.google.com/open?id=1Hd8zPlfoUhYapa5Qt0VFrPiZb_egWeRX) | MP4 | `1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g` | not shared | PROJECT_ASSET | MOVE-006 VERIFIED; team Phase 1 test context |
+| 59 | `01.web app/Car Damage Project 3a5ed27c22388036b84ff1c72b1359f7.md` | [`1kSS01E-YG_cAqgzPXPjcSU1-VRxl7Wca`](https://drive.google.com/open?id=1kSS01E-YG_cAqgzPXPjcSU1-VRxl7Wca) | Markdown | `1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g` | not shared | PROJECT_ASSET | MOVE-007 VERIFIED |
+| 60 | `01.web app/智能檢車 Web App 前端開發作業程序.pdf` | [`1qk9CPWd4ixyvgHJ2m52OKqokQVheuk1V`](https://drive.google.com/open?id=1qk9CPWd4ixyvgHJ2m52OKqokQVheuk1V) | PDF | `1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g` | not shared | PROJECT_ASSET | MOVE-008 VERIFIED |
+| 61 | `02.Auto Labeling/auto_label_V2.4_Feature_Engineering-Copy2 (3).html` | [`1xHW9yBrThhmAZ5l4c7VdLZbpcOd9mPfE`](https://drive.google.com/open?id=1xHW9yBrThhmAZ5l4c7VdLZbpcOd9mPfE) | HTML | `1L8pV9VGLtRs89eknQbo12E8DlNDXOR1e` | not shared | DUPLICATE_CANDIDATE | NOT_MOVED; explicit copy, identity not verified |
+| 62 | `02.Auto Labeling/影像車損辨識開發流程.docx` | [`1VsYrrA3Qq9vn-upEh0HlTSWV0W2NVgbg`](https://drive.google.com/open?id=1VsYrrA3Qq9vn-upEh0HlTSWV0W2NVgbg) | DOCX | `1L8pV9VGLtRs89eknQbo12E8DlNDXOR1e` | not shared | PROJECT_ASSET | MOVE-009 VERIFIED |
+| 63 | `02.Auto Labeling/auto_label_V2.4_Feature_Engineering-Copy2_nocell.html` | [`1W1t2ku41e7mfbGxJOiAcozjBQJVgd9yM`](https://drive.google.com/open?id=1W1t2ku41e7mfbGxJOiAcozjBQJVgd9yM) | HTML | `1L8pV9VGLtRs89eknQbo12E8DlNDXOR1e` | not shared | PROJECT_ASSET | MOVE-010 VERIFIED |
+| 64 | `02.Auto Labeling/YOLO_car_damage_detection_V5.pt` | [`1UrR_rtfSOAKPjOgIpSd8dIDp7BJsiErF`](https://drive.google.com/open?id=1UrR_rtfSOAKPjOgIpSd8dIDp7BJsiErF) | Model artifact | `1L8pV9VGLtRs89eknQbo12E8DlNDXOR1e` | not shared | RECONCILE_REQUIRED | NOT_MOVED; later model reconciliation |
+| 65 | `02.Auto Labeling/auto_label_V2.4_Feature_Engineering.html` | [`1EOayq6dzy7Wrr43l6WOhXWhAGJL77sap`](https://drive.google.com/open?id=1EOayq6dzy7Wrr43l6WOhXWhAGJL77sap) | HTML | `1L8pV9VGLtRs89eknQbo12E8DlNDXOR1e` | not shared | PROJECT_ASSET | MOVE-011 VERIFIED |
+| 66 | `03.系統部署&架構規劃/ChatGPT Image 2026年7月24日 下午12_22_23.png` | [`1WnUmPA4D27zWcRFTfFJBufJk-dWHGHfm`](https://drive.google.com/open?id=1WnUmPA4D27zWcRFTfFJBufJk-dWHGHfm) | PNG | `1HlzCo0bIBI7XakkweV-l2G8g0_a-SG3d` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 67 | `03.系統部署&架構規劃/車況之眼_智慧巡檢系統_實際應用功能流程圖_Editable.pptx` | [`1JFbCFiL29KA5VCRqT6bRGnSaIl9h6qQx`](https://drive.google.com/open?id=1JFbCFiL29KA5VCRqT6bRGnSaIl9h6qQx) | PPTX | `1HlzCo0bIBI7XakkweV-l2G8g0_a-SG3d` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 68 | `03.系統部署&架構規劃/Dashboard/` | [`1E48Mmv5HL9DfLhaGrGgc2GxIqrfHFME9`](https://drive.google.com/open?id=1E48Mmv5HL9DfLhaGrGgc2GxIqrfHFME9) | Folder | `1HlzCo0bIBI7XakkweV-l2G8g0_a-SG3d` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 69 | `03.系統部署&架構規劃/系統開發規格文件/` | [`1eY7PXuxAbkHWLDKE6DOScj6IHeS8qGlO`](https://drive.google.com/open?id=1eY7PXuxAbkHWLDKE6DOScj6IHeS8qGlO) | Folder | `1HlzCo0bIBI7XakkweV-l2G8g0_a-SG3d` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 70 | `03.系統部署&架構規劃/imp_前端 Firebase 整合與建立訂單及拍照上傳實作計畫.md` | [`1C-RklqV63_h4l7Hv8SQLG9Y9_kZcZMkt`](https://drive.google.com/open?id=1C-RklqV63_h4l7Hv8SQLG9Y9_kZcZMkt) | Markdown | `1HlzCo0bIBI7XakkweV-l2G8g0_a-SG3d` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 71 | `03.系統部署&架構規劃/deployment_architecture_v2.png` | [`1MwA_y1FJTm0x9Vxqw2sZxu3IB5rld3Aq`](https://drive.google.com/open?id=1MwA_y1FJTm0x9Vxqw2sZxu3IB5rld3Aq) | PNG | `1HlzCo0bIBI7XakkweV-l2G8g0_a-SG3d` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 72 | `.../Dashboard/Screenshot_20260722-174816.png` | [`1pOwm7RZ1Nmib5pclxwAX21a7lu3z5RU-`](https://drive.google.com/open?id=1pOwm7RZ1Nmib5pclxwAX21a7lu3z5RU-) | PNG | `1E48Mmv5HL9DfLhaGrGgc2GxIqrfHFME9` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 73 | `.../Dashboard/Screenshot_20260722-174823.png` | [`1HKzgu67uOx0S1yeYTsufYHZZK721J1-s`](https://drive.google.com/open?id=1HKzgu67uOx0S1yeYTsufYHZZK721J1-s) | PNG | `1E48Mmv5HL9DfLhaGrGgc2GxIqrfHFME9` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 74 | `.../Dashboard/Screenshot_20260722-174913.png` | [`1IwjEFqlT9Hjx1zqkvtb4yAH5PGv_H1NY`](https://drive.google.com/open?id=1IwjEFqlT9Hjx1zqkvtb4yAH5PGv_H1NY) | PNG | `1E48Mmv5HL9DfLhaGrGgc2GxIqrfHFME9` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 75 | `.../Dashboard/Screenshot_20260722-174923.png` | [`1GCh1vPX-B86tEfZxsimkEaCkLMKXEXMe`](https://drive.google.com/open?id=1GCh1vPX-B86tEfZxsimkEaCkLMKXEXMe) | PNG | `1E48Mmv5HL9DfLhaGrGgc2GxIqrfHFME9` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 76 | `.../Dashboard/Screenshot_20260722-174932.png` | [`1IM419uTLVmzVywzdaNIWmYFslJcbvW7T`](https://drive.google.com/open?id=1IM419uTLVmzVywzdaNIWmYFslJcbvW7T) | PNG | `1E48Mmv5HL9DfLhaGrGgc2GxIqrfHFME9` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 77 | `.../Dashboard/Screenshot_20260722-174942.png` | [`1K22IvLpJdtVV1BY3PdGdC1gFxbi35g7i`](https://drive.google.com/open?id=1K22IvLpJdtVV1BY3PdGdC1gFxbi35g7i) | PNG | `1E48Mmv5HL9DfLhaGrGgc2GxIqrfHFME9` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 78 | `.../Dashboard/dashboard-rentals-list_20260722.png` | [`1S6HzapZbhc4SFQpqJbog40PR9vQU5UP8`](https://drive.google.com/open?id=1S6HzapZbhc4SFQpqJbog40PR9vQU5UP8) | PNG | `1E48Mmv5HL9DfLhaGrGgc2GxIqrfHFME9` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 79 | `.../Dashboard/dashboard-review-detail_20260722.png` | [`1YGir_chDpW1brM5SN2q6Tn8Ub2ZZPhZP`](https://drive.google.com/open?id=1YGir_chDpW1brM5SN2q6Tn8Ub2ZZPhZP) | PNG | `1E48Mmv5HL9DfLhaGrGgc2GxIqrfHFME9` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 80 | `.../系統開發規格文件/00_命名建議.docx` | [`19gbvSRdutQmCBMKT5kiDGIwULnTbc8s4`](https://drive.google.com/open?id=19gbvSRdutQmCBMKT5kiDGIwULnTbc8s4) | DOCX | `1eY7PXuxAbkHWLDKE6DOScj6IHeS8qGlO` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 81 | `.../系統開發規格文件/01_SAS_系統架構書.docx` | [`1hakg5wN4fLaCj-5qCpFYyL06K6CgwzpP`](https://drive.google.com/open?id=1hakg5wN4fLaCj-5qCpFYyL06K6CgwzpP) | DOCX | `1eY7PXuxAbkHWLDKE6DOScj6IHeS8qGlO` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 82 | `.../系統開發規格文件/02_SDD_系統規格書.docx` | [`1oLLvY0vis3CDOc0_hDolEKEeQn97fcYE`](https://drive.google.com/open?id=1oLLvY0vis3CDOc0_hDolEKEeQn97fcYE) | DOCX | `1eY7PXuxAbkHWLDKE6DOScj6IHeS8qGlO` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 83 | `.../系統開發規格文件/03_IAM與Firebase權限操作手冊.docx` | [`1Xe55cyFEzsdgbURC2FVfl-2M2kEJMMlC`](https://drive.google.com/open?id=1Xe55cyFEzsdgbURC2FVfl-2M2kEJMMlC) | DOCX | `1eY7PXuxAbkHWLDKE6DOScj6IHeS8qGlO` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 84 | `.../系統開發規格文件/04_前端模組規格書與串接資料包.docx` | [`1AMesU3AMtXFIPedxwvoMU1OggwV-xX0m`](https://drive.google.com/open?id=1AMesU3AMtXFIPedxwvoMU1OggwV-xX0m) | DOCX | `1eY7PXuxAbkHWLDKE6DOScj6IHeS8qGlO` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 85 | `.../系統開發規格文件/05_後端模組規格書.docx` | [`19wHYTuyyBT7Xln4516YLbIJourAf_AMh`](https://drive.google.com/open?id=19wHYTuyyBT7Xln4516YLbIJourAf_AMh) | DOCX | `1eY7PXuxAbkHWLDKE6DOScj6IHeS8qGlO` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 86 | `.../系統開發規格文件/06_專案時程規劃.docx` | [`1h1XG69_uOPlFam-ZTqo-4a0doeIvzxEK`](https://drive.google.com/open?id=1h1XG69_uOPlFam-ZTqo-4a0doeIvzxEK) | DOCX | `1eY7PXuxAbkHWLDKE6DOScj6IHeS8qGlO` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+| 87 | `.../系統開發規格文件/07_開發任務規格書 for AGENT.docx` | [`1T2VZ-eQRDquUCfWvJf7iginxrJ47jtJK`](https://drive.google.com/open?id=1T2VZ-eQRDquUCfWvJf7iginxrJ47jtJK) | DOCX | `1eY7PXuxAbkHWLDKE6DOScj6IHeS8qGlO` | not shared | PROJECT_ASSET | VIA_PARENT MOVE-001 |
+
+### Pre-Recorded Execution Table
+
+Only the following `31` item IDs may receive Task 6 `update_file` calls. Every call must omit `name`, `file_uri`, and `mime_type`, add only the listed target parent, and remove only the listed source parent.
+
+| Move | Item ID | Exact Source Parent ID | Exact Target Folder ID / Path | Classification | Rationale | Delete Allowed | Status |
+|---|---|---|---|---|---|---|---|
+| MOVE-001 | `1HlzCo0bIBI7XakkweV-l2G8g0_a-SG3d` | `1JPupMGmZK7tp5wQtc5tBLXcdjesgaQYi` | `1a5SrioOwdTitxQ2qYilrhHcqRd2jbODx` / `FleetVision/04_PROJECT_ASSETS/03_phase3_dashboard/` | PROJECT_ASSET | Phase 3 deployment/dashboard material is team/system engineering context. | false | VERIFIED — source absent; target present; parents=[`1a5SrioOwdTitxQ2qYilrhHcqRd2jbODx`] |
+| MOVE-002 | `1gO-9_JSaF8aJgDBWfE4aVaUlzP-g8u8Q` | `1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g` | `1qTeD-y9uEpuSOquJCzKA_BvrPUG94Jag` / `.../01_phase1_capture/` | PROJECT_ASSET | Phase 1 Web App procedure, team context. | false | VERIFIED |
+| MOVE-003 | `1h4wG62BB9CyZy6Pt13o4KRvHq7rf_O2U` | `1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g` | `1qTeD-y9uEpuSOquJCzKA_BvrPUG94Jag` / `.../01_phase1_capture/` | PROJECT_ASSET | Phase 1 capture-model screenshot, team context. | false | VERIFIED |
+| MOVE-004 | `1brnUiaEj6EaZTNEZ3SYgqE00SoLwdXUj` | `1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g` | `1qTeD-y9uEpuSOquJCzKA_BvrPUG94Jag` / `.../01_phase1_capture/` | PROJECT_ASSET | Phase 1 capture-model screenshot, team context. | false | VERIFIED |
+| MOVE-005 | `1Ia6H0xXjU3RWolUTBleHdYBSpgJ_ZQqP` | `1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g` | `1qTeD-y9uEpuSOquJCzKA_BvrPUG94Jag` / `.../01_phase1_capture/` | PROJECT_ASSET | Phase 1 Web App workflow video, private team context only. | false | VERIFIED |
+| MOVE-006 | `1Hd8zPlfoUhYapa5Qt0VFrPiZb_egWeRX` | `1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g` | `1qTeD-y9uEpuSOquJCzKA_BvrPUG94Jag` / `.../01_phase1_capture/` | PROJECT_ASSET | Phase 1 wrong-license-plate test video, private team context. | false | VERIFIED |
+| MOVE-007 | `1kSS01E-YG_cAqgzPXPjcSU1-VRxl7Wca` | `1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g` | `1qTeD-y9uEpuSOquJCzKA_BvrPUG94Jag` / `.../01_phase1_capture/` | PROJECT_ASSET | Phase 1 Web App project note, team context. | false | VERIFIED |
+| MOVE-008 | `1qk9CPWd4ixyvgHJ2m52OKqokQVheuk1V` | `1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g` | `1qTeD-y9uEpuSOquJCzKA_BvrPUG94Jag` / `.../01_phase1_capture/` | PROJECT_ASSET | Phase 1 Web App procedure PDF, team context. | false | VERIFIED |
+| MOVE-009 | `1VsYrrA3Qq9vn-upEh0HlTSWV0W2NVgbg` | `1L8pV9VGLtRs89eknQbo12E8DlNDXOR1e` | `1udVhs2TKxgzOeDuGAtvnZPiGEaAzEPS0` / `.../02_phase2_detection/` | PROJECT_ASSET | Phase 2 damage-analysis development process. | false | VERIFIED |
+| MOVE-010 | `1W1t2ku41e7mfbGxJOiAcozjBQJVgd9yM` | `1L8pV9VGLtRs89eknQbo12E8DlNDXOR1e` | `1udVhs2TKxgzOeDuGAtvnZPiGEaAzEPS0` / `.../02_phase2_detection/` | PROJECT_ASSET | Phase 2 feature-engineering evidence export. | false | VERIFIED |
+| MOVE-011 | `1EOayq6dzy7Wrr43l6WOhXWhAGJL77sap` | `1L8pV9VGLtRs89eknQbo12E8DlNDXOR1e` | `1udVhs2TKxgzOeDuGAtvnZPiGEaAzEPS0` / `.../02_phase2_detection/` | PROJECT_ASSET | Phase 2 feature-engineering evidence export. | false | VERIFIED |
+| MOVE-012 | `1D-8ynDccx_DBDs1rW_nakoItXpWFL6KU` | `1o9mh9AMZwE6c1cuTnYMRShfzqJi-trB1` | `1udVhs2TKxgzOeDuGAtvnZPiGEaAzEPS0` / `.../02_phase2_detection/` | PROJECT_ASSET | Historical Phase 2 training-curve image; not an active metric claim. | false | VERIFIED |
+| MOVE-013 | `153No-5Eos3nem7DOMHb7LCbAU2pPdlb3` | `1o9mh9AMZwE6c1cuTnYMRShfzqJi-trB1` | `1udVhs2TKxgzOeDuGAtvnZPiGEaAzEPS0` / `.../02_phase2_detection/` | PROJECT_ASSET | Historical Phase 2 DBSCAN evidence. | false | VERIFIED |
+| MOVE-014 | `1IEwrRciinWpmqtsv0nC0KFUbqLkthMey` | `1o9mh9AMZwE6c1cuTnYMRShfzqJi-trB1` | `1udVhs2TKxgzOeDuGAtvnZPiGEaAzEPS0` / `.../02_phase2_detection/` | PROJECT_ASSET | Historical Phase 2 correlation evidence. | false | VERIFIED |
+| MOVE-015 | `1-pSvHqt1Zxqc4WXx5kO3-zc7GQCtez7M` | `1o9mh9AMZwE6c1cuTnYMRShfzqJi-trB1` | `1qTeD-y9uEpuSOquJCzKA_BvrPUG94Jag` / `.../01_phase1_capture/` | PROJECT_ASSET | Phase 1 four-angle capture example, team context. | false | VERIFIED |
+| MOVE-016 | `1l3QnkYqmp-qEYOCoYcoe-NuH5e-HPYNU` | `1o9mh9AMZwE6c1cuTnYMRShfzqJi-trB1` | `1qTeD-y9uEpuSOquJCzKA_BvrPUG94Jag` / `.../01_phase1_capture/` | PROJECT_ASSET | Phase 1 Web App demo screenshot, team context. | false | VERIFIED |
+| MOVE-017 | `1rABt3prY0n7vw1YwF0nNejtYqBhSpZPv` | `1o9mh9AMZwE6c1cuTnYMRShfzqJi-trB1` | `1a5SrioOwdTitxQ2qYilrhHcqRd2jbODx` / `.../03_phase3_dashboard/` | PROJECT_ASSET | System deployment diagram, team/system context. | false | VERIFIED |
+| MOVE-018 | `1o9mh9AMZwE6c1cuTnYMRShfzqJi-trB1` | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | `146utuTSsHtomWALO-PkXLeWliwO4ThG0` / `FleetVision/99_ARCHIVE/05_old_presentations/` | ARCHIVE | Legacy presentation asset container after its classified children move. | false | VERIFIED |
+| MOVE-019 | `1pjECAs6lH5kD6R5B9Slcgh05uPLzMsy5cO4k54sekQI` | `1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t` | `146utuTSsHtomWALO-PkXLeWliwO4ThG0` / `.../05_old_presentations/` | ARCHIVE | Latest team deck is unsafe for active claims; preserve reversibly as history. | false | VERIFIED |
+| MOVE-020 | `150U7TxI00K3qoGO65OX98_T_u4c_5bgN` | `1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t` | `146utuTSsHtomWALO-PkXLeWliwO4ThG0` / `.../05_old_presentations/` | ARCHIVE | Presentation media variant; not selected active demo. | false | VERIFIED |
+| MOVE-021 | `1ojUBiwrx4jPD8m8zZbFoCO8jHgCkcDVm` | `1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t` | `146utuTSsHtomWALO-PkXLeWliwO4ThG0` / `.../05_old_presentations/` | ARCHIVE | Presentation media variant; not selected active demo. | false | VERIFIED |
+| MOVE-022 | `1dZQTbe05wSoApvyQi71tRJ1I2In9yaQLxi7FgSUoOw4` | `1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t` | `146utuTSsHtomWALO-PkXLeWliwO4ThG0` / `.../05_old_presentations/` | ARCHIVE | Historical speaker notes. | false | VERIFIED |
+| MOVE-023 | `12vU3RWolYq4YHHdh3-PIYibSeHcZRTGrNyIGfC-Wy-8` | `1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t` | `146utuTSsHtomWALO-PkXLeWliwO4ThG0` / `.../05_old_presentations/` | ARCHIVE | Historical presentation timing sheet. | false | VERIFIED |
+| MOVE-024 | `1It4GcH7ehbgGRLQR8rPIIgfjq1T8Nl-p` | `1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t` | `146utuTSsHtomWALO-PkXLeWliwO4ThG0` / `.../05_old_presentations/` | ARCHIVE | Overview contains unreconciled claims; archive instead of active promotion. | false | VERIFIED |
+| MOVE-025 | `12anZhv5rGmp8laizHPyQjhptupVfxPb1` | `1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t` | `146utuTSsHtomWALO-PkXLeWliwO4ThG0` / `.../05_old_presentations/` | ARCHIVE | Folder contains 15 superseded presentation variants. | false | VERIFIED |
+| MOVE-026 | `1llx0Fzn4_bw3Zs6XTfijbOTPhKh3Dj_9` | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | `146utuTSsHtomWALO-PkXLeWliwO4ThG0` / `.../05_old_presentations/` | ARCHIVE | Earlier full-flow presentation media; sharing state remains unchanged. | false | VERIFIED |
+| MOVE-027 | `1YYFLPjc7SM3KLW3SR8zkqa_ox8P4YyHFmFOeeI7eWdU` | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | `146utuTSsHtomWALO-PkXLeWliwO4ThG0` / `.../05_old_presentations/` | ARCHIVE | Historical presentation-structure note. | false | VERIFIED |
+| MOVE-028 | `1ab1tKdN3bB1LmlM8uvmXI38Bvr2AooUO` | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | `146utuTSsHtomWALO-PkXLeWliwO4ThG0` / `.../05_old_presentations/` | ARCHIVE | Earlier Web App presentation media variant. | false | VERIFIED |
+| MOVE-029 | `1QCIP8ye1WpZfIofFMQi5_tRi1rR37PGh` | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | `146utuTSsHtomWALO-PkXLeWliwO4ThG0` / `.../05_old_presentations/` | ARCHIVE | Empty legacy presentation demo container; no deletion. | false | VERIFIED |
+| MOVE-030 | `1gUQppQKYG3xv7w7Sxx5cum5j1B-N-Xkw` | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | `146utuTSsHtomWALO-PkXLeWliwO4ThG0` / `.../05_old_presentations/` | ARCHIVE | Empty legacy speaker-note container; no deletion. | false | VERIFIED |
+| MOVE-031 | `1Hf9xsQyfs8z6VtwZ6cXftO4s1IgTIeHR` | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | `146utuTSsHtomWALO-PkXLeWliwO4ThG0` / `.../05_old_presentations/` | ARCHIVE | Historical presentation-master folder and its two documents. | false | VERIFIED |
+
+Pre-execution action counters:
+
+```text
+move = 0
+rename = 0
+copy = 0
+upload = 0
+share = 0
+trash = 0
+delete = 0
+permanent deletion = 0
+```
+
+### Post-Batch Independent Readback
+
+- Execution result: `31 VERIFIED`, `0 PENDING`, `0 FAILED`.
+- Each moved ID was absent from its exact old parent, present in its exact target parent, and returned `parent_ids=[expected target ID]` immediately after its `update_file` call.
+- An independent post-batch listing was then performed for the grounded source, every retained source branch, and all four used targets.
+
+| Independently Listed Parent | ID | Direct Children | Result |
+|---|---|---:|---|
+| Grounded source `00.成果發表/` | `1JPupMGmZK7tp5wQtc5tBLXcdjesgaQYi` | 3 | VERIFIED: only explicit NOT_MOVED containers remain |
+| `00.彙總發表/` | `1sZLGHUyDJwTExzCisKkTnOKytj9TYb3j` | 2 | VERIFIED: `02.PPT/` and `Cloud Function - Colab/` only |
+| `01.web app/` | `1FA9AggxqKVEu23x_V93DQTXm5zx5OH1g` | 1 | VERIFIED: explicit copy candidate only |
+| `02.Auto Labeling/` | `1L8pV9VGLtRs89eknQbo12E8DlNDXOR1e` | 2 | VERIFIED: explicit copy candidate and model artifact only |
+| `00.彙總發表/02.PPT/` | `1Nf0mGVvJW86iWgJovF5X_fyq5pVQR_7t` | 1 | VERIFIED: unaudited primary demo candidate only |
+| `00.彙總發表/Cloud Function - Colab/` | `1XrK-FGC8hEccUX56ZywNnnCQ1mYe22WP` | 4 | VERIFIED: mixed reference/model/notebook/credential items retained |
+| `FleetVision/04_PROJECT_ASSETS/01_phase1_capture/` | `1qTeD-y9uEpuSOquJCzKA_BvrPUG94Jag` | 9 | VERIFIED |
+| `FleetVision/04_PROJECT_ASSETS/02_phase2_detection/` | `1udVhs2TKxgzOeDuGAtvnZPiGEaAzEPS0` | 6 | VERIFIED |
+| `FleetVision/04_PROJECT_ASSETS/03_phase3_dashboard/` | `1a5SrioOwdTitxQ2qYilrhHcqRd2jbODx` | 2 | VERIFIED |
+| `FleetVision/99_ARCHIVE/05_old_presentations/` | `146utuTSsHtomWALO-PkXLeWliwO4ThG0` | 14 | VERIFIED |
+
+### Retained NOT_MOVED Items
+
+- `17` inventory rows remain explicitly `NOT_MOVED`.
+- The retained set consists of unresolved containers plus: one unaudited private demo, three model artifacts, one notebook, one credential JSON, mixed reference material, and two explicit non-presentation duplicate candidates.
+- These items were not promoted, archived, renamed, copied, shared, trashed, or deleted. Later notebook/model/duplicate reconciliation tasks must use the recorded IDs rather than infer identity from names.
+
+### Final Action Counters
+
+```text
+metadata-only move = 31
+rename = 0
+copy = 0
+upload = 0
+share = 0
+trash = 0
+delete = 0
+permanent deletion = 0
+active deck selected = 0
+active overview selected = 0
+active demo selected = 0
+interview link added = 0
+```
+
+Sharing states were not modified. The archived `3282_完整流程APP_DASHBOARDmp4` item continues to report `shared=true` with provider visibility `access_not_verified`; no public-access claim is made.
