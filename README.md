@@ -1,135 +1,83 @@
 # FleetVision
 
-> A governed computer-vision data pipeline for vehicle-damage analysis, with human-in-the-loop review, external-dataset controls, deduplication, annotation QA, and reproducible evaluation.
+> An evidence-first computer-vision workflow for turning imperfect vehicle images into governed, reviewable damage-analysis data.
 
-FleetVision focuses on the engineering required to turn imperfect vehicle-image collections into traceable evidence for computer-vision experiments. It is a portfolio project, not a production SaaS product or an automated insurance decision system.
+FleetVision is my Phase 2 contribution to a broader three-stage vehicle-condition system. It focuses on metadata quality, human review, external-dataset governance, annotation QA, deduplication, and reproducible evaluation—not automated insurance decisions or a production SaaS product.
 
-**中文摘要：** FleetVision 是一套車損影像資料治理與分析流程，重點包含 metadata、人工審核、外部資料接收、去重、標註 QA 與可重現評估。目前技術開發暫停於 `Phase 05S-A2`，正進行作品集維護；before/after 車損比較與完整產品化仍未完成。
+## Problem
 
-**Current status:** `Phase 05S-A2 — Implementation Plan Approved and Documented` · Technical development `PAUSED` · Activity `PORTFOLIO_MAINTENANCE`
+Vehicle-damage modelling fails when image provenance, review state, annotation quality, and split boundaries are ambiguous. FleetVision treats those controls as engineering requirements so that later model experiments can be traced to reviewed inputs and defensible evidence.
 
-## Project Overview
+[Project overview](docs/01_portfolio/PROJECT_OVERVIEW.md)
 
-Vehicle-damage modelling is constrained as much by data quality and review discipline as by model architecture. FleetVision therefore treats dataset lineage, schema validation, review state, split safety, and failure-no-overwrite behavior as first-class engineering concerns.
+## What I Built
 
-The repository demonstrates how to:
+- Deterministic metadata inventories and review queues.
+- Traditional Chinese Streamlit review workflows backed by transactional SQLite state, audit events, backups, and no-overwrite exports.
+- Registry- and license-aware external COCO intake with archive identity, safe extraction, staged promotion, and failure controls.
+- SHA-256 and perceptual-hash deduplication audits with bounded review candidates.
+- Geometry-preserving category normalization, bounding-box repair, annotation QA, and group-leakage checks.
+- Validation-only threshold and error-analysis tooling with one-to-one IoU matching and FP/FN worklists.
 
-- inventory image metadata and build deterministic review queues;
-- operate auditable human-review workflows with local Streamlit interfaces and transactional SQLite state;
-- intake external COCO datasets under registry, license, hash, and path-safety controls;
-- detect exact duplicates and generate bounded perceptual-duplicate candidates for review;
-- canonicalize annotations and validate bounding boxes, class mapping, group leakage, and split balance;
-- run validation-only threshold analysis and convert model errors into human-review and data-improvement worklists.
+The first detection contract is YOLOv8 Detect with one class: `damage`. Severity, claimability, liability, and true new-damage decisions are outside that model contract.
 
-The first detection contract remains YOLOv8 Detect with one class, `damage`. Severity, claimability, liability, and true new-damage decisions are outside the current model contract.
+## Architecture
 
-## Key Engineering Highlights
+The broader team context is Phase 1 capture → Phase 2 FleetVision data/model workflow → pairing/comparison boundary → Phase 3 human review/dashboard. Repository evidence supports the Phase 2 governance and review workflows most strongly; before/after comparison remains incomplete, and Phase 1/3 are integration context rather than claims of individual implementation.
 
-- **Fail-closed data intake:** verifies archive copy integrity, records SHA-256 identity, and validates safe extraction, COCO structure, image references, bounding boxes, and registry evidence before promotion.
-- **Deterministic deduplication:** combines SHA-256 with perceptual hashing, bounded candidate generation, explicit cross-source rules, staged outputs, and atomic promotion.
-- **Annotation governance:** normalizes source category aliases into the canonical `damage` class while preserving image and annotation IDs, bounding-box geometry, and provenance evidence.
-- **Human-in-the-loop review:** uses Traditional Chinese Streamlit workflows, SQLite transactions, resumable progress, append-only audit events, scheduled backups, and controlled exports.
-- **Evaluation discipline:** keeps threshold selection and error analysis validation-only and produces traceable error taxonomies and improvement priorities.
-- **Safety-oriented testing:** exercises schemas, path constraints, identity checks, rollback/no-overwrite behavior, deterministic ordering, and review-state integrity with synthetic or temporary fixtures.
+[Architecture and status semantics](docs/01_portfolio/ARCHITECTURE.md)
 
-## System Architecture
+## Key Engineering Challenges
 
-```mermaid
-flowchart LR
-    A[Internal image sources] --> B[Metadata and validation]
-    B --> C[Deterministic review queues]
-    C --> D[Human review and canonical records]
+1. **Fail closed on external intake:** reject unsafe paths, invalid COCO references, identity mismatches, and partial promotion.
+2. **Keep review state recoverable:** use SQLite transactions, resumable progress, audit synchronization, and controlled exports.
+3. **Prevent leakage and duplicate inflation:** preserve group boundaries and separate exact duplicates from bounded perceptual candidates.
+4. **Separate evidence from naming:** a folder called `final_selected` or `dataset_v3` is not accepted as provenance.
+5. **Keep evaluation honest:** threshold analysis uses validation evidence only; Frozen Test is not available for tuning.
 
-    E[Governed external sources] --> F[Controlled intake]
-    F --> G[Exact deduplication and bounded perceptual candidates]
-    G --> H[COCO category canonicalization]
-    H --> I[Annotation and split QA]
+[Data pipeline](docs/01_portfolio/DATA_PIPELINE.md) · [Evaluation methodology](docs/01_portfolio/MODEL_EVALUATION.md)
 
-    D --> J[Reviewed internal artifacts]
-    I --> K[QA-controlled external candidates]
-    J --> L[YOLO dataset materialization - partial]
-    K --> L
-    L --> M[Training and inference - partial]
-    M --> N[Validation-only evaluation and error analysis]
-    N --> O[Streamlit and SQLite review]
-    O --> P[Correction proposals and governed exports]
-```
+## Evidence-Backed Results
 
-Large datasets, model weights, generated review packages, and other protected outputs are intentionally excluded from Git.
+The repository demonstrates implemented software contracts rather than a reconciled final model score:
 
-## Implementation Status
+- metadata and review-queue generation with deterministic tests;
+- governed external-dataset intake, deduplication, canonicalization, and split QA;
+- human-in-the-loop review state with integrity, backup, and export controls;
+- validation error analysis that converts FP/FN evidence into review and data-improvement worklists;
+- a broad automated suite that uses synthetic or temporary fixtures for most data-path checks.
 
-| Capability | Status | Repository-backed boundary |
-|---|---|---|
-| Metadata inventory | `IMPLEMENTED` | Config-driven image scanning, stable IDs, dimensions, quality fields, CSV output, and tests. |
-| Review pipeline | `IMPLEMENTED` | Deterministic queues, worklists, package builders, validators, mergers, and exports. |
-| Human review workflows | `IMPLEMENTED` | Local Streamlit/SQLite workflows with resume, audit events, backups, validation, and no-overwrite exports. |
-| External dataset intake | `IMPLEMENTED` | Registry-aware intake, archive copy-integrity checks, SHA-256 recording, safe extraction, COCO inspection, and staged promotion. |
-| Deduplication | `IMPLEMENTED` | SHA-256 and perceptual-hash auditing with bounded candidates and cross-source controls. |
-| Annotation QA | `IMPLEMENTED` | Category canonicalization plus bounding-box, mapping, leakage, and split-balance validation. |
-| YOLO dataset pipeline | `PARTIAL` | A tested dataset builder and configuration exist; final governed materialization depends on approved labels and data gates. |
-| Training workflow | `PARTIAL` | Model configuration and governed historical workflow evidence exist; this is not a complete current production training system. |
-| Inference | `PARTIAL` | Historical and diagnostic inference evidence exists, but there is no current end-to-end production inference service. |
-| Evaluation and error analysis | `IMPLEMENTED` | Validation-only threshold sweeps, one-to-one IoU matching, error taxonomy, and improvement prioritization are implemented and tested. |
-| Severity analysis | `PARTIAL` | Review tooling can capture severity/scope evidence; automated severity or claimability decisions are not implemented. |
-| Before/after comparison | `PLANNED` | Only supporting IoU logic and an approved team-pairing audit design/plan exist; the damage-comparison workflow itself remains unimplemented. |
-| PostgreSQL | `PARTIAL` | A starter schema and Compose service exist; application-level persistence is not integrated end to end. |
-| MLflow | `PARTIAL` | A dependency and Compose service exist; complete experiment and model-lifecycle integration is not implemented. |
-| Docker | `PARTIAL` | Compose provisions PostgreSQL and MLflow only; it does not define a complete FleetVision application stack. |
-| Streamlit / Dashboard | `PARTIAL` | Purpose-built human-review apps and a project-status demo exist; there is no production product dashboard. |
-| Automated tests | `IMPLEMENTED` | The suite covers data contracts, review state, QA, safety controls, CLI behavior, and static dashboard assets. |
+Historical model metrics remain historical evidence until model, dataset, and result provenance is reconciled in later maintenance tasks. Test results verify repository behavior, not model accuracy or deployment readiness.
 
-## Repository Structure
+[Results and limitations](docs/01_portfolio/RESULTS_AND_LIMITATIONS.md)
 
-```text
-FleetVision/
-├── src/fleetvision/
-│   ├── data/          # Metadata, intake, deduplication, QA, and dataset builders
-│   ├── review/        # Streamlit review workflows, SQLite state, and exports
-│   ├── evaluation/    # Validation-only threshold and error analysis
-│   └── vision/        # Focused vision utilities
-├── scripts/           # Thin CLI and operational entry points
-├── configs/           # Versioned data, model, and review contracts
-├── tests/             # Synthetic, temporary-path, contract, and regression tests
-├── docs/              # Governance, phase evidence, design records, and data guidance
-├── sql/               # Starter PostgreSQL schema
-├── notebooks/         # Governed historical analysis notebooks
-├── demo/              # Project-status presentation assets
-└── docker-compose.yml # PostgreSQL and MLflow development services only
-```
+## Demo / Portfolio Assets
 
-## Technical Evidence
+The repository contains a lightweight [demo-package guide](demo/README_demo.md). Large videos, screenshots, presentations, private images, datasets, model weights, and generated review packages are intentionally stored outside Git and will be linked only after their Drive identity and sharing status are verified.
 
-These files provide a focused review path for engineering managers and interviewers:
+[Interview guide](docs/01_portfolio/INTERVIEW_GUIDE.md)
 
-1. [Controlled external dataset intake](src/fleetvision/data/intake_external_dataset.py) — safe archive handling, COCO validation, provenance, and staged promotion.
-2. [External dataset deduplication](src/fleetvision/data/audit_external_dataset_deduplication.py) — exact/perceptual hashing, bounded candidate search, and atomic output promotion.
-3. [COCO category canonicalization](src/fleetvision/data/normalize_external_coco_categories.py) — schema contracts and geometry-preserving normalization.
-4. [Annotation and split QA](src/fleetvision/data/validate_external_annotation_split_balance.py) — class mapping, lineage, group leakage, and distribution checks.
-5. [Transactional review state](src/fleetvision/review/validation_error_review_state.py) — SQLite transactions, resumable state, audit synchronization, integrity checks, and backups.
-6. [Annotation-correction package](src/fleetvision/review/annotation_correction_review_package.py) — verified predecessor evidence, safe paths, deterministic IDs, and review overlays.
-7. [Validation error analysis](src/fleetvision/evaluation/baseline_error_analysis.py) — IoU matching, threshold sweeps, error taxonomy, and improvement priorities.
+## Tech Stack
 
-Project decisions and current boundaries are tracked in the [active decision index](docs/03_decisions/README.md) and [Project Status](docs/02_workflow/PROJECT_STATUS.md).
+Python 3.10+, pandas, NumPy, OpenCV, Pillow, Streamlit, SQLite, Ultralytics YOLOv8, scikit-learn, pytest, PostgreSQL and MLflow scaffolding, Git/GitHub, and Google Drive for large private artifacts.
 
-## Testing and Quality
+PostgreSQL and MLflow are supporting development services in [Docker Compose](docker-compose.yml); neither is presented as end-to-end application integration.
 
-Latest local verification on `2026-08-09`:
+## Repository Tour
 
-```text
-480 tests collected
-479 passed
-1 skipped
-0 failed
-```
+| Path | Purpose |
+|---|---|
+| [`src/fleetvision/data/`](src/fleetvision/data/) | Metadata, review queues, external intake, deduplication, canonicalization, and QA. |
+| [`src/fleetvision/review/`](src/fleetvision/review/) | Streamlit/SQLite human-review workflows and governed exports. |
+| [`src/fleetvision/evaluation/`](src/fleetvision/evaluation/) | Validation-only threshold and error analysis. |
+| [`scripts/`](scripts/) | Thin CLI and operational entry points. |
+| [`configs/`](configs/) | Versioned data, review, model, and QA contracts. |
+| [`tests/`](tests/) | Unit, integration, CLI, safety, and regression tests. |
+| [`docs/01_portfolio/`](docs/01_portfolio/) | Interview-first reading path. |
+| [`docs/02_workflow/`](docs/02_workflow/) | Current status, handoff, safety, and artifact ledgers. |
+| [`docs/03_decisions/`](docs/03_decisions/) | Active decision index. |
 
-The suite includes unit, integration, CLI, package-integrity, rollback/no-overwrite, and static dashboard tests. Most data-path tests use temporary directories and synthetic fixtures to avoid protected datasets.
-
-These results verify software behavior and repository contracts. They do **not** represent model accuracy, deployment readiness, or performance on the frozen test set.
-
-## Quick Start
-
-FleetVision requires Python `3.10+`. The commands below set up the repository and run its tracked test suite without requiring private datasets or model weights.
+## Reproduce / Test
 
 ```powershell
 python -m venv .venv
@@ -138,34 +86,26 @@ python -m pip install -e ".[dev]"
 python -m pytest -q -p no:cacheprovider
 ```
 
-Inspect the first data-pipeline entry points without processing data:
+The tracked test suite does not require private datasets or model weights. Data-processing commands require separately managed inputs, current configuration, and the applicable project Gate.
 
-```powershell
-python scripts/phase01_build_metadata.py --help
-python scripts/phase02_build_review_queue.py --help
-```
+## Limitations
 
-Running data workflows requires separately managed source data, current configuration, and the applicable project gate. Docker is not required for the test suite and does not launch a complete application.
+- No production deployment or complete application stack.
+- No automated insurance, claimability, liability, pricing, or legal conclusion.
+- Before/after same-vehicle, same-view damage comparison is not complete.
+- Private datasets, model weights, source archives, and generated artifacts are not distributed in Git.
+- YOLO dataset materialization, current model selection, and public metrics remain subject to governed evidence and provenance reconciliation.
+- Frozen Test access, training, fine-tuning, and Phase 05S-A3 implementation are not authorized during portfolio maintenance.
 
-## Limitations and Current Scope
-
-- The repository is an engineering portfolio and governed research workflow, not a production SaaS platform.
-- Private images, canonical datasets, external source archives, model weights, and generated outputs are not distributed in Git.
-- The frozen test split has already been evaluated once, must not be reused for threshold tuning, and requires an explicit gate for any further access.
-- A full before/after same-vehicle, same-view damage comparison workflow remains planned.
-- YOLO dataset materialization, training, inference, and deployment are not complete production systems.
-- PostgreSQL and MLflow are scaffolding-level services; they are not integrated across the application lifecycle.
-- Streamlit is used for local human-review tools, not a customer-facing product dashboard.
-- Visible damage evidence must not be interpreted as severity, claimability, liability, or insurance adjudication.
-
-## Project Status
+## Current Status
 
 | Field | Current value |
 |---|---|
 | Technical phase | `Phase 05S-A2 — Implementation Plan Approved and Documented` |
 | Technical development | `PAUSED` |
 | Current activity | `PORTFOLIO_MAINTENANCE` |
-| Last completed technical gate | `PHASE_05S_A2_PLAN_DOCUMENT_APPLICATION_AND_CHECKPOINT` |
-| Next technical gate when resumed | `PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE` |
+| Last completed technical Gate | `PHASE_05S_A2_PLAN_DOCUMENT_APPLICATION_AND_CHECKPOINT` |
+| Next technical Gate | `PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE` |
+| A3 authorized | `false` |
 
-Portfolio maintenance does not complete a technical phase or authorize Phase 05S-A3 implementation. The current source of truth starts at [START_HERE](START_HERE.md).
+Portfolio maintenance does not advance the technical phase. Development resumes from [START_HERE.md](START_HERE.md), not from historical chat context.
