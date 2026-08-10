@@ -418,3 +418,75 @@ cancelled mixed-container move = 3
 ```
 
 No notebook was executed; no training, fine-tuning, or inference ran; Frozen Test contents/results were not listed, fetched, hashed, or read.
+
+## Task 8 — Model Provenance and Drive Batch D5
+
+### Inventory and Safety Gate
+
+- Inventory coverage: `29` weight artifacts, `8` primary selection/summary records, the four direct `models/` branches, both `outputs/models/` child runs, the model-bearing Task 6 retained items, the Phase 04.5J training run, and the rapid-recovery model tree.
+- Weight/model bytes downloaded, opened, executed, or hashed: `0`.
+- Provider checksum metadata was requested but no usable checksum field was exposed; repository or bounded manifest SHA256 values are distinguished from unknown identities in `MODEL_REGISTRY.md`.
+- Bounded non-sensitive textual records read: `5` (`final_model_selection.json`, `validation_threshold_comparison.csv`, rapid-recovery manifest, training design, and validation metrics).
+- Hard exclusion `outputs/day1_test_evaluation/` (ID `1FkqqIsz-wGs2iol0EG2mI7rtIByrYh--`): name/ID inherited from the prior manifest only; direct children/content were not listed, fetched, read, or hashed.
+- Phase 04.5J historical baseline proof comes only from tracked repository evidence: best-weight SHA `90A880513A42EF2DB1373902D98FF09D1756AB7A8A4EEA6A7AA231D4020B77BF`, validation P/R/mAP50/mAP50-95 `0.4868/0.3508/0.3516/0.1620`, and historical one-time test P/R/mAP50/mAP50-95 `0.5423/0.3883/0.3804/0.1756`.
+- `models/final_selected/` is registered separately as `BEST_AVAILABLE_POC_ONLY`; its bounded selection record says `quality_gate_pass=false` and `test_split_used=false`.
+- `FleetVision/02_MODELS/01_current/` (ID `18aS9iKTDBUlV3ivsWlzw15nU4SKSK7LV`) had `0` direct children before execution and must remain empty.
+- Before the table below was applied: metadata-only move `0`; rename/copy/upload/share/bytes replacement/trash/delete `0`; permanent deletion `0`.
+
+### Pre-Recorded Task 8 Execution Table
+
+Only `PENDING_EXECUTION` rows may receive a Task 8 `update_file` call. Each call must omit `name`, `file_uri`, and `mime_type`, add exactly the target parent, remove exactly the verified old parent, and be followed by source/target/metadata readback. Execution stops on the first mismatch.
+
+| Move | Item ID | Exact Old Parent ID | Exact Target Parent ID / Path | Model / Registry ID | Rationale | Delete Allowed | Status |
+|---|---|---|---|---|---|---|---|
+| T8-MOVE-001 | `1kIP-7nBKqtJwqEtIwCy2HakqYkOXoAHy` | `19RwpAfbPcCw9fv_wXlK6uqA3jmc2mxfD` | `1VMss9gCmwHXiudj97ItldBbnnUTVefvD` / `FleetVision/02_MODELS/03_model_evidence/` | `MDL-045J-Y8S-BASELINE` | Preserve the complete historical Phase 04.5J run and its internal model/evidence relationships without touching sibling protected `input/`. | false | VERIFIED — source count `0`; target count `1`; parents=[`1VMss9gCmwHXiudj97ItldBbnnUTVefvD`] |
+| T8-MOVE-002 | `1iKgVri7W5jsqmjB-_jfhx9iYUEy8qHTV` | `1HvM6hTzw-9lCs7lLmmBylTwhB50UfubY` | `1fHMj15sLeD8AGyrUBmB9bk2LcA2wi-77` / `FleetVision/02_MODELS/02_evaluation/` | `MDL-05R-C01-POC`; `MDL-05R-C02` | Move the bounded selection/comparison records to the evaluation area. | false | VERIFIED — source count `3`; target count `1`; parents=[`1fHMj15sLeD8AGyrUBmB9bk2LcA2wi-77`] |
+| T8-MOVE-003 | `1pseH0cSoYVWMwx6M2WSYhnbeHlPVrBF8` | `1HvM6hTzw-9lCs7lLmmBylTwhB50UfubY` | `1VMss9gCmwHXiudj97ItldBbnnUTVefvD` / `FleetVision/02_MODELS/03_model_evidence/` | `MDL-05R-C01-POC` | Preserve folder-named selection artifact as historical evidence; it is not current/final. | false | VERIFIED — source count `2`; target count `2`; parents=[`1VMss9gCmwHXiudj97ItldBbnnUTVefvD`] |
+| T8-MOVE-004 | `1UAO0tZyrC2v49cvSfw2aZw0Svve1DRT_` | `1HvM6hTzw-9lCs7lLmmBylTwhB50UfubY` | `1VMss9gCmwHXiudj97ItldBbnnUTVefvD` / `FleetVision/02_MODELS/03_model_evidence/` | `MDL-05R-C01-POC` | Preserve complete Candidate 01 training/evaluation tree with its weight relationships. | false | VERIFIED — source count `1`; target count `3`; parents=[`1VMss9gCmwHXiudj97ItldBbnnUTVefvD`] |
+| T8-MOVE-005 | `1C1jCTh4putMmObQ1pZ5rKpiD8o6pyf2Z` | `1HvM6hTzw-9lCs7lLmmBylTwhB50UfubY` | `1VMss9gCmwHXiudj97ItldBbnnUTVefvD` / `FleetVision/02_MODELS/03_model_evidence/` | `MDL-05R-C02` | Preserve complete experimental Candidate 02 tree with unresolved weight SHA. | false | VERIFIED — source count `0`; target count `4`; parents=[`1VMss9gCmwHXiudj97ItldBbnnUTVefvD`] |
+| T8-MOVE-006 | `1qrMR1absDvDKWEbhGE6pV5Q3K7_f3HzB` | `1XrK-FGC8hEccUX56ZywNnnCQ1mYe22WP` | `15DV3cOZdUzPs6dIY4ViWFZXxlCIQN6P6` / `FleetVision/99_ARCHIVE/03_old_models/` | `MDL-LEGACY-YOLOV5-CLOUD` | Isolate one unresolved legacy model from a mixed credential/notebook parent without reading its bytes. | false | VERIFIED — source count `3`; target count `1`; parents=[`15DV3cOZdUzPs6dIY4ViWFZXxlCIQN6P6`] |
+| T8-MOVE-007 | `137GYrPXSf38V1qmkm3BWYwSMvXVYd93V` | `1ledzNwpk3FUBnFeY8myLyZ_279cshCZe` | `15DV3cOZdUzPs6dIY4ViWFZXxlCIQN6P6` / `FleetVision/99_ARCHIVE/03_old_models/` | `MDL-LEGACY-CARDENT` | Archive unresolved reference weight separately; source/license/performance identity is not established. | false | VERIFIED — source count `3`; target count `2`; parents=[`15DV3cOZdUzPs6dIY4ViWFZXxlCIQN6P6`] |
+| T8-MOVE-008 | `1UrR_rtfSOAKPjOgIpSd8dIDp7BJsiErF` | `1L8pV9VGLtRs89eknQbo12E8DlNDXOR1e` | `15DV3cOZdUzPs6dIY4ViWFZXxlCIQN6P6` / `FleetVision/99_ARCHIVE/03_old_models/` | `MDL-LEGACY-YOLOV5-AUTOLABEL` | Archive unresolved auto-label model; same name/size as another item is not duplicate proof. | false | VERIFIED — source count `1`; target count `3`; parents=[`15DV3cOZdUzPs6dIY4ViWFZXxlCIQN6P6`] |
+| T8-MOVE-009 | `1yfWqV6doTvxzwFThltYrSiZjlLV15rDZ` | `13E6gYGUuxpbtmsg38Ipzgs61r31YAKYz` | `1VMss9gCmwHXiudj97ItldBbnnUTVefvD` / `FleetVision/02_MODELS/03_model_evidence/` | `MDL-RDR-C01` | Preserve exported experimental selected checkpoint under reconciled model evidence. | false | VERIFIED — source count `3`; target count `5`; parents=[`1VMss9gCmwHXiudj97ItldBbnnUTVefvD`] |
+| T8-MOVE-010 | `1fSztdS-8FRNfZXRLV3D2WgdWXwkf_Bek` | `13E6gYGUuxpbtmsg38Ipzgs61r31YAKYz` | `1fHMj15sLeD8AGyrUBmB9bk2LcA2wi-77` / `FleetVision/02_MODELS/02_evaluation/` | `MDL-RDR-C01` | Preserve bounded provenance/validation manifest with evaluation records. | false | VERIFIED — source count `2`; target count `2`; parents=[`1fHMj15sLeD8AGyrUBmB9bk2LcA2wi-77`] |
+| T8-MOVE-011 | `1jaFzH6c141zg7QVuMavMEaOUgt6q_q_L` | `1EkkV5JqRRK8vIZ6FzYgTTRG9_fIsYVzf` | `15DV3cOZdUzPs6dIY4ViWFZXxlCIQN6P6` / `FleetVision/99_ARCHIVE/03_old_models/` | `UNRESOLVED_IDENTITY` | Archive superseded `outputs/models/` container; its two direct run folders are empty and no model identity is recoverable. | false | VERIFIED — source count `11`; target count `4`; parents=[`15DV3cOZdUzPs6dIY4ViWFZXxlCIQN6P6`] |
+| T8-MOVE-012 | `1HvM6hTzw-9lCs7lLmmBylTwhB50UfubY` | `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | `15DV3cOZdUzPs6dIY4ViWFZXxlCIQN6P6` / `FleetVision/99_ARCHIVE/03_old_models/` | `UNRESOLVED_IDENTITY` | Archive the old `models/` container after its four registered child branches move; no deletion or rename. | false | VERIFIED — source count `9`; target count `5`; parents=[`15DV3cOZdUzPs6dIY4ViWFZXxlCIQN6P6`] |
+
+### Explicitly Not Moved in Task 8
+
+| Item | Drive ID | Reason | Delete Allowed | Status |
+|---|---|---|---|---|
+| `outputs/rapid_detection_recovery_colab/` | `13E6gYGUuxpbtmsg38Ipzgs61r31YAKYz` | Mixed model, validation, dataset-audit, visual-audit, and relabel-queue tree; only the exported weight and bounded manifest move item-by-item. | false | NOT_MOVED_MIXED_SCOPE |
+| `04_5J/input/` | `1zDOE-EEpvap7DmhpeBVAXgY8gCPs6nhw` | Protected-risk input; content was not listed or read. | false | NOT_MOVED_PROTECTED |
+| `04_5K/runs/` | `1MV9C9xhKPMxFyVaZwC68o3fCj0-G1t8Y` | Validation-analysis tree is not required for model identity; retained intact. | false | NOT_MOVED_EVALUATION_TREE |
+| `outputs/day1_test_evaluation/` | `1FkqqIsz-wGs2iol0EG2mI7rtIByrYh--` | Hard content-access exclusion. | false | NOT_MOVED_HARD_EXCLUSION |
+
+### Task 8 Post-Batch Independent Readback
+
+| Independently Listed Parent | ID | Direct Children | Result |
+|---|---|---:|---|
+| `FleetVision/02_MODELS/01_current/` | `18aS9iKTDBUlV3ivsWlzw15nU4SKSK7LV` | `0` | VERIFIED: intentionally empty; no current reference selected |
+| `FleetVision/02_MODELS/02_evaluation/` | `1fHMj15sLeD8AGyrUBmB9bk2LcA2wi-77` | `2` | VERIFIED: model-selection folder plus rapid-recovery manifest |
+| `FleetVision/02_MODELS/03_model_evidence/` | `1VMss9gCmwHXiudj97ItldBbnnUTVefvD` | `5` | VERIFIED: Phase 04.5J run, Candidate 01/02, POC selected copy, and rapid exported weight |
+| `FleetVision/99_ARCHIVE/03_old_models/` | `15DV3cOZdUzPs6dIY4ViWFZXxlCIQN6P6` | `5` | VERIFIED: three unresolved legacy weights plus two superseded model containers |
+| Old project root | `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | `9` | VERIFIED: old `models/` absent; mixed `outputs/`, `04_5J/`, and `04_5K/` remain |
+| Old `04_5J/runs/` | `19RwpAfbPcCw9fv_wXlK6uqA3jmc2mxfD` | `0` | VERIFIED: registered historical run moved; sibling protected input untouched |
+| Old `outputs/` | `1EkkV5JqRRK8vIZ6FzYgTTRG9_fIsYVzf` | `11` | VERIFIED: `outputs/models/` absent; mixed and protected branches retained |
+| Old rapid-recovery parent | `13E6gYGUuxpbtmsg38Ipzgs61r31YAKYz` | `2` | VERIFIED: mixed run containers retained; exported weight and manifest absent |
+
+### Task 8 Final Action Counters
+
+```text
+metadata-only move = 12
+rename = 0
+copy = 0
+upload = 0
+share = 0
+bytes replacement = 0
+trash = 0
+delete = 0
+permanent deletion = 0
+weight/model bytes read = 0
+Frozen Test content access = 0
+current reference selected = 0
+```

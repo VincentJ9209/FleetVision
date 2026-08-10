@@ -1,0 +1,30 @@
+# FleetVision Results Registry
+
+## Result Boundary
+
+- Every numeric result row below is linked to exact tracked repository evidence.
+- Drive-only Candidate 01/02 and rapid-recovery metrics remain selection/reconciliation evidence in `MODEL_REGISTRY.md`; they are not promoted here as portfolio metrics.
+- Validation training metrics, validation operating-point candidates, and historical test metrics are separate result types and must not be combined into a synthetic final score.
+- Phase 04.5J test evaluation was historical and one-time. It is prohibited for threshold tuning, candidate selection, error prioritization, or data-improvement decisions.
+- No Frozen Test folder or payload was listed, fetched, read, or hashed in Task 8.
+
+| Result ID | Model ID | Dataset / Version | Split | Threshold / Operating Point | Metric | Value | Evidence | Allowed Interpretation |
+|---|---|---|---|---|---|---|---|---|
+| `RES-045J-VAL-P` | `MDL-045J-Y8S-BASELINE` | Phase 04.5J controlled dataset; exact registry ID pending Task 9 | validation | Training-selected best epoch 13; no post-test tuning | Precision | `0.4868` | [Recovered Phase 04.5J checkpoint](../99_archive/legacy_project_management/PHASE_04_5J_04_5K_CHECKPOINT_RECOVERY.md#recovered-phase-045j-checkpoint) | Historical controlled-baseline validation metric only |
+| `RES-045J-VAL-R` | `MDL-045J-Y8S-BASELINE` | Phase 04.5J controlled dataset; exact registry ID pending Task 9 | validation | Training-selected best epoch 13; no post-test tuning | Recall | `0.3508` | [Recovered Phase 04.5J checkpoint](../99_archive/legacy_project_management/PHASE_04_5J_04_5K_CHECKPOINT_RECOVERY.md#recovered-phase-045j-checkpoint) | Historical controlled-baseline validation metric only |
+| `RES-045J-VAL-MAP50` | `MDL-045J-Y8S-BASELINE` | Phase 04.5J controlled dataset; exact registry ID pending Task 9 | validation | Training-selected best epoch 13; no post-test tuning | mAP50 | `0.3516` | [Recovered Phase 04.5J checkpoint](../99_archive/legacy_project_management/PHASE_04_5J_04_5K_CHECKPOINT_RECOVERY.md#recovered-phase-045j-checkpoint) | Historical controlled-baseline validation metric only |
+| `RES-045J-VAL-MAP5095` | `MDL-045J-Y8S-BASELINE` | Phase 04.5J controlled dataset; exact registry ID pending Task 9 | validation | Training-selected best epoch 13; no post-test tuning | mAP50-95 | `0.1620` | [Recovered Phase 04.5J checkpoint](../99_archive/legacy_project_management/PHASE_04_5J_04_5K_CHECKPOINT_RECOVERY.md#recovered-phase-045j-checkpoint) | Historical controlled-baseline validation metric only |
+| `RES-045J-TEST-P` | `MDL-045J-Y8S-BASELINE` | Phase 04.5J controlled dataset; exact registry ID pending Task 9 | historical one-time test | One governed evaluation; unavailable for tuning | Precision | `0.5423` | [Recovered Phase 04.5J checkpoint](../99_archive/legacy_project_management/PHASE_04_5J_04_5K_CHECKPOINT_RECOVERY.md#recovered-phase-045j-checkpoint) | One-time historical test result; reporting only, never a tuning signal |
+| `RES-045J-TEST-R` | `MDL-045J-Y8S-BASELINE` | Phase 04.5J controlled dataset; exact registry ID pending Task 9 | historical one-time test | One governed evaluation; unavailable for tuning | Recall | `0.3883` | [Recovered Phase 04.5J checkpoint](../99_archive/legacy_project_management/PHASE_04_5J_04_5K_CHECKPOINT_RECOVERY.md#recovered-phase-045j-checkpoint) | One-time historical test result; reporting only, never a tuning signal |
+| `RES-045J-TEST-MAP50` | `MDL-045J-Y8S-BASELINE` | Phase 04.5J controlled dataset; exact registry ID pending Task 9 | historical one-time test | One governed evaluation; unavailable for tuning | mAP50 | `0.3804` | [Recovered Phase 04.5J checkpoint](../99_archive/legacy_project_management/PHASE_04_5J_04_5K_CHECKPOINT_RECOVERY.md#recovered-phase-045j-checkpoint) | One-time historical test result; reporting only, never a tuning signal |
+| `RES-045J-TEST-MAP5095` | `MDL-045J-Y8S-BASELINE` | Phase 04.5J controlled dataset; exact registry ID pending Task 9 | historical one-time test | One governed evaluation; unavailable for tuning | mAP50-95 | `0.1756` | [Recovered Phase 04.5J checkpoint](../99_archive/legacy_project_management/PHASE_04_5J_04_5K_CHECKPOINT_RECOVERY.md#recovered-phase-045j-checkpoint) | One-time historical test result; reporting only, never a tuning signal |
+| `RES-045K-OP-HIGH-RECALL` | `MDL-045J-Y8S-BASELINE` | Same verified Phase 04.5J baseline artifacts | validation only | Candidate operating point; IoU `0.5` governed by tracked config | Confidence threshold candidate | `0.05` | [Phase 04.5K section](../99_archive/legacy_project_management/MASTER_PHASE_MAP.md#phase-045k--baseline-error-analysis) | Validation operating-point candidate, not a training metric and not deployment approval |
+| `RES-045K-OP-BALANCED` | `MDL-045J-Y8S-BASELINE` | Same verified Phase 04.5J baseline artifacts | validation only | Candidate operating point; IoU `0.5` governed by tracked config | Confidence threshold candidate | `0.20` | [Phase 04.5K section](../99_archive/legacy_project_management/MASTER_PHASE_MAP.md#phase-045k--baseline-error-analysis) | Validation operating-point candidate, not a training metric and not deployment approval |
+| `RES-045K-OP-HIGH-PRECISION` | `MDL-045J-Y8S-BASELINE` | Same verified Phase 04.5J baseline artifacts | validation only | Candidate operating point; IoU `0.5` governed by tracked config | Confidence threshold candidate | `0.80` | [Phase 04.5K section](../99_archive/legacy_project_management/MASTER_PHASE_MAP.md#phase-045k--baseline-error-analysis) | Validation operating-point candidate, not a training metric and not deployment approval |
+
+## Foreign-Key and Claim Rules
+
+1. Every `Model ID` above exists in `MODEL_REGISTRY.md`.
+2. No result may be described as production, deployment, insurance adjudication, or reliable true-new-damage detection evidence.
+3. Task 10 may use only result rows whose split, operating point, and historical status remain explicit.
+4. Drive-only numeric records require a future repository-backed evidence promotion before becoming portfolio result rows.
