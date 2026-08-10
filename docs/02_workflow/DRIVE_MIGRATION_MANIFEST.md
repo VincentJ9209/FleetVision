@@ -13,10 +13,10 @@
 | DRV-004 | Drive root | relabel working ZIP | ZIP file | DUPLICATE_CANDIDATE | No | `99_ARCHIVE/06_duplicate_candidates/` | Identity must be verified before any duplicate decision. | false | NOT_STARTED |
 | DRV-005 | Drive root | `grouped_dataset/` | Folder | RECONCILE_REQUIRED | Yes | archive/reconciliation first | Dataset provenance and identity require reconciliation. | false | NOT_STARTED |
 | DRV-006 | Drive root | `models/` | Folder | RECONCILE_REQUIRED | Yes | reconcile before selecting current model | Model identities and current selection require reconciliation. | false | NOT_STARTED |
-| DRV-007 | Drive root | `notebooks/` | Folder | RECONCILE_REQUIRED | No | select representatives; archive remainder | Representative notebooks require review before archiving. | false | NOT_STARTED |
-| DRV-008 | Drive root | `outputs/` | Folder | RECONCILE_REQUIRED | No | retain evidence; archive remainder | Evidence retention requires reconciliation before archival. | false | NOT_STARTED |
-| DRV-009 | Drive root | `04_5J/` | Folder | ARCHIVE | No | `99_ARCHIVE/04_old_experiments/` | Historical experiment retained as archive. | false | NOT_STARTED |
-| DRV-010 | Drive root | `04_5K/` | Folder | ARCHIVE | No | `99_ARCHIVE/04_old_experiments/` | Historical experiment retained as archive. | false | NOT_STARTED |
+| DRV-007 | `FleetVision/99_ARCHIVE/01_deprecated_notebooks/` | `notebooks/` (ID `15U1-zwBIrVJ6VtLMbX-X_1VgV907IRxl`) | Folder | ARCHIVE | No | Keep archived; active evidence is limited to two tracked output-stripped notebooks | Six-notebook legacy/recovery container moved whole after notebook audit. | false | VERIFIED — T7-MOVE-001 |
+| DRV-008 | old project root (ID `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl`) | `outputs/` (ID `1EkkV5JqRRK8vIZ6FzYgTTRG9_fIsYVzf`) | Folder | RECONCILE_REQUIRED | Yes | NOT_MOVED; later Task 8/9 item-level reconciliation | Mixed tree includes model/data and protected evaluation scope. | false | NOT_MOVED_TASK7_MIXED_SCOPE |
+| DRV-009 | old project root (ID `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl`) | `04_5J/` (ID `1M-YAK1qvvKfaEQo7IuFd8jtNEarmQZgw`) | Folder | PROTECTED_RECONCILE_REQUIRED | Yes | Container NOT_MOVED; two direct notebooks archived item-by-item | `input/` and `runs/` remain in place; their contents were not listed or read. | false | ITEM_LEVEL_VERIFIED_CONTAINER_NOT_MOVED |
+| DRV-010 | old project root (ID `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl`) | `04_5K/` (ID `1ScY9s0R08Jpwfccg_SnGjrJ_xmhRoR_Q`) | Folder | RECONCILE_REQUIRED | No | NOT_MOVED; later item-level reconciliation | Nested `runs/` was not proven wholly non-protected and Task 7-only. | false | NOT_MOVED_TASK7_BOUNDED_SAFETY |
 
 ## Task 5 — Drive Reset Skeleton Gate
 
@@ -296,3 +296,125 @@ interview link added = 0
 ```
 
 Sharing states were not modified. The archived `3282_完整流程APP_DASHBOARDmp4` item continues to report `shared=true` with provider visibility `access_not_verified`; no public-access claim is made.
+
+## Task 7 — Notebook and Experiment Evidence Migration Pre-Move Gate
+
+### Grounding and Safety Result
+
+- Grounded source root: `AI_Class/00.Project/FleetVision/` (ID `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl`).
+- Grounded source root direct children: `16`; Task 7 scope covers `9` direct items (`3` notebooks, `2` ZIPs, and `4` folders). The other `7` remain governed by prior or later tasks.
+- Notebook identities: `11` (`6` under the old `notebooks/` folder, `3` at the old project root, and `2` under `04_5J/`).
+- Bounded static JSON review: `6` notebooks; no cell execution, training, inference, or external data access occurred.
+- Size-bounded metadata-only exclusions: `5` notebooks (`2,031,431`–`13,041,224` bytes) whose recovery/demo/output-rich identity did not justify content retrieval.
+- Secret-literal matches across the six bounded static reviews: `0`; credential-file/private-key reference matches: `0`.
+- Static review did not print cell source, output text, credentials, private paths, or metrics. Frozen-boundary references were counted only to prevent unsafe active selection.
+- Active Drive-hosted notebooks selected: `0`. Every Drive candidate either contains embedded outputs, is a recovery/demo variant, references protected evaluation boundaries, is not byte-identical to the tracked output-stripped equivalent, or cannot satisfy all active-selection criteria safely.
+- Active tracked notebooks selected: `2` output-stripped repository notebooks. They remain historical evidence and are not authorization to run training or inference.
+- Mixed `outputs/`, `04_5J/`, and `04_5K/` containers remain `NOT_MOVED/RECONCILE_REQUIRED` at the old project root. Only the two direct notebook files under `04_5J/` may move individually; nested model/data artifacts remain intact for Tasks 8–9. Protected-risk `input/` and `day1_test_evaluation/` contents were not listed, fetched, hashed, or read.
+- Before execution: metadata-only move `0`; rename/copy/upload/share/trash/delete `0`; permanent deletion `0`.
+
+### Complete Notebook Identity Inventory
+
+`Embedded Outputs` is a structural count only. `NOT_READ_SIZE_BOUND` means only Drive metadata was read.
+
+| # | Current Path / Name | Drive ID | Size | Modified UTC | Apparent Stage | Embedded Outputs | Tracked Git Equivalent | Classification / Planned Action |
+|---:|---|---|---:|---|---|---:|---|---|
+| 1 | `notebooks/FleetVision_Colab_Rapid_Detection_Training_v4.ipynb` | `14drOkZLzyI9SjfLvEgLOA0aoFtmt58LK` | 45,497 | `2026-07-20T07:39:52.742Z` | rapid-detection training/recovery | 0; static; Frozen-boundary refs 10 | None | ARCHIVE; via old `notebooks/` container T7-MOVE-001 |
+| 2 | `notebooks/FleetVision_Phase05R_B1_Model_Data_Audit` | `1-mmBDEUu0vO6MVCArOh_89s6yr_eGF8v` | 212,961 | `2026-07-19T18:26:13.166Z` | Phase 05R recovery audit | 8; static | None | ARCHIVE; recovery evidence via T7-MOVE-001 |
+| 3 | `notebooks/FleetVision_Phase05_Model_Recovery.ipynb` | `1y9fSZtFq5xxNR-VTfPJG5YDx2QxI6MT9` | 13,041,224 | `2026-07-18T17:05:15.082Z` | model recovery | NOT_READ_SIZE_BOUND | None | ARCHIVE; output-rich recovery via T7-MOVE-001 |
+| 4 | `notebooks/FleetVision_Day3_CLI_API_Demo.ipynb` | `1FpttQMvYhbIG_jGTw2kixSuzDv_2Lzqf` | 2,032,431 | `2026-07-17T18:23:22.905Z` | CLI/API demo | NOT_READ_SIZE_BOUND | None | ARCHIVE; output-rich historical demo via T7-MOVE-001 |
+| 5 | `notebooks/FleetVision_Day2_Inference.ipynb` | `15-5zQO9fGnU8S95QEOH3r8NUTWVg6EHx` | 2,407,412 | `2026-07-17T17:35:56.473Z` | historical inference | NOT_READ_SIZE_BOUND | None | ARCHIVE; Phase 03.5 inference remains frozen; via T7-MOVE-001 |
+| 6 | `notebooks/FleetVision_Day1_Training_20260717.ipynb` | `1mYEmP6r7mZn5ow_XsRx23lZTjOEuAZ_x` | 163,280 | `2026-07-17T15:49:14.283Z` | historical training/evaluation | 12; static; Frozen-boundary refs 4 | None | ARCHIVE; historical training via T7-MOVE-001 |
+| 7 | root `FleetVision_Colab_Rapid_Detection_Training_v4.ipynb` | `1_X26Vs4mG1aY5wH9eRcNsMtlOM92qMrX` | 6,576,224 | `2026-07-21T05:21:01.242Z` | rapid-detection training/recovery | NOT_READ_SIZE_BOUND | Same title as row 1, but size differs by 6,530,727 bytes; identity unresolved | DUPLICATE_CANDIDATE; T7-MOVE-002 |
+| 8 | root `FleetVision_Phase05R_Cell_R4_08R5.ipynb` | `1YirQgcn1_GVcgmuh7mhRcYBQ-p7XByqA` | 2,057,119 | `2026-07-18T18:05:20.150Z` | Phase 05R recovery cell | NOT_READ_SIZE_BOUND | None | ARCHIVE; deprecated recovery notebook; T7-MOVE-003 |
+| 9 | root `phase03_5_auto_review_prelabeller_clean.ipynb` | `1QUoYrveX4mgWZVzb7JCUzuK3BdXb-NCe` | 226,852 | `2026-07-17T15:27:45.260Z` | Phase 03.5 prelabel inference | 36; static | `notebooks/phase03_5_auto_review_prelabeller.ipynb` is output-stripped and 14,115 bytes; identity differs | ARCHIVE; frozen historical inference evidence; T7-MOVE-004 |
+| 10 | `04_5J/FleetVision_04_5K_Validation_Error_Analysis_8_4_93.ipynb` | `1JguKck5KpXISZEluoR-cPKbMn-2yODAZ` | 81,083 | `2026-07-13T11:25:22.668Z` | validation error analysis | 3; static; Frozen-boundary refs 1 | Same-named tracked notebook is output-stripped and 76,446 bytes; identity differs | ARCHIVE historical evidence; direct-file T7-MOVE-010 |
+| 11 | `04_5J/FleetVision_04_5J_Controlled_Baseline_Training_8_4_93.ipynb` | `1N708t2WSISqot9D86F4tMUUJmuJD7b_5` | 63,935 | `2026-07-13T08:29:22.668Z` | controlled baseline training | 9; static; Frozen-boundary refs 3 | None | ARCHIVE historical training evidence; direct-file T7-MOVE-011 |
+
+### Active Tracked Notebook Selection
+
+| Tracked Notebook | Role | Selection Evidence | Current Status |
+|---|---|---|---|
+| `notebooks/FleetVision_04_5K_Validation_Error_Analysis_8_4_93.ipynb` | model evaluation | Output-stripped (`0` outputs, `0` executed cells), no secret literal or credential reference, repository tests validate its contract | HISTORICAL_EVIDENCE; not safe/authorized to run under Phase 05S-A2 |
+| `notebooks/phase03_5_auto_review_prelabeller.ipynb` | inference/prelabel evidence | Output-stripped (`0` outputs, `0` executed cells), no secret literal or credential reference, tracked with repository configuration/tests | HISTORICAL_EVIDENCE_FROZEN; Phase 03.5 may not be rerun |
+
+### Complete Experiment Container Inventory
+
+The table inventories every direct branch that will move with its complete parent container. `VIA_PARENT` preserves nested identity without opening model, dataset, Frozen Test, or private payload contents.
+
+| Current Path / Name | Observed ID | Type | Direct Parent | Classification | Planned Execution |
+|---|---|---|---|---|---|
+| `outputs/candidate02_tile2x2_audit/` | `1SrqyHyNSZagnkqpsMFu8gibsXdImEFOt` | Folder | `outputs/` | ARCHIVE_RECONCILIATION | NOT_MOVED; mixed parent retained for Tasks 8–9 |
+| `outputs/candidate02b_overlap25_audit/` | `1_gVE_JQc0i872ZJhXu-I2oO3t5LLu-Jt` | Folder | `outputs/` | ARCHIVE_RECONCILIATION | NOT_MOVED; mixed parent retained for Tasks 8–9 |
+| `outputs/candidate02b_overlap25_training/` | `1-TGf2dUcBGlNWym2llEirIKtaxEUyqNw` | Folder | `outputs/` | HISTORICAL_EXPERIMENT | NOT_MOVED; mixed parent retained for Tasks 8–9 |
+| `outputs/candidate03a_patch_detection/` | `1zwHgZbHi8n8IX3KTA8-cu1BdolAn3FqI` | Folder | `outputs/` | HISTORICAL_EXPERIMENT | NOT_MOVED; mixed parent retained for Tasks 8–9 |
+| `outputs/rapid_detection_recovery_colab/` | `13E6gYGUuxpbtmsg38Ipzgs61r31YAKYz` | Folder | `outputs/` | RECOVERY_ARCHIVE | NOT_MOVED; mixed parent retained for Tasks 8–9 |
+| `outputs/models/` | `1jaFzH6c141zg7QVuMavMEaOUgt6q_q_L` | Folder | `outputs/` | RECONCILE_REQUIRED | NOT_MOVED; model identities deferred to Task 8 |
+| `outputs/phase05r/` | `1YQx_ZpQvzL1IOzRXancDwAVioQiTr5tT` | Folder | `outputs/` | RECOVERY_ARCHIVE | NOT_MOVED; mixed parent retained for Tasks 8–9 |
+| `outputs/day3_demo/` | `1MHoPtVBd3oPrrDeeliZnrR3TwjGE0ALL` | Folder | `outputs/` | HISTORICAL_EXPERIMENT | NOT_MOVED; mixed parent retained for Tasks 8–9 |
+| `outputs/day2_inference/` | `1W0UF-MA3tZeQ-MiHH-I875jbzyOUybgu` | Folder | `outputs/` | HISTORICAL_EXPERIMENT | NOT_MOVED; no inference run |
+| `outputs/day1_test_evaluation/` | `1FkqqIsz-wGs2iol0EG2mI7rtIByrYh--` | Folder | `outputs/` | PROTECTED_HISTORICAL_EVIDENCE | NOT_MOVED; contents not listed or read |
+| `outputs/day1_label_audit/` | `1dm1rrwoWiNgP0B5sdIMM3XpEnlSvwyx-` | Folder | `outputs/` | HISTORICAL_EXPERIMENT | NOT_MOVED; mixed parent retained for Tasks 8–9 |
+| `outputs/phase03_5/` | `1zLEvCzh1hVn9rnY5m_nKhuuDVIDOrhP0` | Folder | `outputs/` | FROZEN_HISTORICAL_EVIDENCE | NOT_MOVED; contents not listed or read |
+| `04_5J/FleetVision_04_5K_Validation_Error_Analysis_8_4_93.ipynb` | `1JguKck5KpXISZEluoR-cPKbMn-2yODAZ` | Notebook | `04_5J/` | HISTORICAL_EVIDENCE | Direct-file T7-MOVE-010 |
+| `04_5J/FleetVision_04_5J_Controlled_Baseline_Training_8_4_93.ipynb` | `1N708t2WSISqot9D86F4tMUUJmuJD7b_5` | Notebook | `04_5J/` | HISTORICAL_EVIDENCE | Direct-file T7-MOVE-011 |
+| `04_5J/runs/` | `19RwpAfbPcCw9fv_wXlK6uqA3jmc2mxfD` | Folder | `04_5J/` | RECONCILE_REQUIRED | NOT_MOVED; weights/results not inspected |
+| `04_5J/input/` | `1zDOE-EEpvap7DmhpeBVAXgY8gCPs6nhw` | Folder | `04_5J/` | PROTECTED_RECONCILE_REQUIRED | NOT_MOVED; contents not listed or read |
+| `04_5K/runs/` | `1MV9C9xhKPMxFyVaZwC68o3fCj0-G1t8Y` | Folder | `04_5K/` | RECONCILE_REQUIRED | NOT_MOVED; results not inspected |
+| root `FleetVision_Candidate02_Tile2x2_NoAug.zip` | `15T7sWEDVh2ipOJqxkUWofhl-y4D0r4cf` | ZIP, 26,456,356 bytes | old project root | ARCHIVE_RECONCILIATION | T7-MOVE-008; bytes not opened |
+| root `FleetVision_colab_pilot_500_v2.zip` | `1iVH_7c2WPdmbQyMpbD6kBmC-R1H7Bm2R` | ZIP, 209,477,353 bytes | old project root | ARCHIVE_RECONCILIATION | T7-MOVE-009; bytes not opened |
+
+### Pre-Recorded Task 7 Execution Table
+
+Only rows marked `PENDING_EXECUTION` or `VERIFIED` may receive or have received Task 7 `update_file` calls. Rows marked `CANCELLED_NOT_MOVED` are explicitly prohibited. Every permitted call must omit `name`, `file_uri`, and `mime_type`; add only the listed target parent; and remove only the verified old parent.
+
+| Move | Item ID | Exact Old Parent ID | Exact Target Parent ID / Path | Classification | Rationale | Delete Allowed | Status |
+|---|---|---|---|---|---|---|---|
+| T7-MOVE-001 | `15U1-zwBIrVJ6VtLMbX-X_1VgV907IRxl` | `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | `1d_wPAIJQrdCjuXaQMQl7dBuZqXQTDbeI` / `FleetVision/99_ARCHIVE/01_deprecated_notebooks/` | ARCHIVE | Complete six-notebook legacy/recovery container; no candidate satisfies all active criteria. | false | VERIFIED — safety correction arrived after this first safe move; source absent, target present, parents=[`1d_wPAIJQrdCjuXaQMQl7dBuZqXQTDbeI`] |
+| T7-MOVE-002 | `1_X26Vs4mG1aY5wH9eRcNsMtlOM92qMrX` | `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | `1GKTVtkwZX9UdznlZ2E9y0oNf0EYL2oqK` / `FleetVision/99_ARCHIVE/06_duplicate_candidates/` | DUPLICATE_CANDIDATE | Same title as a 45,497-byte notebook but 6,576,224 bytes; identity unresolved and no deletion allowed. | false | VERIFIED — source absent; target present; parents=[`1GKTVtkwZX9UdznlZ2E9y0oNf0EYL2oqK`] |
+| T7-MOVE-003 | `1YirQgcn1_GVcgmuh7mhRcYBQ-p7XByqA` | `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | `1d_wPAIJQrdCjuXaQMQl7dBuZqXQTDbeI` / `FleetVision/99_ARCHIVE/01_deprecated_notebooks/` | ARCHIVE | Output-rich Phase 05R recovery notebook; historical recovery evidence only. | false | VERIFIED — source absent; target present; parents=[`1d_wPAIJQrdCjuXaQMQl7dBuZqXQTDbeI`] |
+| T7-MOVE-004 | `1QUoYrveX4mgWZVzb7JCUzuK3BdXb-NCe` | `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | `1d_wPAIJQrdCjuXaQMQl7dBuZqXQTDbeI` / `FleetVision/99_ARCHIVE/01_deprecated_notebooks/` | ARCHIVE | Output-rich Phase 03.5 notebook; inference is frozen and tracked output-stripped evidence already exists. | false | VERIFIED — source absent; target present; parents=[`1d_wPAIJQrdCjuXaQMQl7dBuZqXQTDbeI`] |
+| T7-MOVE-005 | `1EkkV5JqRRK8vIZ6FzYgTTRG9_fIsYVzf` | `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | NOT_MOVED — remains under old project root | RECONCILE_REQUIRED | Mixed output tree contains later Task 8/9 model/data and protected evaluation scope. | false | CANCELLED_NOT_MOVED |
+| T7-MOVE-006 | `1M-YAK1qvvKfaEQo7IuFd8jtNEarmQZgw` | `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | NOT_MOVED — remains under old project root | PROTECTED_RECONCILE_REQUIRED | Container includes protected-risk `input/` and unlisted `runs/`; only direct notebooks may move. | false | CANCELLED_NOT_MOVED |
+| T7-MOVE-007 | `1ScY9s0R08Jpwfccg_SnGjrJ_xmhRoR_Q` | `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | NOT_MOVED — remains under old project root | RECONCILE_REQUIRED | Nested `runs/` was not proven wholly non-protected and Task 7-only. | false | CANCELLED_NOT_MOVED |
+| T7-MOVE-008 | `15T7sWEDVh2ipOJqxkUWofhl-y4D0r4cf` | `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | `1Hn3sDT1RqZNyzjaYu2YA5tN0W6I8twfb` / `FleetVision/99_ARCHIVE/04_old_experiments/` | ARCHIVE_RECONCILIATION | Candidate02 experiment package preserved whole; bytes and nested data not inspected. | false | VERIFIED — source absent; target present; parents=[`1Hn3sDT1RqZNyzjaYu2YA5tN0W6I8twfb`] |
+| T7-MOVE-009 | `1iVH_7c2WPdmbQyMpbD6kBmC-R1H7Bm2R` | `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | `1Hn3sDT1RqZNyzjaYu2YA5tN0W6I8twfb` / `FleetVision/99_ARCHIVE/04_old_experiments/` | ARCHIVE_RECONCILIATION | Historical pilot package preserved whole; private payload bytes not inspected. | false | VERIFIED — source absent; target present; parents=[`1Hn3sDT1RqZNyzjaYu2YA5tN0W6I8twfb`] |
+| T7-MOVE-010 | `1JguKck5KpXISZEluoR-cPKbMn-2yODAZ` | `1M-YAK1qvvKfaEQo7IuFd8jtNEarmQZgw` | `1Hn3sDT1RqZNyzjaYu2YA5tN0W6I8twfb` / `FleetVision/99_ARCHIVE/04_old_experiments/` | ARCHIVE | Direct historical validation-analysis notebook; container input/runs remain untouched. | false | VERIFIED — source absent; target present; parents=[`1Hn3sDT1RqZNyzjaYu2YA5tN0W6I8twfb`] |
+| T7-MOVE-011 | `1N708t2WSISqot9D86F4tMUUJmuJD7b_5` | `1M-YAK1qvvKfaEQo7IuFd8jtNEarmQZgw` | `1Hn3sDT1RqZNyzjaYu2YA5tN0W6I8twfb` / `FleetVision/99_ARCHIVE/04_old_experiments/` | ARCHIVE | Direct historical baseline-training notebook; container input/runs remain untouched. | false | VERIFIED — source absent; target present; parents=[`1Hn3sDT1RqZNyzjaYu2YA5tN0W6I8twfb`] |
+
+### Task 7 Post-Batch Independent Readback
+
+- Permitted metadata-only moves: `8 VERIFIED`, `0 PENDING`, `0 FAILED`.
+- Cancelled mixed-container moves: `3 CANCELLED_NOT_MOVED` (`outputs/`, `04_5J/`, `04_5K/`).
+- Safety correction timing: T7-MOVE-001 completed before the corrected bounded-container rule arrived; it was a permitted notebook-only container move and verified exact. The write sequence was then terminated before T7-MOVE-002. No mixed/protected container moved.
+- Every verified item is absent from its exact old parent, present in its exact target parent, and reports exactly one expected target parent.
+
+| Independently Listed Parent | ID | Direct Children | Result |
+|---|---|---:|---|
+| Old project root | `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | 10 | VERIFIED: all six moved direct items absent; `outputs/`, `04_5J/`, and `04_5K/` remain |
+| `04_5J/` | `1M-YAK1qvvKfaEQo7IuFd8jtNEarmQZgw` | 2 | VERIFIED: `runs/` and `input/` remain; two direct notebooks absent |
+| `04_5K/` | `1ScY9s0R08Jpwfccg_SnGjrJ_xmhRoR_Q` | 1 | VERIFIED: `runs/` remains; container not moved |
+| `outputs/` | `1EkkV5JqRRK8vIZ6FzYgTTRG9_fIsYVzf` | 12 | VERIFIED: all direct mixed branches remain; container not moved |
+| `FleetVision/03_EXPERIMENTS/01_notebooks/` | `1Lngwx-YQLlKaLWSs6KxA_nYgd8roGctI` | 0 | VERIFIED: no Drive notebook was promoted active |
+| `FleetVision/99_ARCHIVE/01_deprecated_notebooks/` | `1d_wPAIJQrdCjuXaQMQl7dBuZqXQTDbeI` | 3 | VERIFIED: legacy six-notebook container plus two root historical notebooks |
+| `FleetVision/99_ARCHIVE/06_duplicate_candidates/` | `1GKTVtkwZX9UdznlZ2E9y0oNf0EYL2oqK` | 1 | VERIFIED: unresolved rapid-training notebook only |
+| `FleetVision/99_ARCHIVE/04_old_experiments/` | `1Hn3sDT1RqZNyzjaYu2YA5tN0W6I8twfb` | 4 | VERIFIED: two direct historical notebooks plus Candidate02 and pilot ZIPs |
+
+### Task 7 Final Action Counters
+
+```text
+metadata-only move = 8
+rename = 0
+copy = 0
+upload = 0
+share = 0
+bytes replacement = 0
+trash = 0
+delete = 0
+permanent deletion = 0
+active Drive notebook selected = 0
+active tracked notebook selected = 2
+cancelled mixed-container move = 3
+```
+
+No notebook was executed; no training, fine-tuning, or inference ran; Frozen Test contents/results were not listed, fetched, hashed, or read.
