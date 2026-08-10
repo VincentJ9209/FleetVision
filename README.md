@@ -110,7 +110,7 @@ These files provide a focused review path for engineering managers and interview
 6. [Annotation-correction package](src/fleetvision/review/annotation_correction_review_package.py) — verified predecessor evidence, safe paths, deterministic IDs, and review overlays.
 7. [Validation error analysis](src/fleetvision/evaluation/baseline_error_analysis.py) — IoU matching, threshold sweeps, error taxonomy, and improvement priorities.
 
-Project decisions and current boundaries are tracked in the [Decision Log](docs/00_project_management/DECISION_LOG.md) and [Project Status](docs/00_project_management/PROJECT_STATUS.md).
+Project decisions and current boundaries are tracked in the [active decision index](docs/03_decisions/README.md) and [Project Status](docs/02_workflow/PROJECT_STATUS.md).
 
 ## Testing and Quality
 

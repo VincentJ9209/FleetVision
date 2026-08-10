@@ -20,7 +20,7 @@ if ([string]::IsNullOrWhiteSpace($ProjectRoot)) {
     $ProjectRoot = (Resolve-Path $ProjectRoot).Path
 }
 
-$dashboardRoot = Join-Path $ProjectRoot "docs\00_project_management\project_dashboard"
+$dashboardRoot = Join-Path $ProjectRoot "docs\99_archive\legacy_project_management\project_dashboard"
 $requiredFiles = @(
     "index.html",
     "assets\dashboard.css",

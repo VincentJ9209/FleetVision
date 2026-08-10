@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 
 import { readFile } from 'node:fs/promises';
 
-const modulePath = new URL('../../docs/00_project_management/project_dashboard/assets/dashboard.js', import.meta.url);
+const modulePath = new URL('../../docs/99_archive/legacy_project_management/project_dashboard/assets/dashboard.js', import.meta.url);
 const moduleSource = await readFile(modulePath, 'utf8');
 const moduleUrl = `data:text/javascript;base64,${Buffer.from(moduleSource).toString('base64')}`;
 const {
@@ -89,7 +89,7 @@ test('history validation rejects unknown gates', () => {
 });
 
 test('runtime validation rejects N2 progression without N1 PASS and authorization evidence', async () => {
-  const statusPath = new URL('../../docs/00_project_management/project_dashboard/data/project_status.json', import.meta.url);
+  const statusPath = new URL('../../docs/99_archive/legacy_project_management/project_dashboard/data/project_status.json', import.meta.url);
   const status = JSON.parse(await readFile(statusPath, 'utf8'));
   const n2 = status.gates.find((gate) => gate.gate_id === '04.5N-2');
   n2.status = 'READY';

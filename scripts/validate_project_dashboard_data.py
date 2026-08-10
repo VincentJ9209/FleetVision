@@ -339,7 +339,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--dashboard-root",
         type=Path,
-        default=Path("docs/00_project_management/project_dashboard"),
+        default=Path("docs/99_archive/legacy_project_management/project_dashboard"),
         help="Dashboard directory containing data/ and schemas/.",
     )
     parser.add_argument(

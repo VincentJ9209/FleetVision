@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DASHBOARD_ROOT = ROOT / "docs/00_project_management/project_dashboard"
+DASHBOARD_ROOT = ROOT / "docs/99_archive/legacy_project_management/project_dashboard"
 INDEX = DASHBOARD_ROOT / "index.html"
 CSS = DASHBOARD_ROOT / "assets/dashboard.css"
 JS = DASHBOARD_ROOT / "assets/dashboard.js"

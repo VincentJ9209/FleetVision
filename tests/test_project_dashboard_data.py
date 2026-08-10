@@ -9,7 +9,7 @@ import pytest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DASHBOARD_ROOT = ROOT / "docs/00_project_management/project_dashboard"
+DASHBOARD_ROOT = ROOT / "docs/99_archive/legacy_project_management/project_dashboard"
 VALIDATOR_PATH = ROOT / "scripts/validate_project_dashboard_data.py"
 
 

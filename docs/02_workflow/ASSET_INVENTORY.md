@@ -26,7 +26,7 @@
 | Asset | Current Path | Classification | Action |
 |---|---|---|---|
 | Approved reset design | `docs/superpowers/specs/2026-08-10-fleetvision-portfolio-maintenance-reset-design.md` | CURRENT | Keep |
-| Current governance | `docs/00_project_management/` | RECONCILE_REQUIRED | Replace current-facing docs, then archive legacy directory |
+| Current governance | `docs/99_archive/legacy_project_management/` | ARCHIVED | Historical governance retained for auditability; current workflow is under `docs/02_workflow/` |
 | Root README | `README.md` | CURRENT | Rework for interview-first reading path |
 
 ## Drive Baseline
