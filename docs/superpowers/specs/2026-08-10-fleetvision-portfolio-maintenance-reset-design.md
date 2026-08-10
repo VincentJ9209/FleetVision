@@ -1,5 +1,4 @@
 # FleetVision Portfolio & Maintenance Reset — Design Spec
-
 - Date: 2026-08-10
 - Repository: `VincentJ9209/FleetVision`
 - Target repository path: `docs/superpowers/specs/2026-08-10-fleetvision-portfolio-maintenance-reset-design.md`
