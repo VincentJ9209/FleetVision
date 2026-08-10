@@ -1,4 +1,5 @@
 # FleetVision Portfolio & Maintenance Reset — Design Spec
+
 - Date: 2026-08-10
 - Repository: `VincentJ9209/FleetVision`
 - Target repository path: `docs/superpowers/specs/2026-08-10-fleetvision-portfolio-maintenance-reset-design.md`
@@ -403,4 +404,3 @@ This reset does not include:
 - Consistency check: PASS — GitHub is source of truth; Drive is artifact storage; chat is temporary throughout the design.
 - Scope check: PASS — this document covers one maintenance-reset program and explicitly separates later deletion and technical development.
 - Ambiguity check: PASS — first-pass deletion is prohibited; model/dataset naming is not accepted as provenance; cold-start pass is required before chat retirement.
-
