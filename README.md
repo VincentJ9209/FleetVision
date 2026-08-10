@@ -168,4 +168,4 @@ Running data workflows requires separately managed source data, current configur
 | Last completed technical gate | `PHASE_05S_A2_PLAN_DOCUMENT_APPLICATION_AND_CHECKPOINT` |
 | Next technical gate when resumed | `PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE` |
 
-Portfolio maintenance does not complete a technical phase or authorize Phase 05S-A3 implementation. The current source of truth starts at [START_HERE](docs/00_project_management/START_HERE.md).
+Portfolio maintenance does not complete a technical phase or authorize Phase 05S-A3 implementation. The current source of truth starts at [START_HERE](START_HERE.md).

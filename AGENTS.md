@@ -1,335 +1,50 @@
-﻿# FleetVision Agent Instructions
+# FleetVision Agent Instructions
 
-This file applies to the repository root and all descendant directories.
+本規則適用於 repository root 與所有子目錄。請使用繁體中文，中文使用全形標點，英文與數字兩側保留半形空白。
 
-## 1. Source of Truth
+## Startup path
 
-Before planning, inspecting, editing, testing, committing, or pushing, read the relevant current project governance files:
+每次任務先讀取：
 
-- `PROJECT_CONTEXT_BRIEF.md`
-- `docs/00_project_management/MASTER_PHASE_MAP.md`
-- `docs/00_project_management/PROJECT_STATUS.md`
-- `docs/00_project_management/WORKFLOW_GOVERNANCE.md`
-- `docs/00_project_management/HUMAN_REVIEW_INTERFACE_STANDARD.md`
-- `docs/00_project_management/DECISION_LOG.md`
+1. `START_HERE.md`
+2. `PROJECT_CONTEXT_BRIEF.md`
+3. `docs/02_workflow/PROJECT_STATUS.md`
+4. `docs/02_workflow/HANDOFF_CURRENT.md`
 
-Current operating context:
+依工作需要再讀取 `docs/02_workflow/PROTECTED_ASSETS.md`、`docs/02_workflow/WORKFLOW.md` 與適用決策記錄。開始前確認 Phase／Gate、授權範圍、允許與禁止路徑、工作樹狀態、測試證據，以及 commit／push 是否明確授權。衝突或未授權時停止。
 
-- Repository root：`G:\FleetVision\Project\FleetVision`
-- Technical Phase：`Phase 05S-A2 — Implementation Plan Approved and Documented`
-- Technical development：`PAUSED`
-- Current activity：`PORTFOLIO_MAINTENANCE`
-- Last completed technical Gate：`PHASE_05S_A2_PLAN_DOCUMENT_APPLICATION_AND_CHECKPOINT`
-- Next technical Gate when resumed：`PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE`
-- Portfolio maintenance does not create or complete a technical Phase or Gate.
+## Protected asset rules
 
-Use `PROJECT_STATUS.md` to determine the current technical Phase, current activity,
-last completed Gate, and next technical Gate when development resumes. Do not
-rely on chat history as the primary project record.
+- `outputs/metadata/external_assets/` 不得 stage、commit、delete、clean、move 或 rewrite。
+- `dataset/01_raw/`、canonical CSV／COCO／dataset manifests、Registry assets、internal holdout definitions、外部來源 archives、model/training acceptance artifacts 均受保護。
+- 不得覆寫已完成或進行中的人工審核 workbook、reviewer manifest、manual-review ZIP、frozen backup 或 SHA256 manifest。
+- 未經適用 Gate 授權，不得存取 Frozen Test、修改 raw／canonical assets、建立資料 split 或啟動 training／fine-tuning。
+- 正式人工審核預設採本機繁體中文 Streamlit、SQLite live state、audit events、backup 與 no-overwrite export；Excel 僅為 export／exchange／archive，除非 Gate 核准例外。
 
-If repository files conflict with a task prompt, stop and report the conflict before editing.
+## Immutable architecture
 
-## 2. Start-of-Task Gate
+- 停用的 `irent-damage-detection` 不得恢復或混用。
+- 首個 damage model 是 YOLOv8 Detect，且唯一第一版 YOLO class 是 `damage`。
+- `minor_damage` 與 `claimable_damage` 不得成為第一版 YOLO class。
+- CLIP 僅可作已核准的 `photo_type` suggestion；檔名 `_1`、`_2`、`_3`、`_4` 不得推論 angle。
+- Phase 03.5 inference 保持 frozen；不得自動推論 damage／severity。
+- 不得自動判定保險責任、理賠、法律結論或 claimability。
 
-Before taking any repository action, confirm:
+## Engineering and Git rules
 
-1. Current technical Phase, current activity, and applicable Gate boundary.
-2. Required prerequisites are complete.
-3. Immutable architecture decisions.
-4. Allowed files and prohibited files.
-5. Whether formal outputs or human-entered data are at risk.
-6. Expected Git state before the task.
-7. Required tests and completion evidence.
-8. Whether commit or push is explicitly authorized.
+- Production Python code 位於 `src/fleetvision/`；notebooks 不是主要 business logic。
+- 不得在 application code 寫入使用者絕對路徑；使用 config、CLI arguments 或 repository-relative paths。
+- 大型圖片、model weights、training runs、database dumps、review packages、generated artifacts 與 secrets 均留在 Git 外。
+- 做最小且完整的變更，維持 deterministic ordering、schema／path 合約與 no-overwrite behavior；每個行為變更都需對應測試。
+- 完成前執行適用測試、`git diff --check`、`git status --short` 與最後 diff 檢查，確認僅有授權路徑變更且沒有 partial output。
+- 僅用 explicit paths stage；未明確授權不得 commit 或 push。
 
-Do not begin implementation when these items are unresolved.
+## Durable records
 
-## 3. Skill Gate
+- 需要長期保存的決策、狀態、風險與 Gate evidence 必須寫入 repository 文件並納入已授權 checkpoint。
+- Live Git facts 與 cryptographic identities 和敘事衝突時，以前者為準。
+- 不以聊天紀錄、投影片或未驗證的外部摘要升級 artifact、metric 或 deployment claim。
 
-Before repository inspection, planning, editing, debugging, testing, review, commit, or push:
+## Stop conditions
 
-1. Inspect the skills available in the current agent environment.
-2. Explicitly invoke every applicable installed skill.
-3. Never claim a skill was used unless its instructions were actually loaded and followed.
-4. If an applicable skill is unavailable, report:
-
-   `SKILL_NOT_AVAILABLE: <skill-name>`
-
-5. When a skill is unavailable, follow an equivalent disciplined workflow manually.
-
-Evaluate at minimum whether the following workflows apply:
-
-- `using-superpowers`: task startup and skill selection
-- `brainstorming`: new behavior, new features, or design changes
-- `systematic-debugging`: bugs, failures, unexpected behavior, or regressions
-- `test-driven-development`: features, bug fixes, or behavior changes
-- `writing-plans`: multi-step or multi-file implementation
-- `verification-before-completion`: before claiming success, commit, or push
-- `requesting-code-review`: major changes or pre-merge review
-- `using-git-worktrees`: work requiring isolation from the active worktree
-
-The final report must contain:
-
-- `Skills used`
-- How each skill was applied
-- `Skills unavailable`
-- Any applicable skill intentionally not used and the reason
-
-## 4. Token and Context Efficiency
-
-Use the smallest amount of context that preserves correctness.
-
-- Do not repeat governance documents inside prompts.
-- Read only files relevant to the current task.
-- Prefer targeted repository searches over broad full-repository dumps.
-- Do not reopen or reanalyze files already understood unless the task changed.
-- Run targeted tests during development.
-- Run regression or full tests only at the required completion gate.
-- Do not repeatedly run the full suite without a new reason.
-- Keep each task within one coherent Git checkpoint.
-- Do not combine unrelated Phase work in one context or commit.
-- If task scope changes materially, recommend a new context.
-- If remaining context is insufficient for reliable completion, stop at a safe checkpoint and report it.
-
-## 5. Immutable FleetVision Architecture
-
-Unless a newer approved Decision Log entry explicitly changes these rules:
-
-- Project root is `G:\FleetVision\Project\FleetVision`.
-- The deprecated `irent-damage-detection` project must not be restored or reused.
-- First damage model is YOLOv8 Detect.
-- The first YOLO class is only `damage`.
-- `minor_damage` and `claimable_damage` are not YOLO classes.
-- Phase 03.5 inference is frozen and must not be rerun.
-- CLIP is limited to approved photo-type suggestion behavior.
-- Filename angle rules must never infer angle from `_1`, `_2`, `_3`, or `_4`.
-- Phase 03.5 must not infer damage or severity.
-- Do not assign insurance liability.
-- Do not create YOLO labels, `dataset/05_yolo`, data splits, or model training outputs before the applicable Phase gate is approved.
-
-## 6. Data and Human-Review Safety
-
-The following are protected unless the active task explicitly authorizes them:
-
-- `dataset/01_raw/`
-- completed or active human-review Workbooks
-- reviewer assignment manifests
-- manual-review ZIP packages
-- frozen backups and SHA256 manifests
-- canonical CSV outputs
-- external dataset source archives
-- internal holdout definitions
-
-Rules:
-
-- Never modify files under `dataset/01_raw/`.
-- Never overwrite human-entered review data.
-- Never rebuild a canonical Workbook over an active or completed reviewer file.
-- Never save a protected Workbook merely to inspect it.
-- Use read-only access for inspection whenever possible.
-- Use `pytest tmp_path`, Windows TEMP, or another isolated temporary directory for tests.
-- A failed operation must not leave a partial canonical output.
-- Preserve source files and create verified backups before promotion or replacement.
-- Use SHA256 comparisons for high-risk file promotion.
-- External data must remain separated from the frozen FleetVision internal holdout.
-- Never mix external data into internal evaluation data.
-
-### Human-review interface standard
-
-All current and future multi-case human-review workflows must follow
-`docs/00_project_management/HUMAN_REVIEW_INTERFACE_STANDARD.md` unless an
-explicit Gate approves a controlled offline-collaboration exception.
-
-Fixed defaults:
-
-```text
-HUMAN_REVIEW_DEFAULT_INTERFACE=LOCAL_STREAMLIT_TRADITIONAL_CHINESE
-LIVE_REVIEW_STATE=SQLITE
-EXCEL_ROLE=EXPORT_EXCHANGE_ARCHIVE_ONLY
-DIRECT_EXCEL_REVIEW_DEFAULT=PROHIBITED
-```
-
-Rules:
-
-- Use a local Traditional Chinese Streamlit interface for the operator-facing workflow.
-- Store active progress transactionally in SQLite with resumable state, audit events, and scheduled backups.
-- Auto-populate reviewer identity and timezone-aware review timestamps.
-- Treat Excel as a completed export, exchange, archive, or explicitly approved no-Python collaboration format—not the default live state.
-- Before designing a new review tool, inspect and reuse the existing Streamlit/SQLite review patterns where safe.
-- A plan that defaults to direct Excel editing without an approved exception must be blocked at the Start-of-Task Gate.
-
-<!-- FLEETVISION-MANAGED:ONE-SHOT-DELIVERY:BEGIN -->
-### One-shot artifact delivery gate
-
-User-visible installers, correction ZIPs, and operational scripts must be
-release candidates rather than debug builds.
-
-Before delivery:
-
-- rehearse the exact installer against a repository at the target commit;
-- use Windows-compatible checkout behavior, including CRLF, UTF-8 BOM, EOF,
-  file-handle, and PowerShell 5.1 constraints;
-- run cheap structural checks before focused, regression, or full tests;
-- verify exact changed-path allowlists, protected assets, transaction rollback,
-  and idempotency;
-- do not use Vincent's production workspace as the first integration test;
-- do not expose successive internal versions unless the target environment
-  reveals evidence that could not reasonably be reproduced during rehearsal.
-
-Required declaration:
-
-```text
-USER_VISIBLE_ARTIFACT=RELEASE_CANDIDATE_ONLY
-TARGET_ENVIRONMENT_REHEARSAL=REQUIRED
-CHEAP_CHECKS_BEFORE_FULL_SUITE=REQUIRED
-PRODUCTION_WORKSPACE_AS_FIRST_TEST=PROHIBITED
-```
-<!-- FLEETVISION-MANAGED:ONE-SHOT-DELIVERY:END -->
-
-## 7. Implementation Discipline
-
-Make the smallest change that fully satisfies the approved goal.
-
-- Follow existing repository patterns.
-- Do not perform unrelated refactoring.
-- Do not silently alter schemas, column names, label meanings, thresholds, or file paths.
-- Do not hard-code values already controlled by configuration or workbook option sources.
-- Preserve deterministic ordering.
-- Preserve failure-no-overwrite behavior.
-- Keep modules focused on one responsibility.
-- Update tests for every behavior change.
-- Update governance documents when a Phase status, risk, or architectural decision changes.
-- Do not create duplicate tools when an existing builder, validator, exporter, or merger can be extended safely.
-
-## 8. Repository Engineering and Environment Rules
-
-### Code and Repository Conventions
-
-- Production Python code belongs under `src/fleetvision/`.
-- Notebooks are limited to exploration and approved Colab workflows; do not place primary business logic in notebooks.
-- Functions, classes, filenames, configuration keys, and data column names use English.
-- Documentation, guides, comments, and user-facing explanations may use Traditional Chinese.
-- Do not hard-code user-specific absolute paths in application code.
-- `G:\FleetVision\Project\FleetVision` is the current operator workspace, not an application-code constant.
-- Manage filesystem paths through configuration, CLI arguments, or repository-relative paths.
-- Primary scripts must be runnable from the repository root.
-- Data-processing scripts must produce a clear execution summary.
-- Important public functions should include type hints and concise docstrings.
-- Critical logic, including schema validation, matching rules, IoU, label validation, promotion, and no-overwrite behavior, requires automated tests.
-- Use only dataset directories approved by the current Phase Map and Project Status.
-- Do not create future-phase dataset folders or artifacts before their gate is approved.
-
-### Secrets and Large Artifacts
-
-- Never commit `.env`, API tokens, credentials, private keys, or service-account files.
-- A sanitized `.env.example` may be tracked.
-- Do not commit large image collections, model weights, training runs, database dumps, local backups, or generated review packages.
-- Database dumps belong in approved external backup storage, not Git.
-- If PostgreSQL is introduced, keep the tracked schema in `sql/schema.sql`.
-- Docker Compose is limited to approved local services and must not contain embedded secrets.
-
-### Colab and Training
-
-- Colab is reserved for approved GPU inference or training work.
-- Do not use Colab to bypass the current Phase gate.
-- Phase 03.5 inference remains frozen and must not be rerun.
-- When a future training gate is approved, mount data from approved storage and return model outputs to approved external storage.
-- Notebook templates may be tracked, but large training outputs must not be committed.
-
-### Product Claim Boundary
-
-- Do not claim that FleetVision can reliably determine true new damage until sufficient paired before-and-after rental data and validation exist.
-- Do not equate visible damage detection with insurance claimability, liability, or final business adjudication.
-## 9. Verification Gate
-
-Before claiming a task is complete:
-
-1. Run the required targeted tests.
-2. Run relevant regression tests.
-3. Run the full suite when required by the task or governance gate.
-4. Run `git diff --check`.
-5. Run `git status --short`.
-6. Confirm only authorized files changed.
-7. Confirm protected outputs were not modified.
-8. Confirm no partial output remains from failed tests.
-9. Inspect the final diff for accidental scope expansion.
-10. Report exact test counts and failures or skips.
-
-Do not report success based only on expected behavior. Use fresh command output.
-
-## 10. Git Rules
-
-- The main working branch is `main` unless the task explicitly states otherwise.
-- Do not commit or push unless the current task explicitly authorizes it.
-- Do not stage unrelated existing changes.
-- Stage files by explicit path, not broad commands such as `git add .`.
-- Keep code, tests, configuration, and governance documents in intentional checkpoints.
-- Do not commit generated Excel files, ZIP packages, images, model artifacts, caches, temporary files, or local backups.
-- CSV outputs are not committed unless explicitly designated as a tracked governance artifact.
-- Preserve existing uncommitted work that is outside the authorized task.
-- Before push, verify the commit subject, staged file list, tests, and remote branch.
-- After push, verify `git status --short` and `git log -1 --oneline`.
-
-## 11. Required Final Report
-
-Every repository task report must include:
-
-1. Current Phase and completed gate.
-2. Skills used and how they were applied.
-3. Skills unavailable.
-4. Root cause or implementation approach.
-5. Files changed.
-6. Tests executed and exact results.
-7. `git diff --check` result.
-8. Final `git status --short`.
-9. Commit hash and subject, when applicable.
-10. Push result, when applicable.
-11. Whether protected or formal outputs were touched.
-12. Any deviation, remaining risk, blocker, or next gate.
-13. Estimated token load: low, medium, or high.
-
-Do not paste full diffs or full logs unless explicitly requested.
-
-## 12. Stop Conditions
-
-Stop without modifying files and report the issue when:
-
-- the current Phase or prerequisite is unclear;
-- governance documents contradict each other;
-- the requested change violates an immutable decision;
-- protected data would be overwritten;
-- required source files are missing;
-- the worktree contains unexpected changes;
-- an applicable license is unknown or incompatible;
-- a test failure cannot be explained;
-- completing the task would require unauthorized scope expansion;
-- commit or push authorization is absent.
-
-<!-- FLEETVISION-MANAGED:GOVERNANCE-CONTRACT:BEGIN -->
-## FleetVision repository-governance contract
-
-All AI-assisted work must follow this startup order before proposing or executing a change:
-
-1. Read `docs/00_project_management/START_HERE.md`.
-2. Read `docs/00_project_management/PROJECT_STATUS.md`.
-3. Read `docs/00_project_management/HANDOFF_CURRENT.md`.
-4. Read `docs/00_project_management/PROTECTED_ASSETS.md`.
-5. Read the current phase log identified by `PROJECT_STATUS.md`.
-6. Reconcile the documents against the live Git branch, HEAD, `origin/main`, and worktree status.
-
-### Mandatory operating rules
-
-- Repository root: `G:\FleetVision\Project\FleetVision`.
-- Production branch: `main`.
-- Codex is disabled unless Vincent explicitly reauthorizes it.
-- Cursor Agent is disabled unless Vincent explicitly reauthorizes it.
-- Do not provide Codex prompts or instruct Cursor Agent to modify, test, commit, or push.
-- ChatGPT may provide Windows PowerShell 5.1 scripts and VS Code manual procedures.
-- Process one technical Gate at a time.
-- High-risk work must use Audit → Apply/Execute → Verify → Commit/Push.
-- Never stage, commit, delete, clean, move, or rewrite `outputs/metadata/external_assets/`.
-- Do not directly modify canonical COCO, raw datasets, or Registry assets without a Gate that explicitly authorizes that exact mutation.
-- A Gate is not complete until technical verification, project-state documents, Git commit, push, and remote-HEAD verification all agree.
-- Live repository facts and cryptographic hashes override narrative summaries when they conflict.
-<!-- FLEETVISION-MANAGED:GOVERNANCE-CONTRACT:END -->
-
+不要修改檔案，並回報阻塞原因，如果 Phase／前置條件不明、治理文件矛盾、請求違反 immutable decision、protected asset 有覆寫風險、必要來源缺失、worktree 有非預期變更、license 不明、測試失敗無法解釋，或完成工作需要未授權的 scope expansion。
