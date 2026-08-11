@@ -540,3 +540,66 @@ permanent deletion = 0
 Frozen Test content access = 0
 raw/canonical content mutation = 0
 ```
+
+## Task 12 — Final Portfolio Maintenance Reset Verification
+
+### Verification Boundary
+
+- Verification date: `2026-08-11`.
+- Git baseline: `483217b8bac3f4fd31b394460335cebccce31efb` (`docs: verify chat-independent FleetVision handoff`).
+- Drive verification was metadata-only and limited to exact folder IDs, direct-child names/IDs, and already authorized provenance records.
+- Task 12 performed `0` move, rename, copy, upload, share, bytes replacement, trash, delete, or permanent deletion operations.
+- No Frozen Test content, protected dataset payload, model bytes, or unresolved archive payload was opened.
+
+### Active Drive Root Readback
+
+| Expected Area | Exact ID | Direct-Child Readback |
+|---|---|---|
+| `00_PORTFOLIO/` | `1FV0ZpCmn7xlesHuDzhFAeM2dvbBgTjzW` | VERIFIED under root `1wiabQ8ELbyd7UOvZlXkyrQLQbwfb0Wif` |
+| `01_DATA/` | `1dVA2CajesUX9m4bOckSFtXxiUnzY538K` | VERIFIED under root `1wiabQ8ELbyd7UOvZlXkyrQLQbwfb0Wif` |
+| `02_MODELS/` | `1Qdu1a9Bz8yJMCTHmsw7u2BR8d0Bvi-Pk` | VERIFIED under root `1wiabQ8ELbyd7UOvZlXkyrQLQbwfb0Wif` |
+| `03_EXPERIMENTS/` | `1gq9ILZ9zpcRrYSqJQBuCyN8sqP_1m4C1` | VERIFIED under root `1wiabQ8ELbyd7UOvZlXkyrQLQbwfb0Wif` |
+| `04_PROJECT_ASSETS/` | `1i0NAzvD82Ih8nIp70clk6EtY9SUJl0Sd` | VERIFIED under root `1wiabQ8ELbyd7UOvZlXkyrQLQbwfb0Wif` |
+| `99_ARCHIVE/` | `1UtHROZBdOjzAbEcexQigzapzRvU0Tqjs` | VERIFIED under root `1wiabQ8ELbyd7UOvZlXkyrQLQbwfb0Wif` |
+
+The active root contains exactly these six direct children. `FleetVision/02_MODELS/01_current/` (ID `18aS9iKTDBUlV3ivsWlzw15nU4SKSK7LV`) remains empty, consistent with `CURRENT_REFERENCE_MODEL = NONE`.
+
+### Old Project Root Classification Readback
+
+| Legacy Item | Exact ID | Classification / Disposition | Task 12 Status | Delete Allowed |
+|---|---|---|---|---|
+| `00.成果發表/` | `1JPupMGmZK7tp5wQtc5tBLXcdjesgaQYi` | `RECONCILE_REQUIRED`; item-level Task 6 migration complete, retained source container | `CLASSIFIED_UNRESOLVED` | false |
+| `FleetVision_YOLO_Labels_Package.zip` | `1BDp1KKMZr1Km86kglHnY_Ux5wnYycR4V` | `ARCHIVE_RECONCILIATION`; export provenance and split coverage unresolved | `CLASSIFIED_UNRESOLVED` | false |
+| `grouped_dataset/` | `1UG9y4jEuJL28lk7pdIotFj-Hqqp5mgGg` | `ARCHIVE_RECONCILIATION`; lineage/holdout boundary unresolved | `CLASSIFIED_UNRESOLVED` | false |
+| `04_5K/` | `1ScY9s0R08Jpwfccg_SnGjrJ_xmhRoR_Q` | `RECONCILE_REQUIRED`; nested run not proven wholly non-protected | `CLASSIFIED_UNRESOLVED` | false |
+| `04_5J/` | `1M-YAK1qvvKfaEQo7IuFd8jtNEarmQZgw` | `PROTECTED_RECONCILE_REQUIRED`; protected input/runs retained | `CLASSIFIED_UNRESOLVED` | false |
+| `outputs/` | `1EkkV5JqRRK8vIZ6FzYgTTRG9_fIsYVzf` | `RECONCILE_REQUIRED`; mixed model/data/evaluation scope retained | `CLASSIFIED_UNRESOLVED` | false |
+
+Old-root direct-child coverage is `6/6 classified`, with `0` unclassified items. These explicit unresolved items prevent an unqualified `Drive active structure = CLEAN` or `A1 archive classification = COMPLETE` claim, but they do not block maintenance-reset completion under the approved Task 12 acceptance rule.
+
+### Final Reconciliation State
+
+- Model provenance: `RECONCILED_WITH_EXPLICIT_UNRESOLVED_IDENTITIES`; `CURRENT_REFERENCE_MODEL = NONE`.
+- Dataset provenance: `RECONCILED_WITH_EXPLICIT_UNRESOLVED_ITEMS`; the working relabel copy remains `NOT_CANONICAL`.
+- Metric provenance: `RECONCILED`; portfolio quantitative claims remain governed by `RESULTS_REGISTRY.md`, with training, validation operating-point, and historical test evidence kept separate.
+- Chat dependency: `NONE`; `COLD_START_ACCEPTANCE = PASS` and `CHAT_HISTORY_REQUIRED = FALSE`.
+- Technical state remains `Phase 05S-A2`, `PAUSED`; next gate is `PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE`, `A3 authorized = false`, and `Frozen Test access = false`.
+
+```text
+TASK_12_RESULT = COMPLETE
+Drive active structure = VERIFIED_SIX_AREAS_WITH_CLASSIFIED_UNRESOLVED_LEGACY_ITEMS
+A1 archive classification = CLASSIFIED_WITH_EXPLICIT_UNRESOLVED_ITEMS
+unclassified old-root direct children = 0
+first-pass permanent deletion count = 0
+Delete Allowed = false for every maintenance-reset move/classification row
+CURRENT_REFERENCE_MODEL = NONE
+working relabel copy canonical = false
+COLD_START_ACCEPTANCE = PASS
+CHAT_HISTORY_REQUIRED = FALSE
+Technical phase = Phase 05S-A2
+Technical development = PAUSED
+Next gate = PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE
+A3 authorized = false
+Frozen Test access = false
+PORTFOLIO_MAINTENANCE_RESET_COMPLETE = true
+```
