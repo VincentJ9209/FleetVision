@@ -39,7 +39,7 @@ The broader team context is Phase 1 capture → Phase 2 FleetVision data/model w
 
 ## Evidence-Backed Results
 
-The repository demonstrates implemented software contracts rather than a reconciled final model score:
+The repository demonstrates implemented software contracts and one explicitly historical model baseline:
 
 - metadata and review-queue generation with deterministic tests;
 - governed external-dataset intake, deduplication, canonicalization, and split QA;
@@ -47,13 +47,22 @@ The repository demonstrates implemented software contracts rather than a reconci
 - validation error analysis that converts FP/FN evidence into review and data-improvement worklists;
 - a broad automated suite that uses synthetic or temporary fixtures for most data-path checks.
 
-Historical model metrics remain historical evidence until model, dataset, and result provenance is reconciled in later maintenance tasks. Test results verify repository behavior, not model accuracy or deployment readiness.
+All published model numbers below come from the [Results Registry](docs/02_workflow/RESULTS_REGISTRY.md) and belong to `MDL-045J-Y8S-BASELINE`, a **historical controlled baseline**:
+
+| Evidence layer | Precision | Recall | mAP50 | mAP50-95 | Claim boundary |
+|---|---:|---:|---:|---:|---|
+| Training-selected validation summary | `0.4868` (`RES-045J-VAL-P`) | `0.3508` (`RES-045J-VAL-R`) | `0.3516` (`RES-045J-VAL-MAP50`) | `0.1620` (`RES-045J-VAL-MAP5095`) | Historical validation metrics at the training-selected best epoch; not a deployment result. |
+| Historical one-time test | `0.5423` (`RES-045J-TEST-P`) | `0.3883` (`RES-045J-TEST-R`) | `0.3804` (`RES-045J-TEST-MAP50`) | `0.1756` (`RES-045J-TEST-MAP5095`) | Reporting only; unavailable for tuning, selection, or error prioritization. |
+
+The separate validation operating-point candidates are confidence `0.05` (`RES-045K-OP-HIGH-RECALL`), `0.20` (`RES-045K-OP-BALANCED`), and `0.80` (`RES-045K-OP-HIGH-PRECISION`) at IoU `0.5`. They are analysis candidates, not training metrics or deployment thresholds. No current reference or production-ready final model is accepted; the folder-named `final_selected` artifact is only `BEST_AVAILABLE_POC_ONLY`. Test-suite results verify repository behavior, not model accuracy or deployment readiness.
+
+Dataset identity follows the [Dataset Registry](docs/02_workflow/DATASET_REGISTRY.md): `DS-INT-V1` is a protected historical baseline, while `DS-RELABEL-V3-WORKING` is a `NOT_CANONICAL` working copy. The metric registry identifies its dataset only as the Phase 04.5J controlled dataset; this portfolio does not equate it to `DS-INT-V1` without lineage evidence. Neither a folder name nor an unresolved export establishes a new canonical Dataset v3.
 
 [Results and limitations](docs/01_portfolio/RESULTS_AND_LIMITATIONS.md)
 
 ## Demo / Portfolio Assets
 
-The repository contains a lightweight [demo-package guide](demo/README_demo.md). Large videos, screenshots, presentations, private images, datasets, model weights, and generated review packages are intentionally stored outside Git and will be linked only after their Drive identity and sharing status are verified.
+The repository contains a lightweight [demo-package guide](demo/README_demo.md). The Drive audit selected no evidence-safe active deck, overview, or demo for public use; large videos, screenshots, presentations, private images, datasets, model weights, and generated review packages remain outside Git with their identity and disposition recorded in the [Drive Migration Manifest](docs/02_workflow/DRIVE_MIGRATION_MANIFEST.md).
 
 [Interview guide](docs/01_portfolio/INTERVIEW_GUIDE.md)
 
@@ -94,7 +103,8 @@ The tracked test suite does not require private datasets or model weights. Data-
 - No automated insurance, claimability, liability, pricing, or legal conclusion.
 - Before/after same-vehicle, same-view damage comparison is not complete.
 - Private datasets, model weights, source archives, and generated artifacts are not distributed in Git.
-- YOLO dataset materialization, current model selection, and public metrics remain subject to governed evidence and provenance reconciliation.
+- No current reference model is selected; the historical baseline is not a production-ready final model, and the PoC selection failed its own quality gate.
+- `DS-INT-V1` remains a protected historical baseline; the relabel working copy is not canonical Dataset v3, and unresolved legacy/export artifacts are not active datasets.
 - Frozen Test access, training, fine-tuning, and Phase 05S-A3 implementation are not authorized during portfolio maintenance.
 
 ## Current Status
@@ -107,5 +117,6 @@ The tracked test suite does not require private datasets or model weights. Data-
 | Last completed technical Gate | `PHASE_05S_A2_PLAN_DOCUMENT_APPLICATION_AND_CHECKPOINT` |
 | Next technical Gate | `PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE` |
 | A3 authorized | `false` |
+| Frozen Test access | `false` |
 
 Portfolio maintenance does not advance the technical phase. Development resumes from [START_HERE.md](START_HERE.md), not from historical chat context.
