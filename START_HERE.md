@@ -14,9 +14,13 @@
 - Current activity: `PORTFOLIO_MAINTENANCE`
 - Next technical gate: `PHASE_05S_A3_IMPLEMENTATION_AUTHORIZATION_BEFORE_CODE`
 - A3 authorized: `false`
-- Chat history required: `not yet retired`
+- Frozen Test access: `false`
+- Chat-independent cold-start acceptance: `PASS`
+- Chat history required: `false`
 
 Portfolio maintenance does not create or complete a technical Phase or Gate. A3 needs separate explicit authorization and fresh read-only reconciliation before any implementation work.
+
+The independent [Cold-Start Acceptance](docs/02_workflow/COLD_START_ACCEPTANCE.md) confirmed that GitHub plus the reorganized Drive root are sufficient to recover and resume the project. Historical FleetVision chat is no longer required.
 
 ## Read only when relevant
 
