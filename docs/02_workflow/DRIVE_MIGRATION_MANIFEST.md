@@ -8,10 +8,10 @@
 | ID | Current Path | Name | Type | Classification | Protected | Target Path | Evidence / Rationale | Delete Allowed | Verification |
 |---|---|---|---|---|---|---|---|---|---|
 | DRV-001 | `AI_Class/00.Project/FleetVision/` (parent ID `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl`) | `00.成果發表/` (ID `1JPupMGmZK7tp5wQtc5tBLXcdjesgaQYi`) | Folder | RECONCILE_REQUIRED | No | item-level split to approved Task 6 targets; source root itself remains in place | Live Drive grounding supersedes the generic `Drive root` label. Complete Task 6 inventory, moves, verification, and explicit NOT_MOVED rows are recorded below. | false | VERIFIED_WITH_NOT_MOVED — 31 metadata-only moves verified; 17 inventory rows retained |
-| DRV-002 | Drive root | `internal_grouped_dataset_v1_20260717_212356/` | Folder | PROTECTED | Yes | `01_DATA/01_internal/` after dataset gate | Protected internal dataset; no move without dataset gate. | false | NOT_STARTED |
-| DRV-003 | Drive root | `dataset_v3_relabel_working_20260720_091414/` | Folder | ARCHIVE | No | `99_ARCHIVE/02_old_datasets/` | Historical relabel working dataset retained as archive. | false | NOT_STARTED |
-| DRV-004 | Drive root | relabel working ZIP | ZIP file | DUPLICATE_CANDIDATE | No | `99_ARCHIVE/06_duplicate_candidates/` | Identity must be verified before any duplicate decision. | false | NOT_STARTED |
-| DRV-005 | Drive root | `grouped_dataset/` | Folder | RECONCILE_REQUIRED | Yes | archive/reconciliation first | Dataset provenance and identity require reconciliation. | false | NOT_STARTED |
+| DRV-002 | `FleetVision/01_DATA/01_internal/` | `internal_grouped_dataset_v1_20260717_212356/` (ID `15u6KNMwei6J1vEfG57DO-z9y9nlAyIEw`) | Folder | PROTECTED | Yes | Keep as protected historical baseline | Task 9 verified top-level `train/valid/test/lineage` names only, did not enter Frozen Test contents, and moved this folder last by parent metadata only. | false | VERIFIED — T9-MOVE-003 |
+| DRV-003 | `FleetVision/99_ARCHIVE/02_old_datasets/` | `dataset_v3_relabel_working_20260720_091414/` (ID `1NDs9m9HCFMAKg9O9MCHnRgnG_sZ1sCKx`) | Folder | ARCHIVE / WORKING_COPY | No | Keep archived | README and package manifest prove this is not formal Dataset v3, excludes test/Frozen Test, and did not modify the source baseline. | false | VERIFIED — T9-MOVE-001 |
+| DRV-004 | `FleetVision/99_ARCHIVE/06_duplicate_candidates/` | `dataset_v3_relabel_working_20260720_091414.zip` (ID `1No4IDs-VmR0oLY4IxzVZhltikPbUROQi`) | ZIP file | DUPLICATE_CANDIDATE | No | Keep pending independent identity check | Same-name working-package ZIP; Task 9 did not open bytes or assert equivalence. | false | VERIFIED — T9-MOVE-002 |
+| DRV-005 | old project root (ID `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl`) | `grouped_dataset/` (ID `1UG9y4jEuJL28lk7pdIotFj-Hqqp5mgGg`) | Folder | ARCHIVE_RECONCILIATION | Yes | NOT_MOVED; future provenance reconciliation | Lineage/holdout boundary remains unresolved; Task 9 intentionally retained the folder without nested protected-boundary inspection. | false | NOT_MOVED_TASK9_UNRESOLVED |
 | DRV-006 | Drive root | `models/` | Folder | RECONCILE_REQUIRED | Yes | reconcile before selecting current model | Model identities and current selection require reconciliation. | false | NOT_STARTED |
 | DRV-007 | `FleetVision/99_ARCHIVE/01_deprecated_notebooks/` | `notebooks/` (ID `15U1-zwBIrVJ6VtLMbX-X_1VgV907IRxl`) | Folder | ARCHIVE | No | Keep archived; active evidence is limited to two tracked output-stripped notebooks | Six-notebook legacy/recovery container moved whole after notebook audit. | false | VERIFIED — T7-MOVE-001 |
 | DRV-008 | old project root (ID `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl`) | `outputs/` (ID `1EkkV5JqRRK8vIZ6FzYgTTRG9_fIsYVzf`) | Folder | RECONCILE_REQUIRED | Yes | NOT_MOVED; later Task 8/9 item-level reconciliation | Mixed tree includes model/data and protected evaluation scope. | false | NOT_MOVED_TASK7_MIXED_SCOPE |
@@ -489,4 +489,54 @@ permanent deletion = 0
 weight/model bytes read = 0
 Frozen Test content access = 0
 current reference selected = 0
+```
+
+## Task 9 — Dataset Provenance and Migration Gate
+
+### Grounding and Safety Result
+
+- Source project root: `AI_Class/00.Project/FleetVision/` (ID `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl`).
+- Destination data root: `FleetVision/01_DATA/` (ID `1dVA2CajesUX9m4bOckSFtXxiUnzY538K`).
+- Protected baseline top-level structure verified by names only: `train/`, `valid/`, `test/`, `lineage/`; `test/` contents were not listed, fetched, read, or hashed.
+- Working-copy evidence explicitly states it is not formal Dataset v3, excludes test/Frozen Test, and did not modify its source dataset.
+- `grouped_dataset/` and `FleetVision_YOLO_Labels_Package.zip` remain in the old project root because provenance/holdout boundaries are insufficient for safe promotion or relocation.
+- All Task 9 actions are metadata-only parent moves; no rename, content replacement, copy, upload, share, trash, or delete occurred.
+- First-pass permanent deletion count remains `0`.
+
+### Task 9 Execution Table
+
+| Move | Item ID | Exact Old Parent ID | Exact Target Parent ID / Path | Registry ID | Classification | Delete Allowed | Status |
+|---|---|---|---|---|---|---|---|
+| `T9-MOVE-001` | `1NDs9m9HCFMAKg9O9MCHnRgnG_sZ1sCKx` | `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | `1H1QGj-n6wZrVzQcEBcC0ziaVOztg8D89` / `FleetVision/99_ARCHIVE/02_old_datasets/` | `DS-RELABEL-V3-WORKING` | `WORKING_COPY` / `NOT_CANONICAL` | false | VERIFIED — same item ID; expected target parent read back |
+| `T9-MOVE-002` | `1No4IDs-VmR0oLY4IxzVZhltikPbUROQi` | `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | `1GKTVtkwZX9UdznlZ2E9y0oNf0EYL2oqK` / `FleetVision/99_ARCHIVE/06_duplicate_candidates/` | `DS-RELABEL-V3-ZIP` | `DUPLICATE_CANDIDATE` | false | VERIFIED — same item ID; expected target parent read back |
+| `T9-MOVE-003` | `15u6KNMwei6J1vEfG57DO-z9y9nlAyIEw` | `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | `1bMzY5H48l7svSj_YU0hD-8qbSTLOaMMB` / `FleetVision/01_DATA/01_internal/` | `DS-INT-V1` | `PROTECTED` / `HISTORICAL_BASELINE` | false | VERIFIED — moved last; same item ID; expected target parent read back |
+
+### Explicit NOT_MOVED Dataset Items
+
+| Item | ID | Current Parent | Registry ID | Classification | Reason | Delete Allowed | Status |
+|---|---|---|---|---|---|---|---|
+| `grouped_dataset/` | `1UG9y4jEuJL28lk7pdIotFj-Hqqp5mgGg` | old project root `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | `DS-GROUPED-LEGACY` | `ARCHIVE_RECONCILIATION` | Lineage/holdout boundary unresolved; no nested inspection required for safe retain-in-place decision. | false | NOT_MOVED_UNRESOLVED |
+| `FleetVision_YOLO_Labels_Package.zip` | `1BDp1KKMZr1Km86kglHnY_Ux5wnYycR4V` | old project root `1li3KfpTp53YIy4_PtOJcvqMpunUQW5Zl` | `DS-YOLO-LABELS-ZIP` | `ARCHIVE_RECONCILIATION` | Export provenance and split coverage unresolved; filename is not provenance. | false | NOT_MOVED_UNRESOLVED |
+
+### Independent Post-Batch Readback
+
+- Old project root no longer contains the three moved IDs and still contains both explicit `NOT_MOVED` items.
+- `FleetVision/01_DATA/01_internal/` contains exactly the protected baseline folder ID `15u6KNMwei6J1vEfG57DO-z9y9nlAyIEw` from this batch.
+- `FleetVision/99_ARCHIVE/02_old_datasets/` contains the working-copy folder ID `1NDs9m9HCFMAKg9O9MCHnRgnG_sZ1sCKx`.
+- `FleetVision/99_ARCHIVE/06_duplicate_candidates/` contains the relabel ZIP ID `1No4IDs-VmR0oLY4IxzVZhltikPbUROQi` plus the previously archived notebook duplicate candidate.
+
+### Task 9 Final Action Counters
+
+```text
+metadata-only move = 3
+rename = 0
+copy = 0
+upload = 0
+share = 0
+bytes replacement = 0
+trash = 0
+delete = 0
+permanent deletion = 0
+Frozen Test content access = 0
+raw/canonical content mutation = 0
 ```

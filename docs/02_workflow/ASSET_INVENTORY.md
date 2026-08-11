@@ -33,10 +33,11 @@
 | Asset | Current Location | Classification | Protected | Initial Target |
 |---|---|---|---|---|
 | `00.成果發表/` | Drive root | PORTFOLIO | No | split to `00_PORTFOLIO/` and `04_PROJECT_ASSETS/` |
-| `internal_grouped_dataset_v1_20260717_212356/` | Drive root | PROTECTED | Yes | `01_DATA/01_internal/` after dataset gate |
-| `dataset_v3_relabel_working_20260720_091414/` | Drive root | ARCHIVE | No | `99_ARCHIVE/02_old_datasets/` |
-| relabel working ZIP | Drive root | DUPLICATE_CANDIDATE | No | `99_ARCHIVE/06_duplicate_candidates/` |
-| `grouped_dataset/` | Drive root | RECONCILE_REQUIRED | Yes | archive/reconciliation first |
+| `internal_grouped_dataset_v1_20260717_212356/` | `FleetVision/01_DATA/01_internal/` | PROTECTED / HISTORICAL_BASELINE | Yes | Keep; Task 9 parent move VERIFIED, same Drive item ID |
+| `dataset_v3_relabel_working_20260720_091414/` | `FleetVision/99_ARCHIVE/02_old_datasets/` | ARCHIVE / WORKING_COPY | No | Keep archived; explicitly NOT_CANONICAL |
+| relabel working ZIP | `FleetVision/99_ARCHIVE/06_duplicate_candidates/` | DUPLICATE_CANDIDATE | No | Keep; no deletion/equivalence claim |
+| `FleetVision_YOLO_Labels_Package.zip` | old project root | ARCHIVE_RECONCILIATION | Yes | NOT_MOVED; export provenance unresolved |
+| `grouped_dataset/` | old project root | ARCHIVE_RECONCILIATION | Yes | NOT_MOVED; lineage/holdout unresolved |
 | `models/` | Drive root | RECONCILE_REQUIRED | Yes | reconcile before selecting current model |
 | `notebooks/` | Drive root | RECONCILE_REQUIRED | No | select representatives; archive remainder |
 | `outputs/` | Drive root | RECONCILE_REQUIRED | No | retain evidence; archive remainder |
@@ -63,3 +64,13 @@
 | `03_EXPERIMENTS/` | CREATED | `1gq9ILZ9zpcRrYSqJQBuCyN8sqP_1m4C1` | [Open](https://drive.google.com/drive/folders/1gq9ILZ9zpcRrYSqJQBuCyN8sqP_1m4C1) | 4/4 VERIFIED |
 | `04_PROJECT_ASSETS/` | CREATED | `1i0NAzvD82Ih8nIp70clk6EtY9SUJl0Sd` | [Open](https://drive.google.com/drive/folders/1i0NAzvD82Ih8nIp70clk6EtY9SUJl0Sd) | 3/3 VERIFIED |
 | `99_ARCHIVE/` | CREATED | `1UtHROZBdOjzAbEcexQigzapzRvU0Tqjs` | [Open](https://drive.google.com/drive/folders/1UtHROZBdOjzAbEcexQigzapzRvU0Tqjs) | 7/7 VERIFIED |
+
+## Task 9 — Dataset Provenance Gate
+
+- Gate result: `VERIFIED_WITH_EXPLICIT_UNRESOLVED_ITEMS`.
+- Dataset registry: `docs/02_workflow/DATASET_REGISTRY.md`.
+- Metadata-only Drive moves: `3 VERIFIED`.
+- Explicit unresolved items retained in old project root: `2` (`grouped_dataset/`, `FleetVision_YOLO_Labels_Package.zip`).
+- Working relabel copy remains `WORKING_COPY / NOT_CANONICAL` and was archived; it was not promoted to Dataset v3.
+- Protected internal baseline moved last with the same Drive item ID into `FleetVision/01_DATA/01_internal/`; content was not mutated.
+- Frozen Test contents were not accessed; first-pass permanent deletion remains `0`.
